@@ -129,10 +129,10 @@ body.content-page .bunker-bg-overlay {
 .dropdown-level-1 {
     list-style: none;
     width: 100%;
-    padding-left: 20px; /* Împinge sub-elementele subtil în dreapta pentru ierarhie */
+    padding-left: 20px;
     padding-top: 5px;
-    display: none; /* Ascuns implicit */
-    position: relative; /* NU mai este absolute! Acum împinge elementele de sub el */
+    display: none;
+    position: relative;
     z-index: 10;
 }
 
@@ -141,33 +141,12 @@ body.content-page .bunker-bg-overlay {
     width: 100%;
     padding-left: 15px;
     padding-top: 5px;
-    display: none; /* Ascuns implicit */
-    position: relative; /* Împinge conținutul din interior mai jos */
+    display: none;
+    position: relative;
     z-index: 11;
 }
 
-/* DECLANȘAREA HOVER-ULUI PE DESKTOP (Se deschide în jos și împinge totul) */
-@media (min-width: 1024px) {
-    .has-dropdown:hover > .dropdown-level-1 {
-        display: block;
-    }
-
-    .has-sub-dropdown:hover > .dropdown-level-2 {
-        display: block;
-    }
-    
-    /* Efectul de Glitch pe Text la Hover */
-    .menu-item:hover > .nav-link { 
-        animation: HUDGlitch 0.4s steps(2) infinite; 
-    }
-    
-    /* Ancorare fundal */
-    .bunker-bg-overlay { 
-        background-position: right center; 
-    }
-}
-
-/* Designul fin pentru link-urile din sub-meniuri */
+/* DESIGNUL SUB-MENIURILOR GLOBAL */
 .dropdown-level-1 a, .dropdown-level-2 a {
     font-size: 13px !important;
     letter-spacing: 1px;
@@ -188,18 +167,34 @@ body.content-page .bunker-bg-overlay {
     box-shadow: -5px 0 10px rgba(255, 69, 0, 0.2);
 }
 
+/* DECLANȘAREA HOVER-ULUI PE DESKTOP */
+@media (min-width: 1024px) {
+    .has-dropdown:hover > .dropdown-level-1 {
+        display: block;
+    }
+
+    .has-sub-dropdown:hover > .dropdown-level-2 {
+        display: block;
+    }
+    
+    .menu-item:hover > .nav-link { 
+        animation: HUDGlitch 0.4s steps(2) infinite; 
+    }
+    
+    .bunker-bg-overlay { 
+        background-position: right center; 
+    }
+}
+
 /* ==========================================================================
    5. FOOTER LEGAL COMPONENT & DISCRET HUD STATUS BAR (FIXED TERMINAL)
    ========================================================================== */
-   /* ==========================================================================
-   BUTON CONSOLĂ MOBIL - CONFIGURAȚIE DE BAZĂ (ASCUNS PE DESKTOP)
-   ========================================================================== */
 .mobile-bunker-toggle {
-    display: none !important; /* Îl blochează complet pe monitoarele mari */
+    display: none !important;
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 100;
+    z-index: 110; /* Trebuie să fie peste tot, inclusiv peste meniul mobil (.sidebar-nav) */
     background: #000000;
     color: var(--text-colorless);
     border: 1px solid var(--dark-fence);
@@ -212,6 +207,7 @@ body.content-page .bunker-bg-overlay {
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     transition: all 0.3s ease;
 }
+
 .bunker-footer {
     position: fixed;
     bottom: 0;
@@ -224,7 +220,7 @@ body.content-page .bunker-bg-overlay {
     border-top: 1px solid var(--dark-fence);
     padding: 0 60px;
     background: rgba(5, 5, 5, 0.95);
-    z-index: 95; /* Rămâne permanent deasupra conținutului la scroll */
+    z-index: 95;
 }
 
 .hud-status-bar {
@@ -268,12 +264,11 @@ body.content-page .bunker-bg-overlay {
 /* ==========================================================================
    6. GLOBAL CONTENT INTEGRATION (ANTI-BOX CUT EFFECT)
    ========================================================================== */
-/* Schimbăm fundalul opac cu un amestec fluid de sticlă acrilică cibernetică */
 .project-card, .chronicle-post, .media-channel-card, .profile-card, .bunker-form-box, .uplink-channels-box {
     background: rgba(0, 0, 0, 0.65) !important;
-    backdrop-filter: blur(12px); /* Înglobează perfect blur-ul imaginii din spate, eliminând tăietura brută */
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 69, 0, 0.15) !important; /* Margine fină vulcanică inertă */
+    border: 1px solid rgba(255, 69, 0, 0.15) !important;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
@@ -281,45 +276,44 @@ body.content-page .bunker-bg-overlay {
    7. DESKTOP WORKFLOW FIX (STRUCTURE ALIGNMENT - MASTER GRID)
    ========================================================================== */
 @media (min-width: 1024px) {
-    /* Transformăm containerul într-un sistem pe două coloane fixe */
     .os-container {
         display: grid !important;
-        grid-template-columns: 350px 1fr; /* Coloana 1: Meniul (350px), Coloana 2: Conținutul (restul spațiului) */
-        gap: 50px; /* Spațiu clar și curat între meniu și cutii */
+        grid-template-columns: 350px 1fr;
+        gap: 50px;
         width: 100%;
         padding-top: 40px;
-        padding-bottom: 100px; /* Siguranță ca să nu intre conținutul sub footer-ul fix */
+        padding-bottom: 100px;
         align-items: flex-start;
     }
 
-    /* Meniul lateral devine static în coloana lui, dar își păstrează poziția */
     .sidebar-nav {
-        position: relative; /* Nu mai e fixed ca să nu zboare peste conținut */
+        position: relative;
         top: 0;
         left: 0;
-        width: 100%; /* Ocupă cei 350px alocați de grid */
+        width: 100%;
         z-index: 80;
     }
 
-    /* Blocul de conținut își ocupă automat coloana lui, fără marje oarbe */
     .content-wrapper {
-        margin-left: 0 !important; /* Resetăm marjele vechi */
-        margin-top: 0 !important;  /* Aliniere automată sus, la linie cu [01] HOME */
+        margin-left: 0 !important;
+        margin-top: 0 !important;
         width: 100%;
         z-index: 70;
     }
 }
 
 /* ==========================================================================
-   8. MOBILE RESPONSIVE SWITCH ENGINE
+   8. MOBILE RESPONSIVE SWITCH ENGINE (MASACRUL ȘI REMEDIEREA DEFECTELOR)
    ========================================================================== */
 @media (max-width: 1023px) {
     .mobile-bunker-toggle {
-        display: block !important; /* Devine vizibil doar pe telefoane / tablete */
+        display: block !important;
     }
 
     .os-container {
-        padding: 80px 20px 80px 20px;
+        padding: 80px 20px 120px 20px; /* Adăugat spațiu generos jos pentru footer */
+        flex-direction: column;
+        justify-content: flex-start;
     }
 
     .bunker-bg-overlay {
@@ -334,7 +328,7 @@ body.content-page .bunker-bg-overlay {
         width: 100%;
         height: 100vh;
         background: rgba(0, 0, 0, 0.98);
-        z-index: 90;
+        z-index: 105; /* Peste footer-ul fix, sub butonul de toggle */
         margin-top: 0;
         padding: 100px 30px;
         display: flex;
@@ -359,31 +353,71 @@ body.content-page .bunker-bg-overlay {
         border-color: #111;
     }
 
+    /* DROPDOWN-URILE PE MOBIL: Forțăm vizibilitate mecanică absolută la adăugarea clasei .open */
     .dropdown-level-1, .dropdown-level-2 {
-        position: relative;
-        left: 0;
-        width: 100%;
-        padding-left: 20px;
-        display: none;
+        position: relative !important;
+        left: 0 !important;
+        width: 100% !important;
+        padding-left: 20px !important;
+        display: none !important;
+        pointer-events: auto !important; /* Permite executarea evenimentelor tactile */
     }
 
-    .menu-item.open > .dropdown-level-1 { display: block; }
-    .dropdown-item.open > .dropdown-level-2 { display: block; }
+    /* Extindere mecanică și forțare afișare la starea .open */
+    .menu-item.open > .dropdown-level-1 { 
+        display: block !important; 
+    }
+    .dropdown-item.open > .dropdown-level-2 { 
+        display: block !important; 
+    }
 
+    /* UX HITBOX ENHANCEMENT: Mărim hitbox-ul tactil al link-urilor din sub-meniuri pe telefoane */
+    .dropdown-level-1 a, .dropdown-level-2 a {
+        font-size: 15px !important; /* Text mai lizibil pe telefon */
+        padding: 15px 20px !important; /* Hitbox masiv de minimum 44px înălțime pentru deget */
+        display: block !important;
+        pointer-events: auto !important;
+        z-index: 120 !important;
+    }
+
+    /* BLOCARE DISPOZITIVE DE FUNDAL: Ignorăm elementele HUD parazite la apasare */
+    .bunker-bg-overlay, .hud-status-bar {
+        pointer-events: none;
+    }
+
+    /* REPARAȚIE FOOTER MOBIL: Forțat solid la bază, eliminat suprapunerile de text */
     .bunker-footer {
-        position: relative;
-        height: auto;
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-        padding: 20px 0 0 0;
-        background: transparent;
-        border-top: 1px solid var(--dark-fence);
+        position: fixed !important; /* Îl blocăm permanent jos pe ecran */
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important; /* Se adaptează după textul pe mai multe rânduri */
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding: 15px 20px !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+        border-top: 1px dashed var(--magma-orange) !important; /* Linie fină Magma Orange */
+        z-index: 95 !important; /* Stă deasupra conținutului paginii, dar sub meniul deschis */
+    }
+
+    .hud-status-bar {
+        justify-content: center;
+        width: 100%;
     }
 
     .legal-bindings {
-        flex-direction: column;
-        gap: 8px;
+        flex-direction: row !important; /* Rămân pe linie sau se așează frumos */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px !important;
+        width: 100%;
+    }
+    
+    .legal-link {
+        font-size: 12px !important;
+        padding: 5px 10px;
     }
 }
 
