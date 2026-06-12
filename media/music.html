@@ -140,7 +140,7 @@
 
     <div class="bunker-bg-overlay"></div>
 
-    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+    <button class="mobile-bunker-toggle">
         [ = ] SYS_MENU
     </button>
 
@@ -149,31 +149,31 @@
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
                 <li class="menu-item">
-                    <a href="../index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
+                    <a href="/index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
                 </li>
-                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
-                    <a href="../projects.html" class="nav-link"><span class="node-num">[02]</span> PROJECTS</a>
+                <li class="menu-item has-dropdown">
+                    <a href="/projects.html" class="nav-link mobile-expandable"><span class="node-num">[02]</span> PROJECTS</a>
                     <ul class="dropdown-level-1">
-                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
-                            <a href="../deaddrop/index.html">> DEAD DROP</a>
+                        <li class="dropdown-item has-sub-dropdown">
+                            <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
                             <ul class="dropdown-level-2">
-                                <li><a href="../deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="../deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
                 <li class="menu-item">
-                    <a href="../chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
+                    <a href="/chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
                 </li>
                 <li class="menu-item active">
-                    <a href="../media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA</a>
+                    <a href="/media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA</a>
                 </li>
                 <li class="menu-item">
-                    <a href="../about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
+                    <a href="/about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
                 </li>
                 <li class="menu-item">
-                    <a href="../contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
+                    <a href="/contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
                 </li>
             </ul>
         </nav>
@@ -193,32 +193,32 @@
                 <div class="playlist-log-box">
                     <ul class="track-log-list">
                         
-                        <li class="track-log-item playing-active" onclick="playTrack('assets/Dead_Drop.mp3', 'Dead Drop', this)">
+                        <li class="track-log-item playing-active" data-src="assets/Dead_Drop.mp3" data-title="Dead Drop">
                             <span>[01] // <span class="track-title">Dead Drop</span></span>
                             <span class="status-tag">[ONLINE]</span>
                         </li>
 
-                        <li class="track-log-item" onclick="playTrack('assets/Abyssal_Sacrament.mp3', 'Abyssal Sacrament', this)">
+                        <li class="track-log-item" data-src="assets/Abyssal_Sacrament.mp3" data-title="Abyssal Sacrament">
                             <span>[02] // <span class="track-title">Abyssal Sacrament</span></span>
                             <span class="status-tag">[STANDBY]</span>
                         </li>
 
-                        <li class="track-log-item" onclick="playTrack('assets/Magma_Orange_Eyes.mp3', 'Magma Orange Eyes', this)">
+                        <li class="track-log-item" data-src="assets/Magma_Orange_Eyes.mp3" data-title="Magma Orange Eyes">
                             <span>[03] // <span class="track-title">Magma Orange Eyes</span></span>
                             <span class="status-tag">[STANDBY]</span>
                         </li>
 
-                        <li class="track-log-item" onclick="playTrack('assets/Marrow_of_the_Rot.mp3', 'Marrow of the Rot', this)">
+                        <li class="track-log-item" data-src="assets/Marrow_of_the_Rot.mp3" data-title="Marrow of the Rot">
                             <span>[04] // <span class="track-title">Marrow of the Rot</span></span>
                             <span class="status-tag">[STANDBY]</span>
                         </li>
 
-                        <li class="track-log-item" onclick="playTrack('assets/Take_Off_The_Limiters.mp3', 'Take Off The Limiters', this)">
+                        <li class="track-log-item" data-src="assets/Take_Off_The_Limiters.mp3" data-title="Take Off The Limiters">
                             <span>[05] // <span class="track-title">Take Off The Limiters</span></span>
                             <span class="status-tag">[STANDBY]</span>
                         </li>
 
-                        <li class="track-log-item" onclick="playTrack('assets/Throne_of_Stone.mp3', 'Throne of Stone', this)">
+                        <li class="track-log-item" data-src="assets/Throne_of_Stone.mp3" data-title="Throne of Stone">
                             <span>[06] // <span class="track-title">Throne of Stone</span></span>
                             <span class="status-tag">[STANDBY]</span>
                         </li>
@@ -234,64 +234,87 @@
                 <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
             </div>
             <div class="legal-bindings">
-                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+                <a href="/terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="/privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="/cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
             </div>
         </footer>
 
     </div>
 
     <script>
+        // ENGINE AUDIO INTERACTIV
         const player = document.getElementById('audioEngine');
         const currentTitleText = document.getElementById('currentTrackName');
+        const trackItems = document.querySelectorAll('.track-log-item');
 
-        function playTrack(fileSource, trackName, element) {
-            // Încărcăm sursa nouă în motorul audio
-            player.src = fileSource;
-            currentTitleText.textContent = trackName;
-            
-            // Curățăm stările active de pe toate celelalte rânduri
-            document.querySelectorAll('.track-log-item').forEach(item => {
-                item.classList.remove('playing-active');
-                item.querySelector('.status-tag').textContent = "[STANDBY]";
+        trackItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const src = item.getAttribute('data-src');
+                const title = item.getAttribute('data-title');
+                
+                player.src = src;
+                currentTitleText.textContent = title;
+                
+                trackItems.forEach(i => {
+                    i.classList.remove('playing-active');
+                    i.querySelector('.status-tag').textContent = "[STANDBY]";
+                });
+                
+                item.classList.add('playing-active');
+                item.querySelector('.status-tag').textContent = "[ONLINE]";
+                
+                player.play();
             });
+        });
 
-            // Activăm vizual rândul curent dând click
-            element.classList.add('playing-active');
-            element.querySelector('.status-tag').textContent = "[ONLINE]";
-            
-            // Executăm comanda de redare directă
-            player.play();
-        }
+        // CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
+        const nav = document.getElementById('globalNav');
+        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
-        function toggleMobileMenu() {
-            const nav = document.getElementById('globalNav');
-            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.classList.toggle('mobile-open');
+            
             if(nav.classList.contains('mobile-open')) {
                 toggleBtn.textContent = "[ X ] CLOSE_MENU";
                 toggleBtn.style.color = "#FF4500";
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
+                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                    el.classList.remove('dropdown-open');
+                });
             }
+        });
+
+        // LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
+        if (window.innerWidth < 1024) {
+            document.querySelectorAll('.mobile-expandable').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const nextDropdown = link.nextElementSibling;
+                    
+                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
+                        e.preventDefault(); 
+                        nextDropdown.classList.add('dropdown-open');
+                    }
+                });
+            });
         }
-        function toggleMobileDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
-                    event.preventDefault();
+
+        // Click Outside: Închidere automată
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
+                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    nav.classList.remove('mobile-open');
+                    toggleBtn.textContent = "[ = ] SYS_MENU";
+                    toggleBtn.style.color = "#ffffff";
+                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                        el.classList.remove('dropdown-open');
+                    });
                 }
-                element.classList.toggle('open');
             }
-        }
-        function toggleMobileSubDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                event.stopPropagation();
-                event.preventDefault();
-                element.classList.toggle('open');
-            }
-        }
+        });
     </script>
 </body>
 </html>
