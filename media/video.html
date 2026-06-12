@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // MEDIA // VIDEO_PROMOS</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* CONFIGURAȚIE CORECTATĂ PENTRU CONSOLA VIDEO GRID */
+        .video-terminal-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 900px) {
+            .video-terminal-container {
+                grid-template-columns: 1.4fr 0.6fr; /* Coloana 1: Ecranul Mare, Coloana 2: Lista Teasere */
+            }
+        }
+
+        .main-screen-box, .video-feed-selector {
+            padding: 20px;
+            position: relative;
+        }
+
+        .main-screen-box::before {
+            content: "MONITOR_DISPLAY // TRANSMISSION_LIVE";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            letter-spacing: 1px;
+        }
+
+        .video-feed-selector::before {
+            content: "CHANNELS // AVAILABLE_LOGS";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--terminal-gray);
+            letter-spacing: 1px;
+        }
+
+        /* Container Proporțional 16:9 Cinema pentru Ecranul Central */
+        .video-theater-screen {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Raport 16:9 perfect */
+            height: 0;
+            background: #000000;
+            border: 1px solid #111;
+        }
+
+        .video-theater-screen iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Listă tactică de selecție video */
+        .feed-nodes-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .feed-node-item {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            color: var(--terminal-gray);
+            border: 1px solid #111;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .feed-node-item:hover {
+            border-color: var(--terminal-gray);
+            color: var(--text-colorless);
+            background: rgba(5, 5, 5, 0.8);
+        }
+
+        .feed-node-item.node-active {
+            border-color: var(--magma-orange) !important;
+            color: var(--text-colorless);
+            background: var(--pure-black);
+            box-shadow: inset 0 0 10px rgba(255, 69, 0, 0.1);
+        }
+
+        .feed-node-item .feed-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.2s ease;
+        }
+
+        .feed-node-item.node-active .feed-title {
+            color: var(--magma-orange);
+        }
+
+        .feed-node-item .feed-meta {
+            font-size: 11px;
+            color: var(--terminal-gray);
+        }
+
+        .media-header-title {
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--magma-orange);
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--dark-fence);
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                <li class="menu-item">
+                    <a href="../index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
+                </li>
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="../projects.html" class="nav-link"><span class="node-num">[02]</span> PROJECTS</a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="../deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="../deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="../deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="../chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
+                </li>
+                <li class="menu-item active">
+                    <a href="../media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA</a>
+                </li>
+                <li class="menu-item">
+                    <a href="../about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
+                </li>
+                <li class="menu-item">
+                    <a href="../contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            
+            <h1 class="media-header-title">Video Promos // Visual Operations</h1>
+
+            <div class="video-terminal-container">
+                
+                <div class="main-screen-box">
+                    <div class="video-theater-screen">
+                        <iframe id="videoMonitor" 
+                                src="https://www.youtube.com/embed/Sd7--V8R1ks?rel=0" 
+                                title="Dead Drop Teaser"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-feed-selector">
+                    <ul class="feed-nodes-list">
+                        
+                        <li class="feed-node-item node-active" onclick="switchVideo('https://www.youtube.com/embed/Sd7--V8R1ks?rel=0', this)">
+                            <span class="feed-title">> Teaser General // Dead Drop</span>
+                            <span class="feed-meta">PROTOCOL: OVERVIEW // SECURE_STREAM</span>
+                        </li>
+
+                        <li class="feed-node-item" onclick="switchVideo('https://www.youtube.com/embed/pzDrUI8Jr7Q?rel=0', this)">
+                            <span class="feed-title">> Teaser Issue #12 // The Game</span>
+                            <span class="feed-meta">PROTOCOL: DATA_UPDATE // LAUNCH_PROMO</span>
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function switchVideo(embedUrl, element) {
+            const monitor = document.getElementById('videoMonitor');
+            
+            // Forțăm reîncărcarea curată a iframe-ului cu noua sursă
+            monitor.setAttribute('src', embedUrl);
+            
+            // Resetăm selectorii vizuali ai canalelor
+            document.querySelectorAll('.feed-node-item').forEach(node => {
+                node.classList.remove('node-active');
+            });
+            
+            // Activăm nodul curent
+            element.classList.add('node-active');
+        }
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

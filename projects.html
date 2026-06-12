@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // PROJECTS // ARCHIVE_FILES</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .project-card {
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover {
+            border-color: var(--magma-orange) !important;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .project-cover-preview {
+            width: 100%;
+            height: 400px;
+            background-color: #000000;
+            border: 1px solid #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .project-cover-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-info h2 {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: var(--text-colorless);
+        }
+
+        .project-info p {
+            font-size: 14px;
+            color: var(--terminal-gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            height: 70px;
+            overflow: hidden;
+        }
+
+        .btn-enter {
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--terminal-gray);
+            color: var(--text-colorless);
+            text-decoration: none;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .btn-enter {
+            border-color: var(--magma-orange);
+            color: var(--magma-orange);
+            background: #000;
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                <li class="menu-item">
+                    <a href="index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
+                </li>
+                <li class="menu-item has-dropdown active" onclick="toggleMobileDropdown(this, event)">
+                    <a href="projects.html" class="nav-link"><span class="node-num">[02]</span> PROJECTS</a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
+                </li>
+                <li class="menu-item">
+                    <a href="media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA</a>
+                </li>
+                <li class="menu-item">
+                    <a href="about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
+                </li>
+                <li class="menu-item">
+                    <a href="contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-cover-preview">
+                        <img src="deaddrop/assets/deaddroppj.webp" alt="Dead Drop Vol 1 Cover" onerror="this.src='https://via.placeholder.com/300x400/050505/ff4500?text=DEAD+DROP'">
+                    </div>
+                    <div class="project-info">
+                        <h2>DEAD DROP Comic books</h2>
+                        <p>Un tech-noir violent, necenzurat și brut. Urmărește acțiunile operative în subteranele unui sistem aflat în colaps total. Volumele 1 și 2 complete.</p>
+                        <a href="deaddrop/index.html" class="btn-enter">[ ACCESS_DATABASE ]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

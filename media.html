@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // MEDIA // CENTRAL_HUB</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CONFIGURAȚIE GRID PENTRU SUB-MODULELE MEDIA */
+        .media-hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .media-channel-card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--dark-fence);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .media-channel-card:hover {
+            border-color: var(--magma-orange);
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .channel-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--terminal-gray);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .media-channel-card:hover .channel-code {
+            color: var(--magma-orange);
+        }
+
+        .channel-info h2 {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-colorless);
+            margin-bottom: 10px;
+        }
+
+        .channel-info p {
+            font-size: 14px;
+            color: var(--terminal-gray);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-connect {
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--dark-fence);
+            color: var(--text-colorless);
+            text-decoration: none;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .media-channel-card:hover .btn-connect {
+            border-color: var(--text-colorless);
+            background: var(--pure-black);
+        }
+
+        /* Layout Fix pentru Desktop */
+        .content-wrapper {
+            margin-left: 0;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 1024px) {
+            /* Suprascriem așezarea globală: aliniem totul la unghi sus și eliminăm împrăștierea pe verticală */
+            .os-container {
+                display: grid !important;
+                grid-template-columns: 350px 1fr;
+                gap: 50px;
+                width: 100%;
+                padding-top: 40px;
+                padding-bottom: 100px;
+                align-items: flex-start;
+            }
+            
+            /* Meniul lateral își păstrează lățimea, dar îi resetăm marjele ca să nu fie afectat */
+            .sidebar-nav {
+                position: relative;
+                top: 0;
+                left: 0;
+                width: 100%;
+                z-index: 80;
+            }
+            
+            /* Blocul de conținut se aliniază acum perfect la linie cu [01] HOME */
+            .content-wrapper {
+                margin-left: 0 !important;
+                margin-top: 0 !important;
+                width: 100%;
+                z-index: 70;
+            }
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME 
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <!-- SINCRO REPARATĂ: ADĂUGAT DROPDOWN CARE COBOARĂ LA HOVER DESKTOP -->
+                <li class="menu-item active has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li><a href="media/music.html">> AUDIO_LOGS</a></li>
+                        <li><a href="media/video.html">> TRANSMISSIONS</a></li>
+                        <li><a href="media/viewer.html">> GRAPHIC_FILES</a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="media-hub-grid">
+                
+                <div class="media-channel-card">
+                    <div class="channel-info">
+                        <div class="channel-code">SYS_CHANNEL // [AUDIO_FEED]</div>
+                        <h2>Audio Uplink</h2>
+                        <p>Accesează playlist-urile oficiale și designul sonor brut care dictează atmosfera din buncăr. Metal greu și frecvențe joase.</p>
+                    </div>
+                    <a href="media/music.html" class="btn-connect">[ OPEN_STREAM ]</a>
+                </div>
+
+                <div class="media-channel-card">
+                    <div class="channel-info">
+                        <div class="channel-code">SYS_CHANNEL // [VISUAL_LOG]</div>
+                        <h2>Video Promos</h2>
+                        <p>Arhiva de clipuri promoționale, teasere oficiale și materiale video rulate pe ecranele tacticle securizate.</p>
+                    </div>
+                    <a href="media/video.html" class="btn-connect">[ EXECUTE_PLAYER ]</a>
+                </div>
+
+                <div class="media-channel-card">
+                    <div class="channel-info">
+                        <div class="channel-code">SYS_CHANNEL // [IMAGE_DECRYPT]</div>
+                        <h2>Graphic Files</h2>
+                        <p>Vizualizator securizat pentru concepte de artă brută, randări Chiaroscuro și cadre nefiltrate din producția Dead Drop.</p>
+                    </div>
+                    <a href="media/viewer.html" class="btn-connect">[ DECRYPT_FILES ]</a>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+    <!-- [01] ROOT ENGINE / HOME -->
+    <url>
+        <loc>https://va-comics.com/index.html</loc>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- [02] PROJECTS ARCHIVE HUB -->
+    <url>
+        <loc>https://va-comics.com/projects.html</loc>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- [03] CHRONICLES / FIELD REPORTS -->
+    <url>
+        <loc>https://va-comics.com/chronicles.html</loc>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- [04] MEDIA CENTRAL HUB -->
+    <url>
+        <loc>https://va-comics.com/media.html</loc>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- MEDIA SUB-CHANNELS -->
+    <url>
+        <loc>https://va-comics.com/media/music.html</loc>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://va-comics.com/media/video.html</loc>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- [05] ABOUT US / DOSSIER -->
+    <url>
+        <loc>https://va-comics.com/about.html</loc>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- [06] CONTACT // UPLINK TERMINAL -->
+    <url>
+        <loc>https://va-comics.com/contact.html</loc>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- ==========================================
+         DEAD DROP DIRECTORY FILES
+         ========================================== -->
+    <url>
+        <loc>https://va-comics.com/deaddrop/index.html</loc>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://va-comics.com/deaddrop/vol1.html</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://va-comics.com/deaddrop/vol2.html</loc>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- ==========================================
+         LEGAL & SECURITY PROTOCOLS
+         ========================================== -->
+    <url>
+        <loc>https://va-comics.com/terms.html</loc>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://va-comics.com/privacy.html</loc>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://va-comics.com/cookies.html</loc>
+        <priority>0.5</priority>
+    </url>
+
+</urlset>

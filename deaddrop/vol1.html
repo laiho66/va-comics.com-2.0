@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // DEAD DROP // VOLUME_01</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* CONFIGURAȚIE GRID PENTRU NUMERELE VOLUMULUI 1 */
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .issue-card {
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .issue-card:hover {
+            border-color: var(--magma-orange) !important;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .issue-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            background-color: #000000;
+            border: 1px solid #111;
+            margin-bottom: 15px;
+        }
+
+        .issue-card h3 {
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-colorless);
+            margin-bottom: 15px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buy-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-buy {
+            flex: 1;
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--dark-fence);
+            color: var(--text-colorless);
+            text-decoration: none;
+            padding: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy:hover {
+            border-color: var(--text-colorless);
+            background: var(--pure-black);
+            color: var(--magma-orange);
+        }
+
+        .btn-buy.paperback:hover {
+            border-color: var(--magma-orange);
+        }
+
+        /* Titlul principal al paginii, integrat în stilul terminalului */
+        .volume-header-title {
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--magma-orange);
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--dark-fence);
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="../index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown active" onclick="toggleMobileDropdown(this, event)">
+                    <a href="../projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown active" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li class="active"><a href="vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA 
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            
+            <h1 class="volume-header-title">VOLUME 01 // ORIGINS</h1>
+
+            <div class="issues-grid">
+                
+                <div class="issue-card">
+                    <img src="assets/cover1.webp" class="issue-cover" alt="Issue 1" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+01'">
+                    <h3>ISSUE #01: Terminal Velocity</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Velocity-ebook/dp/B0G6X2J5G1/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Velocity/dp/B0GPW5D5DT/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover2.webp" class="issue-cover" alt="Issue 2" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+02'">
+                    <h3>ISSUE #02: Ghost Mark</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Ghost-Mark-ebook/dp/B0GC9ZWJCP/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Ghost-Mark/dp/B0GQTQDM2B/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover3.webp" class="issue-cover" alt="Issue 3" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+03'">
+                    <h3>ISSUE #03: The Gossamer Shadow</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Gossamer-Shadow-ebook/dp/B0GCV43BN2/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Gossamer-Shadow/dp/B0GPQYD67M/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover4.webp" class="issue-cover" alt="Issue 4" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+04'">
+                    <h3>ISSUE #04: The Chimera Project</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Chimera-Project-ebook/dp/B0F41H788D/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Chimera-Project/dp/B0GPVJ42WD/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover5.webp" class="issue-cover" alt="Issue 5" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+05'">
+                    <h3>ISSUE #05: Ghost in the Machine</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Ghost-Machine-ebook/dp/B0GDTGG8QT/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Ghost-Machine/dp/B0GQHS1ZRF/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover6.webp" class="issue-cover" alt="Issue 6" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+06'">
+                    <h3>ISSUE #06: Terminal Protocol P.1</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Protocol-ebook/dp/B0GDY78W9M/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Protocol/dp/B0GQHH28P5/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover7.webp" class="issue-cover" alt="Issue 7" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+07'">
+                    <h3>ISSUE #07: Terminal Protocol P.2</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Protocol-ebook/dp/B0GF2V6496/" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Protocol/dp/B0GRGZTY7F/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover8.webp" class="issue-cover" alt="Issue 8" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+08'">
+                    <h3>ISSUE #08: Terminal Protocol P.3</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/gp/product/B0GF8VTJ6Z?" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Terminal-Protocol/dp/B0GPW22DGH/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

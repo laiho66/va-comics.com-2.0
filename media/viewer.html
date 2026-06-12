@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* ==========================================================================
+           CONFIGURAȚIE INTERFAȚĂ SPLIT-SCREEN CINEMATIC (VARIANTA B)
+           ========================================================================== */
+        .viewer-terminal-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: row; /* Aliniere pe orizontală: Miniaturi în stânga, Monitor în dreapta */
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        /* COLOANA STÂNGA: SELECTORUL DE NODURI (MINIATURI VERTICALE) */
+        .thumbnails-grid-hud {
+            display: flex;
+            flex-direction: column; /* Forțăm așezarea una sub alta, în stivă */
+            gap: 15px;
+            position: relative;
+            padding: 25px 15px 15px 15px;
+            border: 1px solid var(--dark-fence);
+            background: rgba(0, 0, 0, 0.3);
+            width: 130px; /* Lățime fixă, compactă pentru coloana din stânga */
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .thumbnails-grid-hud::before {
+            content: "NODES";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #050505;
+            padding: 0 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--terminal-gray);
+            letter-spacing: 1px;
+        }
+
+        .thumb-node {
+            width: 100%;
+            aspect-ratio: 2/3; /* FORMAT PORTRET PERFECT PENTRU COPERȚI / PAGINI CORECTE */
+            object-fit: cover;
+            background: #000000;
+            border: 1px solid #151515;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0.5;
+            display: block;
+        }
+
+        .thumb-node:hover {
+            opacity: 0.9;
+            border-color: var(--terminal-gray);
+        }
+
+        .thumb-node.node-selected {
+            opacity: 1 !important;
+            border-color: var(--magma-orange) !important;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
+        }
+
+        /* COLOANA DREAPTA: MONITORUL HUD PRINCIPAL */
+        .main-display-box {
+            flex-grow: 1; /* Ocupă automat tot spațiul rămas în dreapta */
+            padding: 15px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--dark-fence);
+            box-sizing: border-box;
+        }
+
+        .main-display-box::before {
+            content: "IMAGE_VIEWER // HIGH_RESOLUTION_FEED";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            letter-spacing: 1px;
+        }
+
+        .active-image-frame {
+            width: auto;
+            max-width: 100%;
+            max-height: 65vh; /* Împiedică imaginea să devină mai înaltă decât ecranul laptopului */
+            object-fit: contain;
+            background: #000000;
+            border: 1px solid #111;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .media-header-title {
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--magma-orange);
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--dark-fence);
+            padding-bottom: 10px;
+        }
+
+        /* COMPATIBILITATE MOBIL // STRUCTURA RE-ALINIATĂ PE TELEFOANE */
+        @media (max-width: 768px) {
+            .viewer-terminal-container {
+                flex-direction: column; /* Trecem de la rând la coloană: monitorul sus, miniaturile jos */
+                gap: 20px;
+            }
+            .main-display-box {
+                padding: 8px;
+            }
+            .active-image-frame {
+                max-height: 50vh; /* Lăsăm spațiu pe ecranul telefonului */
+            }
+            .thumbnails-grid-hud {
+                width: 100%;
+                flex-direction: row; /* Pe mobil devine bandă orizontală de miniaturi */
+                justify-content: center;
+                padding: 20px 10px 10px 10px;
+                gap: 10px;
+            }
+            .thumbnails-grid-hud::before {
+                content: "AVAILABLE_NODES // CONCEPT_ART";
+            }
+            .thumb-node {
+                width: auto;
+                height: 70px; /* Limităm înălțimea bănzii pe mobil */
+            }
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                <li class="menu-item">
+                    <a href="../index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
+                </li>
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="../projects.html" class="nav-link"><span class="node-num">[02]</span> PROJECTS</a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="../deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="../deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="../deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="../chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
+                </li>
+                <li class="menu-item active">
+                    <a href="../media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA </a>
+                </li>
+                <li class="menu-item">
+                    <a href="../about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
+                </li>
+                <li class="menu-item">
+                    <a href="../contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            
+            <h1 class="media-header-title">Graphic Files // Concept Intel</h1>
+
+            <div class="viewer-terminal-container">
+                
+                <div class="thumbnails-grid-hud">
+                    
+                    <img src="assets/issue1.webp" 
+                         class="thumb-node node-selected" 
+                         alt="Concept 1" 
+                         onclick="changeDisplayImage('assets/issue1.webp', this)">
+                         
+                    <img src="assets/cover9.webp" 
+                         class="thumb-node" 
+                         alt="Concept 2" 
+                         onclick="changeDisplayImage('assets/cover9.webp', this)">
+                         
+                    <img src="assets/issue1.webp" 
+                         class="thumb-node" 
+                         alt="Concept 3" 
+                         onclick="changeDisplayImage('assets/issue1.webp', this)">
+                         
+                    <img src="https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04" 
+                         class="thumb-node" 
+                         alt="Concept 4" 
+                         onclick="changeDisplayImage('https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04', this)">
+
+                </div>
+
+                <div class="main-display-box">
+                    <img id="mainViewerDisplay" 
+                         src="assets/test.webp" 
+                         class="active-image-frame" 
+                         alt="Dead Drop Main Intel">
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function changeDisplayImage(newSrc, element) {
+            const display = document.getElementById('mainViewerDisplay');
+            display.src = newSrc;
+            
+            // Eliminăm clasa de selecție de pe nodul vechi
+            document.querySelectorAll('.thumb-node').forEach(thumb => {
+                thumb.classList.remove('node-selected');
+            });
+            
+            // Aprindem noul nod cu portocaliu vulcanic
+            element.classList.add('node-selected');
+        }
+
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+/* ==========================================================================
+   VA COMICS v2.0 // CORE TERMINAL ENGINE (STYLE.CSS)
+   Color Palette: OLED Blacks, Colorless Gray/White, Magma Orange (#FF4500)
+   Fully Responsive: Desktop UI + Mobile Touch HUD
+   ========================================================================== */
+
+/* 1. CORE SYSTEM RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --oled-black: #050505;
+    --pure-black: #000000;
+    --magma-orange: #FF4500;
+    --text-colorless: #ffffff;
+    --terminal-gray: #888888;
+    --dark-fence: #111111;
+}
+
+body {
+    background-color: var(--oled-black);
+    color: var(--text-colorless);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* 2. GLOBAL BACKGROUND ENGINE (WALLPAPER ENGINE v2.0) */
+.bunker-bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('bg-home.webp') no-repeat center center;
+    background-size: cover;
+    z-index: -2;
+    transition: filter 0.5s ease, brightness 0.5s ease;
+    will-change: transform;
+}
+
+/* Scanlines HUD */
+.bunker-bg-overlay::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+    z-index: 2;
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+body.content-page .bunker-bg-overlay {
+    filter: blur(8px) brightness(30%);
+}
+
+/* Master Layout Container */
+.os-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+}
+
+/* 3. NAVIGATION HUD (DEFAULT DESKTOP) */
+.sidebar-nav {
+    width: 350px;
+    margin-top: 40px;
+    will-change: transform;
+}
+
+.main-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.nav-link, .dropdown-level-1 a, .dropdown-level-2 a {
+    display: block;
+    color: var(--terminal-gray);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid var(--dark-fence);
+    transition: all 0.3s ease;
+}
+
+.nav-link .node-num {
+    color: var(--text-colorless);
+    margin-right: 8px;
+    transition: color 0.3s ease;
+}
+
+/* HOVER STATES */
+.menu-item.active > .nav-link,
+.menu-item:hover > .nav-link {
+    color: var(--text-colorless);
+    border-color: var(--magma-orange);
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.4);
+    background: var(--pure-black);
+}
+
+.menu-item.active .node-num,
+.menu-item:hover > .nav-link .node-num {
+    color: var(--magma-orange);
+}
+
+/* ==========================================================================
+   4. DROPDOWN SYSTEM (DESKTOP ACCORDION & MOBILE PLIABLE)
+   ========================================================================== */
+.dropdown-level-1 {
+    list-style: none;
+    width: 100%;
+    padding-left: 20px; /* Împinge sub-elementele subtil în dreapta pentru ierarhie */
+    padding-top: 5px;
+    display: none; /* Ascuns implicit */
+    position: relative; /* NU mai este absolute! Acum împinge elementele de sub el */
+    z-index: 10;
+}
+
+.dropdown-level-2 {
+    list-style: none;
+    width: 100%;
+    padding-left: 15px;
+    padding-top: 5px;
+    display: none; /* Ascuns implicit */
+    position: relative; /* Împinge conținutul din interior mai jos */
+    z-index: 11;
+}
+
+/* DECLANȘAREA HOVER-ULUI PE DESKTOP (Se deschide în jos și împinge totul) */
+@media (min-width: 1024px) {
+    .has-dropdown:hover > .dropdown-level-1 {
+        display: block;
+    }
+
+    .has-sub-dropdown:hover > .dropdown-level-2 {
+        display: block;
+    }
+    
+    /* Efectul de Glitch pe Text la Hover */
+    .menu-item:hover > .nav-link { 
+        animation: HUDGlitch 0.4s steps(2) infinite; 
+    }
+    
+    /* Ancorare fundal */
+    .bunker-bg-overlay { 
+        background-position: right center; 
+    }
+}
+
+/* Designul fin pentru link-urile din sub-meniuri */
+.dropdown-level-1 a, .dropdown-level-2 a {
+    font-size: 13px !important;
+    letter-spacing: 1px;
+    padding: 10px 15px !important;
+    margin-top: 5px;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-left: 3px solid var(--dark-fence) !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+}
+
+.dropdown-level-1 li:hover > a, 
+.dropdown-level-2 li:hover > a {
+    color: var(--text-colorless);
+    border-left-color: var(--magma-orange) !important;
+    background: var(--pure-black) !important;
+    box-shadow: -5px 0 10px rgba(255, 69, 0, 0.2);
+}
+
+/* ==========================================================================
+   5. FOOTER LEGAL COMPONENT & DISCRET HUD STATUS BAR (FIXED TERMINAL)
+   ========================================================================== */
+   /* ==========================================================================
+   BUTON CONSOLĂ MOBIL - CONFIGURAȚIE DE BAZĂ (ASCUNS PE DESKTOP)
+   ========================================================================== */
+.mobile-bunker-toggle {
+    display: none !important; /* Îl blochează complet pe monitoarele mari */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: #000000;
+    color: var(--text-colorless);
+    border: 1px solid var(--dark-fence);
+    padding: 12px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+}
+.bunker-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--dark-fence);
+    padding: 0 60px;
+    background: rgba(5, 5, 5, 0.95);
+    z-index: 95; /* Rămâne permanent deasupra conținutului la scroll */
+}
+
+.hud-status-bar {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: var(--terminal-gray);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--magma-orange);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--magma-orange);
+    animation: pulseStatus 2s infinite ease-in-out;
+}
+
+.legal-bindings {
+    display: flex;
+    gap: 20px;
+}
+
+.legal-link {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    color: var(--terminal-gray);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.legal-link:hover {
+    color: var(--text-colorless);
+}
+
+/* ==========================================================================
+   6. GLOBAL CONTENT INTEGRATION (ANTI-BOX CUT EFFECT)
+   ========================================================================== */
+/* Schimbăm fundalul opac cu un amestec fluid de sticlă acrilică cibernetică */
+.project-card, .chronicle-post, .media-channel-card, .profile-card, .bunker-form-box, .uplink-channels-box {
+    background: rgba(0, 0, 0, 0.65) !important;
+    backdrop-filter: blur(12px); /* Înglobează perfect blur-ul imaginii din spate, eliminând tăietura brută */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 69, 0, 0.15) !important; /* Margine fină vulcanică inertă */
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================================================
+   7. DESKTOP WORKFLOW FIX (STRUCTURE ALIGNMENT - MASTER GRID)
+   ========================================================================== */
+@media (min-width: 1024px) {
+    /* Transformăm containerul într-un sistem pe două coloane fixe */
+    .os-container {
+        display: grid !important;
+        grid-template-columns: 350px 1fr; /* Coloana 1: Meniul (350px), Coloana 2: Conținutul (restul spațiului) */
+        gap: 50px; /* Spațiu clar și curat între meniu și cutii */
+        width: 100%;
+        padding-top: 40px;
+        padding-bottom: 100px; /* Siguranță ca să nu intre conținutul sub footer-ul fix */
+        align-items: flex-start;
+    }
+
+    /* Meniul lateral devine static în coloana lui, dar își păstrează poziția */
+    .sidebar-nav {
+        position: relative; /* Nu mai e fixed ca să nu zboare peste conținut */
+        top: 0;
+        left: 0;
+        width: 100%; /* Ocupă cei 350px alocați de grid */
+        z-index: 80;
+    }
+
+    /* Blocul de conținut își ocupă automat coloana lui, fără marje oarbe */
+    .content-wrapper {
+        margin-left: 0 !important; /* Resetăm marjele vechi */
+        margin-top: 0 !important;  /* Aliniere automată sus, la linie cu [01] HOME */
+        width: 100%;
+        z-index: 70;
+    }
+}
+
+/* ==========================================================================
+   8. MOBILE RESPONSIVE SWITCH ENGINE
+   ========================================================================== */
+@media (max-width: 1023px) {
+    .mobile-bunker-toggle {
+        display: block !important; /* Devine vizibil doar pe telefoane / tablete */
+    }
+
+    .os-container {
+        padding: 80px 20px 80px 20px;
+    }
+
+    .bunker-bg-overlay {
+        background-position: center center;
+        filter: brightness(40%);
+    }
+
+    .sidebar-nav {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.98);
+        z-index: 90;
+        margin-top: 0;
+        padding: 100px 30px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .sidebar-nav.mobile-open {
+        left: 0;
+    }
+
+    .main-menu {
+        width: 100%;
+        gap: 20px;
+    }
+
+    .nav-link {
+        font-size: 18px;
+        padding: 16px 20px;
+        background: #050505;
+        border-color: #111;
+    }
+
+    .dropdown-level-1, .dropdown-level-2 {
+        position: relative;
+        left: 0;
+        width: 100%;
+        padding-left: 20px;
+        display: none;
+    }
+
+    .menu-item.open > .dropdown-level-1 { display: block; }
+    .dropdown-item.open > .dropdown-level-2 { display: block; }
+
+    .bunker-footer {
+        position: relative;
+        height: auto;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+        padding: 20px 0 0 0;
+        background: transparent;
+        border-top: 1px solid var(--dark-fence);
+    }
+
+    .legal-bindings {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* ==========================================================================
+   9. UTILS & ANIMATIONS
+   ========================================================================== */
+@keyframes pulseStatus {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+@keyframes HUDGlitch {
+    0% { text-shadow: 2px 0 0 rgba(255, 69, 0, 0.5), -2px 0 0 rgba(255, 255, 255, 0.2); transform: skewX(0deg); }
+    50% { text-shadow: -2px 0 0 rgba(255, 69, 0, 0.7), 2px 0 0 rgba(0, 0, 0, 0.5); transform: skewX(1deg); }
+    100% { text-shadow: 1px 0 0 rgba(255, 69, 0, 0.4), -1px 0 0 rgba(255, 255, 255, 0.3); transform: skewX(-1deg); }
+}
+
+.nav-link:active {
+    transform: scale(0.97);
+}

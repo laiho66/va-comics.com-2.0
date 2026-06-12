@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // ABOUT US // OPERATIVE_PROFILE</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CONFIGURAȚIE CORECTATĂ PENTRU PAGINA ABOUT */
+        .about-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .profile-card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--dark-fence);
+            padding: 35px;
+            position: relative;
+        }
+
+        .profile-card::before {
+            content: "DOSSIER_FILE // ACCESS_GRANTED";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            letter-spacing: 1px;
+        }
+
+        .profile-header {
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .profile-meta {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            color: var(--terminal-gray);
+            line-height: 1.5;
+        }
+
+        .profile-meta span {
+            color: var(--text-colorless);
+        }
+
+        .about-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #dddddd;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+        }
+
+        .manifesto-quote {
+            border-left: 3px solid var(--magma-orange);
+            padding-left: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: var(--text-colorless);
+            background: rgba(255, 69, 0, 0.02);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        /* FIX-UL GEOMETRIC MASTER (Alinierea sus, la linie cu meniul) */
+        @media (min-width: 1024px) {
+    /* Suprascriem așezarea globală: aliniem totul la unghi sus și eliminăm împrăștierea pe verticală */
+    .os-container {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start !important; /* Forțăm pornirea de la stânga la dreapta */
+        align-items: flex-start !important;    /* Forțăm ancorarea strânsă în partea de sus */
+    }
+    
+    /* Meniul lateral își păstrează lățimea, dar îi resetăm marjele ca să nu fie afectat */
+    .sidebar-nav {
+        width: 350px;
+        flex-shrink: 0; /* Împiedică flexbox-ul să comprime lățimea meniului */
+    }
+    
+    /* Blocul de conținut se aliniază acum perfect la linie cu [01] HOME */
+    .content-wrapper {
+        margin-left: 30px; /* Spațiu curat între meniul din stânga și cutii */
+        margin-top: 40px;  /* Coborâre calibrată exact pe linia primului element din HUD */
+        width: 100%;
+    }
+}
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS 
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA
+                    </a>
+                </li>
+
+                <li class="menu-item active">
+                    <a href="about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="about-container">
+                
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-meta">
+                            DESIGNATION: <span>VA COMICS // UNDERGROUND_PUBLISHING</span><br>
+                            OPERATIVE: <span>VA COMICS</span><br>
+                            SECTOR: <span>Sector 1 // TERMINUS CITY</span><br>
+                            PROTOCOL: <span>Viewer discretion is advised</span>
+                        </div>
+                    </div>
+                    
+                    <div class="about-text">
+                        <p>VA Comics was born out of a simple desire: to tell stories. We aren’t a big studio, nor do we aim to be; 
+        we are a space where creative freedom carries more weight than any market convention. We are drawn to 
+        subjects that usually reside in the shadows—those deemed too unconventional or experimental by mainstream 
+        publishers. We believe the audience deserves more than safe, predictable formulas. Whether we are crafting 
+        a comic book or an adventure chronicle, our goal remains the same: to explore new horizons exactly 
+        where others choose to stop.</p>
+                        
+                        <p>Everything you see on our pages is the result of a partnership between human vision and digital potential. 
+        It always begins with an idea—a mental blueprint and a clear direction—while technology steps in as the 
+        forge that helps us build those worlds from the ground up. We use these tools to construct intricate 
+        environments, to refine the atmosphere of every scene, and to add the subtle details that give our 
+        projects their unique pulse. We are here to ensure the original vision takes shape and reaches you 
+        without compromise. To us, technology is the bridge that lets us translate imagination directly 
+        onto the screen without losing its essence along the way.</p>
+                        
+                        <div class="manifesto-quote">
+                            The Future is Loading...
+                        </div>
+                        
+                        <p>Even though we work with the latest digital tools, we call this process a <span class="highlight">“handcrafted future.”</span> 
+        We don’t believe in shortcuts that sacrifice emotion. We dedicate time to every aspect of our work, 
+        manually adjusting every shadow, every angle, and every expression until the result captures the exact 
+        mood we intended. It is a meticulous process where every final decision is entirely our own. At the end 
+        of the day, the tools we use matter far less than whether our universe resonates with you. 
+        We are here to build worlds where you can truly lose yourself, page by page.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

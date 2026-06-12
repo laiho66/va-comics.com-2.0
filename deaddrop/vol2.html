@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // DEAD DROP // VOLUME_02</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* CONFIGURAȚIE STATUS PRODUCTION BARBARIAN STYLE */
+        .status-container-wrapper {
+            max-width: 600px;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .status-uplink {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--dark-fence);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .status-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: var(--terminal-gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .progress-bar-hud {
+            width: 100%;
+            height: 6px;
+            background: #111;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+
+        .progress-fill-magma {
+            width: 65%; /* Nivelul curent de producție */
+            height: 100%;
+            background: var(--magma-orange);
+            box-shadow: 0 0 10px var(--magma-orange);
+        }
+
+        .progress-fill-magma.issue13 {
+            width: 35%; /* Progresul specific pentru Issue 13 */
+        }
+
+        .status-percent {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* GRID CONȚINUT REVELATIONS */
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .issue-card {
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .issue-card:hover {
+            border-color: var(--magma-orange) !important;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .issue-cover {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            background-color: #000000;
+            border: 1px solid #111;
+            margin-bottom: 15px;
+        }
+
+        .issue-card h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-colorless);
+            margin-bottom: 15px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buy-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-buy {
+            flex: 1;
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--dark-fence);
+            color: var(--text-colorless);
+            text-decoration: none;
+            padding: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy:hover:not(.disabled) {
+            border-color: var(--text-colorless);
+            background: var(--pure-black);
+            color: var(--magma-orange);
+        }
+
+        /* Stil specific pentru elementele indisponibile (N/A) */
+        .btn-buy.disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            color: var(--terminal-gray);
+            border-color: #151515;
+        }
+
+        .volume-header-title {
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--magma-orange);
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--dark-fence);
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="../index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown active" onclick="toggleMobileDropdown(this, event)">
+                    <a href="../projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown active" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li class="active"><a href="vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            
+            <h1 class="volume-header-title">VOLUME 02 // REVELATIONS</h1>
+
+            <div class="status-container-wrapper">
+                <div class="status-uplink">
+                    <p class="status-label">VOLUME 2 // CURRENT_STATUS:</p>
+                    <div class="progress-bar-hud">
+                        <div class="progress-fill-magma"></div>
+                    </div>
+                    <span class="status-percent">// IN PRODUCTION</span>
+                </div>
+                
+                <div class="status-uplink">
+                    <p class="status-label">ISSUE #13 // CURRENT_STATUS:</p>
+                    <div class="progress-bar-hud">
+                        <div class="progress-fill-magma issue13"></div>
+                    </div>
+                    <span class="status-percent">// IN PRODUCTION</span>
+                </div>
+            </div>
+
+            <div class="issues-grid">
+                
+                <div class="issue-card">
+                    <img src="assets/cover9.webp" class="issue-cover" alt="Issue 9" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+09'">
+                    <h3>ISSUE #09: Zero Collateral</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/dp/B0GHPV6KLC" target="_blank" class="btn-buy">eBook</a>
+                        <a href="https://www.amazon.com/Dead-Drop-Issue-Zero-Collateral/dp/B0GPX2T8R7/" target="_blank" class="btn-buy paperback">Paperback</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover10.webp" class="issue-cover" alt="Issue 10" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+10'">
+                    <h3>ISSUE #10: Ghost Mark II</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/gp/product/B0GJ73M2TN?" target="_blank" class="btn-buy">eBook</a>
+                        <a href="#" class="btn-buy disabled">N/A</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover11p1.webp" class="issue-cover" alt="Issue 11 P1" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+11+P1'">
+                    <h3>ISSUE #11: THE NEW ORDER - PART I</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/dp/B0GSXHLPWK" target="_blank" class="btn-buy">eBook</a>
+                        <a href="#" class="btn-buy disabled">N/A</a>
+                    </div>
+                </div>
+                
+                <div class="issue-card">
+                    <img src="assets/cover11p2.webp" class="issue-cover" alt="Issue 11 P2" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+11+P2'">
+                    <h3>ISSUE #11: THE NEW ORDER - PART II</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/dp/B0GSXHK3W7" target="_blank" class="btn-buy">eBook</a>
+                        <a href="#" class="btn-buy disabled">N/A</a>
+                    </div>
+                </div>
+
+                <div class="issue-card">
+                    <img src="assets/cover12.webp" class="issue-cover" alt="Issue 12" onerror="this.src='https://via.placeholder.com/240x320?text=ISSUE+12'">
+                    <h3>ISSUE #12: THE GAME</h3>
+                    <div class="buy-options">
+                        <a href="https://www.amazon.com/dp/B0H2FRZ6W3" target="_blank" class="btn-buy">eBook</a>
+                        <a href="#" class="btn-buy disabled">N/A</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

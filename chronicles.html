@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // CHRONICLES // FIELD_REPORTS</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CONFIGURAȚIE APERIODICĂ PENTRU RAPOARTE / CHRONICLES */
+        .chronicles-container {
+            width: 100%;
+            max-width: 800px; /* Limităm lățimea textului pentru o lizibilitate maximă */
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .chronicle-post {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--dark-fence);
+            padding: 30px;
+            position: relative;
+        }
+
+        .chronicle-post::before {
+            content: "REPORT_LOG // TRANSMISSION_OK";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            letter-spacing: 1px;
+        }
+
+        .chronicle-header {
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .chronicle-title {
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-colorless);
+            margin-bottom: 5px;
+        }
+
+        .chronicle-date {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: var(--terminal-gray);
+        }
+
+        .chronicle-body {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #dddddd; /* Text ușor gri pentru a nu obosi ochii la citit pe întuneric */
+        }
+
+        .chronicle-body p {
+            margin-bottom: 15px;
+        }
+
+        /* Împingem conținutul în dreapta meniului fix pe Desktop */
+        .content-wrapper {
+            margin-left: 0;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 1024px) {
+            .content-wrapper {
+                margin-left: 380px;
+                margin-top: 0;
+            }
+            .os-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-content: space-between;
+            }
+        }
+
+        /* Optimizări stricte pentru ecrane mici (Mobil) */
+        @media (max-width: 1023px) {
+            .chronicle-post {
+                padding: 20px;
+            }
+            .chronicle-title {
+                font-size: 18px;
+            }
+            .chronicle-body {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item active">
+                    <a href="chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="chronicles-container" id="chroniclesFeed">
+                
+                <div class="chronicle-post">
+                    <div class="chronicle-header">
+                        <h2 class="chronicle-title">Lansare Proiect VA Comics v2.0</h2>
+                        <div class="chronicle-date">SYS_TIME: 2026-06-11 // AUTHOR: OPERATIVE_ARIS</div>
+                    </div>
+                    <div class="chronicle-body">
+                        <p>Sistemul a fost migrat integral pe infrastructura Cloudflare Pages. Noua arhitectură elimină complet erorile de procesare a caracterelor parazite și oferă o viteză superioară de transmisie.</p>
+                        <p>Modulele pentru Dead Drop Volumul 1 și Volumul 2 au fost mapate cu succes în noul meniu de rețea. Terminalul de administrare local este operațional.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

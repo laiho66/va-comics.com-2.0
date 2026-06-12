@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // CONTACT // UPLINK_TERMINAL</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CONFIGURAȚIE FORMULAR ȘI CONDUITE DE CONTACT */
+        .contact-container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+        }
+
+        .bunker-form-box, .uplink-channels-box {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--dark-fence);
+            padding: 30px;
+            position: relative;
+        }
+
+        .bunker-form-box::before {
+            content: "SECURE_FORM // TRANSMIT_PROTOCOL";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            letter-spacing: 1px;
+        }
+
+        .uplink-channels-box::before {
+            content: "EXTERNAL_NODES // SOCIAL_LINKS";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--terminal-gray);
+            letter-spacing: 1px;
+        }
+
+        /* Form Elements Brutalist Style */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: var(--terminal-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .terminal-input {
+            width: 100%;
+            background: #000000;
+            border: 1px solid #222;
+            padding: 12px 15px;
+            color: var(--text-colorless);
+            font-family: sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .terminal-input:focus {
+            outline: none;
+            border-color: var(--magma-orange);
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.15);
+        }
+
+        textarea.terminal-input {
+            height: 150px;
+            resize: none;
+        }
+
+        .btn-transmit {
+            background: transparent;
+            border: 1px solid var(--terminal-gray);
+            color: var(--text-colorless);
+            padding: 14px 25px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-transmit:hover {
+            border-color: var(--magma-orange);
+            color: var(--magma-orange);
+            background: #000000;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+        }
+
+        /* Social Channel Styling (Monochrome / No Color Pop) */
+        .social-node-list {
+            list-style: none;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .social-node-link {
+            display: flex;
+            align-items: center;
+            color: var(--text-colorless);
+            text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-size: 15px;
+            padding: 10px 15px;
+            border: 1px solid #111;
+            background: #000;
+            transition: all 0.3s ease;
+        }
+
+        .social-node-link:hover {
+            border-color: var(--terminal-gray);
+            background: #0a0a0a;
+            color: var(--magma-orange);
+        }
+
+        /* FIX-UL GEOMETRIC MASTER (Alinierea sus, la linie cu meniul) */
+        @media (min-width: 1024px) {
+            .os-container {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start !important;
+                align-items: flex-start !important;
+            }
+            
+            .sidebar-nav {
+                width: 350px;
+                flex-shrink: 0;
+            }
+            
+            .content-wrapper {
+                margin-left: 30px;
+                margin-top: 40px; /* Ancorat la linie cu [01] HOME */
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="deaddrop/index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item active">
+                    <a href="contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="contact-container">
+                
+               <!-- CONTENT AREA -->
+<div class="content-wrapper">
+    <div style="width: 100%; max-width: 600px; margin: 0 auto;">
+        
+        <div style="padding: 40px; position: relative; background: rgba(0, 0, 0, 0.85); border: 1px solid var(--dark-fence); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+            
+            <!-- Eticheta specifică stilului tău de terminal -->
+            <div style="position: absolute; top: -10px; left: 20px; background: #050505; padding: 0 10px; font-family: 'Courier New', Courier, monospace; font-size: 11px; color: var(--magma-orange); letter-spacing: 1px;">
+                UPLINK_PROTOCOL // DIRECT_CONTACT
+            </div>
+
+            <div style="font-family: Arial, sans-serif; color: #dddddd; line-height: 1.6; text-align: center;">
+                <h2 style="color: #ffffff; font-size: 20px; margin-top: 10px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+                    Connect via Social Network
+                </h2>
+                
+                <p style="margin-bottom: 30px; font-size: 14px; color: #aaaaaa;">
+                    For business inquiries, project updates, feedback, or direct communication with VA Comics Studio, please access our official transmission channel on Facebook.
+                </p>
+
+                <!-- BUTONUL COMBAT/TERMINAL CĂTRE FACEBOOK -->
+                <a href="https://www.facebook.com/vacomics66" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   style="display: block; width: 100%; padding: 18px 0; background: transparent; border: 1px solid #ffffff; color: #ffffff; font-family: 'Courier New', Courier, monospace; font-size: 14px; font-weight: bold; text-transform: uppercase; text-decoration: none; letter-spacing: 2px; transition: all 0.3s ease; box-sizing: border-box;">
+                    [ CONNECT_VIA_FACEBOOK ]
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>

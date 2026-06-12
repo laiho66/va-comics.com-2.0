@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // DEAD DROP // DATABASE_SUBHUB</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* CONFIGURAȚIE SPECIFICĂ PENTRU SUB-HUB-UL DEAD DROP */
+        .deaddrop-volumes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .volume-channel-card {
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .volume-channel-card:hover {
+            border-color: var(--magma-orange) !important;
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.25);
+            transform: translateY(-4px);
+        }
+
+        .volume-tag {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .volume-info h2 {
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-colorless);
+            margin-bottom: 12px;
+        }
+
+        .volume-info p {
+            font-size: 14px;
+            color: var(--terminal-gray);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn-access-vol {
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--dark-fence);
+            color: var(--text-colorless);
+            text-decoration: none;
+            padding: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .volume-channel-card:hover .btn-access-vol {
+            border-color: var(--text-colorless);
+            background: var(--pure-black);
+        }
+    </style>
+</head>
+<body class="content-page">
+
+    <div class="bunker-bg-overlay"></div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+        [ = ] SYS_MENU
+    </button>
+
+    <div class="os-container">
+        
+        <nav class="sidebar-nav" id="globalNav">
+            <ul class="main-menu">
+                
+                <li class="menu-item">
+                    <a href="../index.html" class="nav-link">
+                        <span class="node-num">[01]</span> HOME
+                    </a>
+                </li>
+
+                <li class="menu-item has-dropdown active" onclick="toggleMobileDropdown(this, event)">
+                    <a href="../projects.html" class="nav-link">
+                        <span class="node-num">[02]</span> PROJECTS
+                    </a>
+                    <ul class="dropdown-level-1">
+                        <li class="dropdown-item has-sub-dropdown active" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="index.html">> DEAD DROP</a>
+                            <ul class="dropdown-level-2">
+                                <li><a href="vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../chronicles.html" class="nav-link">
+                        <span class="node-num">[03]</span> CHRONICLES
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../media.html" class="nav-link">
+                        <span class="node-num">[04]</span> MEDIA
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../about.html" class="nav-link">
+                        <span class="node-num">[05]</span> ABOUT US
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="../contact.html" class="nav-link">
+                        <span class="node-num">[06]</span> CONTACT
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="deaddrop-volumes-grid">
+                
+                <div class="volume-channel-card">
+                    <div class="volume-info">
+                        <div class="volume-tag">ARCHIVE_FILE // [VOL_01]</div>
+                        <h2>Volume 1 // Issues 1-8</h2>
+                        <p>Inicierea protocolului Dead Drop. Începutul poveștii brute în inima de fier a buncărului. Include primele 8 numere complete în format digital și paperback.</p>
+                    </div>
+                    <a href="vol1.html" class="btn-access-vol">[ LOAD_VOLUME_01 ]</a>
+                </div>
+
+                <div class="volume-channel-card">
+                    <div class="volume-info">
+                        <div class="volume-tag">ARCHIVE_FILE // [VOL_02]</div>
+                        <h2>Volume 2 // Issues 9-12+</h2>
+                        <p>Extinderea rețelei de criminalitate tech-noir. Intră în scenă facțiunile Krest și Iron Kings. Război total, fără cenzură sau filtre editoriale.</p>
+                    </div>
+                    <a href="vol2.html" class="btn-access-vol">[ LOAD_VOLUME_02 ]</a>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="bunker-footer">
+            <div class="hud-status-bar">
+                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
+            </div>
+            <div class="legal-bindings">
+                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+            }
+        }
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
+                }
+                element.classList.toggle('open');
+            }
+        }
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
+    </script>
+</body>
+</html>
