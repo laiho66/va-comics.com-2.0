@@ -111,7 +111,6 @@
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
-                // Închide toate sub-meniurile când se închide meniul mare
                 document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
             }
         });
@@ -119,7 +118,6 @@
         // Închidere la click în exterior (Click Outside)
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-                // Dacă click-ul NU este în interiorul navigării și NU pe butonul de toggle
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
                     nav.classList.remove('mobile-open');
                     toggleBtn.textContent = "[ = ] SYS_MENU";
@@ -129,33 +127,37 @@
             }
         });
 
-        // Logică separată pentru Dropdown-uri pe Mobil (Fără conflicte de propagation)
+        // RECONSTRUCȚIE LOGICĂ DROPDOWN: Separare chirurgicală a țintelor tactile
         nav.addEventListener('click', (e) => {
-            if (window.innerWidth >= 1024) return; // Pe desktop ignorăm logica asta
+            if (window.innerWidth >= 1024) return;
 
             const target = e.target;
 
-            // 1. Gestiune nod principal: [02] PROJECTS
+            // Dacă utilizatorul a apăsat exact pe un link final de volum (VOL 1 sau VOL 2)
+            if (target.classList.contains('vol-link')) {
+                // Forțăm browserul să execute link-ul și oprim orice alt script parazit din spate
+                return; 
+            }
+
+            // Gestiune deschidere pentru [02] PROJECTS
             if (target.closest('.has-dropdown') && !target.closest('.dropdown-level-1')) {
-                // Dacă se apasă pe link-ul principal de Projects, blocăm navigarea ca să deschidem meniul
                 if (target.classList.contains('nav-link') || target.parentElement.classList.contains('nav-link')) {
                     e.preventDefault();
+                    e.stopPropagation();
                     target.closest('.has-dropdown').classList.toggle('open');
                 }
             }
 
-            // 2. Gestiune sub-nod: > DEAD DROP
-            if (target.closest('.has-sub-dropdown')) {
-                // Dacă degetul lovește exact textul sau link-ul "> DEAD DROP"
-                if (target.classList.contains('sub-nav-link') || target.tagName === 'A' && !target.classList.contains('vol-link')) {
+            // Gestiune deschidere pentru > DEAD DROP (Folosim selectarea exactă a tagului)
+            const subDropdownTrigger = target.closest('.has-sub-dropdown');
+            if (subDropdownTrigger) {
+                // Dacă s-a apăsat pe textul "> DEAD DROP" dar NU pe link-urile din interior (VOL 1 / VOL 2)
+                if (target.classList.contains('sub-nav-link') || target.parentElement.classList.contains('has-sub-dropdown')) {
                     e.preventDefault();
                     e.stopPropagation();
-                    target.closest('.has-sub-dropdown').classList.toggle('open');
+                    subDropdownTrigger.classList.toggle('open');
                 }
             }
-            
-            // NOTE: Link-urile care au clasa '.vol-link' (VOL 1 / VOL 2) nu sunt interceptate de regulile de mai sus,
-            // așa că browser-ul le va executa nativ și va schimba pagina instant!
         });
     </script>
 </body>
