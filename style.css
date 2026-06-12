@@ -194,7 +194,7 @@ body.content-page .bunker-bg-overlay {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 110; /* Trebuie să fie peste tot, inclusiv peste meniul mobil (.sidebar-nav) */
+    z-index: 110;
     background: #000000;
     color: var(--text-colorless);
     border: 1px solid var(--dark-fence);
@@ -303,7 +303,7 @@ body.content-page .bunker-bg-overlay {
 }
 
 /* ==========================================================================
-   8. MOBILE RESPONSIVE SWITCH ENGINE (MASACRUL ȘI REMEDIEREA DEFECTELOR)
+   8. MOBILE RESPONSIVE SWITCH ENGINE (TREE-STYLE EXCLUSIV MOBIL)
    ========================================================================== */
 @media (max-width: 1023px) {
     .mobile-bunker-toggle {
@@ -311,7 +311,7 @@ body.content-page .bunker-bg-overlay {
     }
 
     .os-container {
-        padding: 80px 20px 120px 20px; /* Adăugat spațiu generos jos pentru footer */
+        padding: 80px 20px 120px 20px;
         flex-direction: column;
         justify-content: flex-start;
     }
@@ -328,7 +328,7 @@ body.content-page .bunker-bg-overlay {
         width: 100%;
         height: 100vh;
         background: rgba(0, 0, 0, 0.98);
-        z-index: 105; /* Peste footer-ul fix, sub butonul de toggle */
+        z-index: 105;
         margin-top: 0;
         padding: 100px 30px;
         display: flex;
@@ -343,63 +343,73 @@ body.content-page .bunker-bg-overlay {
 
     .main-menu {
         width: 100%;
-        gap: 20px;
+        gap: 15px;
     }
 
     .nav-link {
         font-size: 18px;
-        padding: 16px 20px;
+        padding: 14px 20px;
         background: #050505;
         border-color: #111;
     }
 
-    /* DROPDOWN-URILE PE MOBIL: Forțăm vizibilitate mecanică absolută la adăugarea clasei .open */
+    /* FORȚARE TREE-STYLE PE MOBIL: Direct active și vizibile */
     .dropdown-level-1, .dropdown-level-2 {
+        display: block !important;
         position: relative !important;
         left: 0 !important;
         width: 100% !important;
-        padding-left: 20px !important;
-        display: none !important;
-        pointer-events: auto !important; /* Permite executarea evenimentelor tactile */
-    }
-
-    /* Extindere mecanică și forțare afișare la starea .open */
-    .menu-item.open > .dropdown-level-1 { 
-        display: block !important; 
-    }
-    .dropdown-item.open > .dropdown-level-2 { 
-        display: block !important; 
-    }
-
-    /* UX HITBOX ENHANCEMENT: Mărim hitbox-ul tactil al link-urilor din sub-meniuri pe telefoane */
-    .dropdown-level-1 a, .dropdown-level-2 a {
-        font-size: 15px !important; /* Text mai lizibil pe telefon */
-        padding: 15px 20px !important; /* Hitbox masiv de minimum 44px înălțime pentru deget */
-        display: block !important;
         pointer-events: auto !important;
-        z-index: 120 !important;
     }
 
-    /* BLOCARE DISPOZITIVE DE FUNDAL: Ignorăm elementele HUD parazite la apasare */
+    /* Indentare > DEAD DROP */
+    .dropdown-level-1 {
+        padding-left: 25px !important;
+        padding-top: 5px;
+    }
+    .dropdown-level-1 a {
+        font-size: 15px !important;
+        padding: 12px 15px !important;
+        border-left: 2px solid #333 !important;
+    }
+
+    /* Indentare structurală scară: » VOL 1 și » VOL 2 */
+    .dropdown-level-2 {
+        padding-left: 30px !important;
+        padding-top: 5px;
+    }
+    .dropdown-level-2 a {
+        font-size: 14px !important;
+        padding: 14px 15px !important; /* Hitbox generos pentru touch */
+        color: var(--terminal-gray) !important;
+        border-left: 2px dashed var(--magma-orange) !important; /* Ghidaj Magma Neon */
+        background: rgba(255, 69, 0, 0.03) !important;
+    }
+
+    .dropdown-level-2 a:active {
+        color: var(--text-colorless) !important;
+        background: var(--pure-black) !important;
+    }
+
     .bunker-bg-overlay, .hud-status-bar {
         pointer-events: none;
     }
 
-    /* REPARAȚIE FOOTER MOBIL: Forțat solid la bază, eliminat suprapunerile de text */
+    /* FIX DEFINITIV FOOTER MOBIL: Solid la bază */
     .bunker-footer {
-        position: fixed !important; /* Îl blocăm permanent jos pe ecran */
+        position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         width: 100% !important;
-        height: auto !important; /* Se adaptează după textul pe mai multe rânduri */
+        height: auto !important;
         flex-direction: column !important;
         gap: 12px !important;
         align-items: center !important;
         text-align: center !important;
         padding: 15px 20px !important;
         background: rgba(0, 0, 0, 0.95) !important;
-        border-top: 1px dashed var(--magma-orange) !important; /* Linie fină Magma Orange */
-        z-index: 95 !important; /* Stă deasupra conținutului paginii, dar sub meniul deschis */
+        border-top: 1px dashed var(--magma-orange) !important;
+        z-index: 95 !important;
     }
 
     .hud-status-bar {
@@ -408,7 +418,7 @@ body.content-page .bunker-bg-overlay {
     }
 
     .legal-bindings {
-        flex-direction: row !important; /* Rămân pe linie sau se așează frumos */
+        flex-direction: row !important;
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px !important;
