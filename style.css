@@ -303,7 +303,7 @@ body.content-page .bunker-bg-overlay {
 }
 
 /* ==========================================================================
-   8. MOBILE RESPONSIVE SWITCH ENGINE (TREE-STYLE EXCLUSIV MOBIL)
+   8. MOBILE RESPONSIVE SWITCH ENGINE (ACORDEON CU SCROLL INTERN IZOLAT)
    ========================================================================== */
 @media (max-width: 1023px) {
     .mobile-bunker-toggle {
@@ -311,7 +311,9 @@ body.content-page .bunker-bg-overlay {
     }
 
     .os-container {
-        padding: 80px 20px 120px 20px;
+        /* FIX DEFINITIV PENTRU IMAGINEA 1000027594.jpg: */
+        /* Crestem padding-bottom masiv ca butoanele de Ebook sa iasa curat deasupra footer-ului la scroll */
+        padding: 80px 20px 220px 20px !important;
         flex-direction: column;
         justify-content: flex-start;
     }
@@ -333,6 +335,9 @@ body.content-page .bunker-bg-overlay {
         padding: 100px 30px;
         display: flex;
         flex-direction: column;
+        
+        /* FIX DE COMANDA: Limitare inaltime meniu si scroll izolat pentru a nu deforma footerul */
+        max-height: calc(100vh - 150px);
         overflow-y: auto;
         transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1);
     }
@@ -353,16 +358,22 @@ body.content-page .bunker-bg-overlay {
         border-color: #111;
     }
 
-    /* FORȚARE TREE-STYLE PE MOBIL: Direct active și vizibile */
+    /* SISTEM ACORDEON MOBIL CONTROLAT: Se deschid doar cand primesc clasa prin script */
     .dropdown-level-1, .dropdown-level-2 {
-        display: block !important;
+        display: none; /* Ascunse standard pana la interactiune */
         position: relative !important;
         left: 0 !important;
         width: 100% !important;
         pointer-events: auto !important;
     }
 
-    /* Indentare > DEAD DROP */
+    /* Clasele dinamice care vor fi injectate din JavaScript pentru activare */
+    .dropdown-level-1.dropdown-open,
+    .dropdown-level-2.dropdown-open {
+        display: block !important;
+    }
+
+    /* Indentare Nivel 1: Sub-pagina X -> Y (> DEAD DROP) */
     .dropdown-level-1 {
         padding-left: 25px !important;
         padding-top: 5px;
@@ -373,14 +384,14 @@ body.content-page .bunker-bg-overlay {
         border-left: 2px solid #333 !important;
     }
 
-    /* Indentare structurală scară: » VOL 1 și » VOL 2 */
+    /* Indentare Nivel 2: Sub-pagina Y -> Q (» VOL 1 si » VOL 2) */
     .dropdown-level-2 {
         padding-left: 30px !important;
         padding-top: 5px;
     }
     .dropdown-level-2 a {
         font-size: 14px !important;
-        padding: 14px 15px !important; /* Hitbox generos pentru touch */
+        padding: 14px 15px !important;
         color: var(--terminal-gray) !important;
         border-left: 2px dashed var(--magma-orange) !important; /* Ghidaj Magma Neon */
         background: rgba(255, 69, 0, 0.03) !important;
@@ -395,7 +406,7 @@ body.content-page .bunker-bg-overlay {
         pointer-events: none;
     }
 
-    /* FIX DEFINITIV FOOTER MOBIL: Solid la bază */
+    /* FIX COMBAT FOOTER FIXAT: Blocat ferm la baza, sub nivelul meniului */
     .bunker-footer {
         position: fixed !important;
         bottom: 0 !important;
