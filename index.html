@@ -10,7 +10,7 @@
 
     <div class="bunker-bg-overlay"></div>
 
-    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+    <button class="mobile-bunker-toggle">
         [ = ] SYS_MENU
     </button>
 
@@ -25,16 +25,16 @@
                     </a>
                 </li>
 
-                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                <li class="menu-item has-dropdown">
                     <a href="projects.html" class="nav-link">
                         <span class="node-num">[02]</span> PROJECTS
                     </a>
                     <ul class="dropdown-level-1">
-                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
-                            <a href="deaddrop/index.html">> DEAD DROP</a>
+                        <li class="dropdown-item has-sub-dropdown">
+                            <a href="deaddrop/index.html" class="sub-nav-link">> DEAD DROP</a>
                             <ul class="dropdown-level-2">
-                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                                <li><a href="deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -65,7 +65,7 @@
                 </li>
             </ul>
         </nav>
-		
+        
         <footer class="bunker-footer">
             <div class="hud-status-bar">
                 <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
@@ -81,7 +81,7 @@
     </div>
 
     <script>
-        // 1. STRATIFIED PARALLAX DEPTH (Desktop - Rămâne Neschimbat)
+        // 1. STRATIFIED PARALLAX DEPTH (Desktop)
         const bg = document.querySelector('.bunker-bg-overlay');
         const sidebar = document.querySelector('.sidebar-nav');
         
@@ -96,10 +96,13 @@
             });
         }
 
-        // 2. MOBILE HAMBURGER TERMINAL OVERLAY
-        function toggleMobileMenu() {
-            const nav = document.getElementById('globalNav');
-            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+        // CONTROL INTEGRAT PENTRU INTERFAȚA DE MOBIL
+        const nav = document.getElementById('globalNav');
+        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+
+        // Toggle Meniu Principal
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.classList.toggle('mobile-open');
             
             if(nav.classList.contains('mobile-open')) {
@@ -108,50 +111,52 @@
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
-                // Resetăm dropdown-urile la închiderea meniului general
-                document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('open'));
+                // Închide toate sub-meniurile când se închide meniul mare
+                document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
             }
-        }
+        });
 
-        // PROTOCOL: ÎNCHIDERE AUTOMATĂ LA CLICK ÎN AFARA MENIULUI (Adăugat)
-        document.addEventListener('click', function(event) {
-            const nav = document.getElementById('globalNav');
-            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
-            
-            // Verificăm dacă meniul de mobil este deschis
-            if (nav.classList.contains('mobile-open')) {
-                // Dacă click-ul NU este în interiorul meniului și NU pe butonul de toggle
-                if (!nav.contains(event.target) && !toggleBtn.contains(event.target)) {
-                    toggleMobileMenu(); // Prăbușește meniul automat
+        // Închidere la click în exterior (Click Outside)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
+                // Dacă click-ul NU este în interiorul navigării și NU pe butonul de toggle
+                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    nav.classList.remove('mobile-open');
+                    toggleBtn.textContent = "[ = ] SYS_MENU";
+                    toggleBtn.style.color = "#ffffff";
+                    document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
                 }
             }
         });
 
-        // 3. LOGICĂ TAP DROPDOWN PENTRU MOBIL (Corectată)
-        function toggleMobileDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                // Prevenim navigarea doar dacă se apasă pe textul părinte principal
-                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    element.classList.toggle('open');
-                }
-            }
-        }
+        // Logică separată pentru Dropdown-uri pe Mobil (Fără conflicte de propagation)
+        nav.addEventListener('click', (e) => {
+            if (window.innerWidth >= 1024) return; // Pe desktop ignorăm logica asta
 
-        function toggleMobileSubDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                event.stopPropagation(); // Oprim închiderea meniului părinte [02] PROJECTS
-                
-                // CORECTURĂ CRITICĂ: Permitem click-ului să execute link-ul dacă utilizatorul a apăsat direct pe sub-pagini (VOL 1 / VOL 2)
-                if (event.target.tagName === 'A' && event.target.getAttribute('href').includes('vol')) {
-                    return; // Lasă browserul să deschidă link-ul normal!
+            const target = e.target;
+
+            // 1. Gestiune nod principal: [02] PROJECTS
+            if (target.closest('.has-dropdown') && !target.closest('.dropdown-level-1')) {
+                // Dacă se apasă pe link-ul principal de Projects, blocăm navigarea ca să deschidem meniul
+                if (target.classList.contains('nav-link') || target.parentElement.classList.contains('nav-link')) {
+                    e.preventDefault();
+                    target.closest('.has-dropdown').classList.toggle('open');
                 }
-                
-                event.preventDefault();
-                element.classList.toggle('open');
             }
-        }
+
+            // 2. Gestiune sub-nod: > DEAD DROP
+            if (target.closest('.has-sub-dropdown')) {
+                // Dacă degetul lovește exact textul sau link-ul "> DEAD DROP"
+                if (target.classList.contains('sub-nav-link') || target.tagName === 'A' && !target.classList.contains('vol-link')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    target.closest('.has-sub-dropdown').classList.toggle('open');
+                }
+            }
+            
+            // NOTE: Link-urile care au clasa '.vol-link' (VOL 1 / VOL 2) nu sunt interceptate de regulile de mai sus,
+            // așa că browser-ul le va executa nativ și va schimba pagina instant!
+        });
     </script>
 </body>
 </html>
