@@ -120,6 +120,7 @@
             }
             .main-display-box {
                 padding: 8px;
+                width: 100%;
             }
             .active-image-frame {
                 max-height: 50vh; /* Lăsăm spațiu pe ecranul telefonului */
@@ -145,7 +146,7 @@
 
     <div class="bunker-bg-overlay"></div>
 
-    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+    <button class="mobile-bunker-toggle">
         [ = ] SYS_MENU
     </button>
 
@@ -154,31 +155,31 @@
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
                 <li class="menu-item">
-                    <a href="../index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
+                    <a href="/index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
                 </li>
-                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
-                    <a href="../projects.html" class="nav-link"><span class="node-num">[02]</span> PROJECTS</a>
+                <li class="menu-item has-dropdown">
+                    <a href="/projects.html" class="nav-link mobile-expandable"><span class="node-num">[02]</span> PROJECTS</a>
                     <ul class="dropdown-level-1">
-                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
-                            <a href="../deaddrop/index.html">> DEAD DROP</a>
+                        <li class="dropdown-item has-sub-dropdown">
+                            <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
                             <ul class="dropdown-level-2">
-                                <li><a href="../deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="../deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
+                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
                 <li class="menu-item">
-                    <a href="../chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
+                    <a href="/chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
                 </li>
                 <li class="menu-item active">
-                    <a href="../media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA </a>
+                    <a href="/media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA </a>
                 </li>
                 <li class="menu-item">
-                    <a href="../about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
+                    <a href="/about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
                 </li>
                 <li class="menu-item">
-                    <a href="../contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
+                    <a href="/contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
                 </li>
             </ul>
         </nav>
@@ -194,28 +195,28 @@
                     <img src="assets/issue1.webp" 
                          class="thumb-node node-selected" 
                          alt="Concept 1" 
-                         onclick="changeDisplayImage('assets/issue1.webp', this)">
+                         data-viewer-src="assets/issue1.webp">
                          
                     <img src="assets/cover9.webp" 
                          class="thumb-node" 
                          alt="Concept 2" 
-                         onclick="changeDisplayImage('assets/cover9.webp', this)">
+                         data-viewer-src="assets/cover9.webp">
                          
                     <img src="assets/issue1.webp" 
                          class="thumb-node" 
                          alt="Concept 3" 
-                         onclick="changeDisplayImage('assets/issue1.webp', this)">
+                         data-viewer-src="assets/issue1.webp">
                          
                     <img src="https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04" 
                          class="thumb-node" 
                          alt="Concept 4" 
-                         onclick="changeDisplayImage('https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04', this)">
+                         data-viewer-src="https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04">
 
                 </div>
 
                 <div class="main-display-box">
                     <img id="mainViewerDisplay" 
-                         src="assets/test.webp" 
+                         src="assets/issue1.webp" 
                          class="active-image-frame" 
                          alt="Dead Drop Main Intel">
                 </div>
@@ -228,55 +229,82 @@
                 <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
             </div>
             <div class="legal-bindings">
-                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+                <a href="/terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="/privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="/cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
             </div>
         </footer>
 
     </div>
 
     <script>
-        function changeDisplayImage(newSrc, element) {
-            const display = document.getElementById('mainViewerDisplay');
-            display.src = newSrc;
-            
-            // Eliminăm clasa de selecție de pe nodul vechi
-            document.querySelectorAll('.thumb-node').forEach(thumb => {
-                thumb.classList.remove('node-selected');
-            });
-            
-            // Aprindem noul nod cu portocaliu vulcanic
-            element.classList.add('node-selected');
+        // ENGINE MANIPULARE GALERIE (Evenimente Curate)
+        const displayImage = document.getElementById('mainViewerDisplay');
+        const thumbnails = document.querySelectorAll('.thumb-node');
+
+        // Sincronizăm imaginea inițială din display cu nodul selectat default
+        const activeNode = document.querySelector('.thumb-node.node-selected');
+        if (activeNode) {
+            displayImage.src = activeNode.getAttribute('data-viewer-src');
         }
 
-        function toggleMobileMenu() {
-            const nav = document.getElementById('globalNav');
-            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const targetSrc = thumb.getAttribute('data-viewer-src');
+                displayImage.src = targetSrc;
+                
+                thumbnails.forEach(t => t.classList.remove('node-selected'));
+                thumb.classList.add('node-selected');
+            });
+        });
+
+        // CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
+        const nav = document.getElementById('globalNav');
+        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.classList.toggle('mobile-open');
+            
             if(nav.classList.contains('mobile-open')) {
                 toggleBtn.textContent = "[ X ] CLOSE_MENU";
                 toggleBtn.style.color = "#FF4500";
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
+                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                    el.classList.remove('dropdown-open');
+                });
             }
+        });
+
+        // LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
+        if (window.innerWidth < 1024) {
+            document.querySelectorAll('.mobile-expandable').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const nextDropdown = link.nextElementSibling;
+                    
+                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
+                        e.preventDefault(); 
+                        nextDropdown.classList.add('dropdown-open');
+                    }
+                });
+            });
         }
-        function toggleMobileDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
-                    event.preventDefault();
+
+        // Click Outside: Închidere automată
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
+                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    nav.classList.remove('mobile-open');
+                    toggleBtn.textContent = "[ = ] SYS_MENU";
+                    toggleBtn.style.color = "#ffffff";
+                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                        el.classList.remove('dropdown-open');
+                    });
                 }
-                element.classList.toggle('open');
             }
-        }
-        function toggleMobileSubDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                event.stopPropagation();
-                event.preventDefault();
-                element.classList.toggle('open');
-            }
-        }
+        });
     </script>
 </body>
 </html>
