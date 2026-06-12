@@ -81,7 +81,7 @@
     </div>
 
     <script>
-        // 1. STRATIFIED PARALLAX DEPTH (Desktop)
+        // 1. STRATIFIED PARALLAX DEPTH (Desktop - Rămâne Neschimbat)
         const bg = document.querySelector('.bunker-bg-overlay');
         const sidebar = document.querySelector('.sidebar-nav');
         
@@ -108,23 +108,46 @@
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
+                // Resetăm dropdown-urile la închiderea meniului general
+                document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('open'));
             }
         }
 
-        // 3. LOGICĂ TAP DROPDOWN PENTRU MOBIL
+        // PROTOCOL: ÎNCHIDERE AUTOMATĂ LA CLICK ÎN AFARA MENIULUI (Adăugat)
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+            
+            // Verificăm dacă meniul de mobil este deschis
+            if (nav.classList.contains('mobile-open')) {
+                // Dacă click-ul NU este în interiorul meniului și NU pe butonul de toggle
+                if (!nav.contains(event.target) && !toggleBtn.contains(event.target)) {
+                    toggleMobileMenu(); // Prăbușește meniul automat
+                }
+            }
+        });
+
+        // 3. LOGICĂ TAP DROPDOWN PENTRU MOBIL (Corectată)
         function toggleMobileDropdown(element, event) {
             if (window.innerWidth < 1024) {
-                // Prevenim navigarea instantă pe projects.html doar la primul tap pe mobil
+                // Prevenim navigarea doar dacă se apasă pe textul părinte principal
                 if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
                     event.preventDefault();
+                    event.stopPropagation();
+                    element.classList.toggle('open');
                 }
-                element.classList.toggle('open');
             }
         }
 
         function toggleMobileSubDropdown(element, event) {
             if (window.innerWidth < 1024) {
-                event.stopPropagation(); // Oprim închiderea meniului părinte
+                event.stopPropagation(); // Oprim închiderea meniului părinte [02] PROJECTS
+                
+                // CORECTURĂ CRITICĂ: Permitem click-ului să execute link-ul dacă utilizatorul a apăsat direct pe sub-pagini (VOL 1 / VOL 2)
+                if (event.target.tagName === 'A' && event.target.getAttribute('href').includes('vol')) {
+                    return; // Lasă browserul să deschidă link-ul normal!
+                }
+                
                 event.preventDefault();
                 element.classList.toggle('open');
             }
