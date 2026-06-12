@@ -173,33 +173,84 @@
     </div>
 
     <script>
-        function toggleMobileMenu() {
-            const nav = document.getElementById('globalNav');
-            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+        // 1. STRATIFIED PARALLAX DEPTH (Desktop)
+        const bg = document.querySelector('.bunker-bg-overlay');
+        const sidebar = document.querySelector('.sidebar-nav');
+        
+        if (window.matchMedia("(min-width: 1024px)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth - 0.5;
+                const mouseY = e.clientY / window.innerHeight - 0.5;
+                
+                bg.style.transform = `translate(${mouseX * -20}px, ${mouseY * -20}px)`;
+                sidebar.style.transform = `translate(${mouseX * 10}px, ${mouseY * 10}px)`;
+                sidebar.style.transition = "transform 0.1s ease-out";
+            });
+        }
+
+        // CONTROL INTEGRAT PENTRU INTERFAȚA DE MOBIL
+        const nav = document.getElementById('globalNav');
+        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+
+        // Toggle Meniu Principal
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.classList.toggle('mobile-open');
+            
             if(nav.classList.contains('mobile-open')) {
                 toggleBtn.textContent = "[ X ] CLOSE_MENU";
                 toggleBtn.style.color = "#FF4500";
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
+                document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
             }
-        }
-        function toggleMobileDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
-                    event.preventDefault();
+        });
+
+        // Închidere la click în exterior (Click Outside)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
+                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    nav.classList.remove('mobile-open');
+                    toggleBtn.textContent = "[ = ] SYS_MENU";
+                    toggleBtn.style.color = "#ffffff";
+                    document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
                 }
-                element.classList.toggle('open');
             }
-        }
-        function toggleMobileSubDropdown(element, event) {
-            if (window.innerWidth < 1024) {
-                event.stopPropagation();
-                event.preventDefault();
-                element.classList.toggle('open');
+        });
+
+        // RECONSTRUCȚIE LOGICĂ DROPDOWN: Separare chirurgicală a țintelor tactile
+        nav.addEventListener('click', (e) => {
+            if (window.innerWidth >= 1024) return;
+
+            const target = e.target;
+
+            // Dacă utilizatorul a apăsat exact pe un link final de volum (VOL 1 sau VOL 2)
+            if (target.classList.contains('vol-link')) {
+                // Forțăm browserul să execute link-ul și oprim orice alt script parazit din spate
+                return; 
             }
-        }
+
+            // Gestiune deschidere pentru [02] PROJECTS
+            if (target.closest('.has-dropdown') && !target.closest('.dropdown-level-1')) {
+                if (target.classList.contains('nav-link') || target.parentElement.classList.contains('nav-link')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    target.closest('.has-dropdown').classList.toggle('open');
+                }
+            }
+
+            // Gestiune deschidere pentru > DEAD DROP (Folosim selectarea exactă a tagului)
+            const subDropdownTrigger = target.closest('.has-sub-dropdown');
+            if (subDropdownTrigger) {
+                // Dacă s-a apăsat pe textul "> DEAD DROP" dar NU pe link-urile din interior (VOL 1 / VOL 2)
+                if (target.classList.contains('sub-nav-link') || target.parentElement.classList.contains('has-sub-dropdown')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    subDropdownTrigger.classList.toggle('open');
+                }
+            }
+        });
     </script>
 </body>
 </html>
