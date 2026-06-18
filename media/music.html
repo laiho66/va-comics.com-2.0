@@ -134,6 +134,38 @@
             border-bottom: 1px solid var(--dark-fence);
             padding-bottom: 10px;
         }
+        /* ==========================================================================
+   FORȚARE CULORI BUTOANE PLAYER (DESKTOP + MOBILE)
+   ========================================================================== */
+
+/* 1. Forțăm toate iconițele native (Play, Mute, Fullscreen) să devină Magma Orange (#FF4500) */
+audio.terminal-audio-engine::-webkit-media-controls-play-button,
+audio.terminal-audio-engine::-webkit-media-controls-mute-button,
+audio.terminal-audio-engine::-webkit-media-controls-toggle-closed-captions-button,
+audio.terminal-audio-engine::-webkit-media-controls-fullscreen-button {
+    /* Filtrul transformă negrul/griul nativ în Magma Orange pur */
+    filter: invert(33%) sepia(91%) saturate(5438%) hue-rotate(1deg) brightness(101%) contrast(106%) !important;
+    background-color: transparent !important;
+    cursor: pointer;
+}
+
+/* 2. Dacă vrei ca butoanele să fie în schimb ALB CURAT (să iasă puternic în evidență), folosește filtrul ăsta: */
+/*
+audio.terminal-audio-engine::-webkit-media-controls-play-button,
+audio.terminal-audio-engine::-webkit-media-controls-mute-button {
+    filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(0deg) brightness(100%) contrast(100%) !important;
+}
+*/
+
+/* 3. Forțăm bara de volum și tracker-ul de timp să nu fie complet negre */
+audio.terminal-audio-engine::-webkit-media-controls-timeline {
+    background-color: #111111 !important; /* Gri militar foarte închis */
+    filter: none !important;
+}
+
+audio.terminal-audio-engine::-webkit-media-controls-volume-slider {
+    background-color: #111111 !important;
+}
     </style>
 </head>
 <body class="content-page">
