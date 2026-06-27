@@ -123,9 +123,7 @@ body.content-page .bunker-bg-overlay {
     color: var(--magma-orange);
 }
 
-/* ==========================================================================
-   4. DROPDOWN SYSTEM (DESKTOP ACCORDION & MOBILE PLIABLE)
-   ========================================================================== */
+/* 4. DROPDOWN SYSTEM */
 .dropdown-level-1 {
     list-style: none;
     width: 100%;
@@ -146,7 +144,6 @@ body.content-page .bunker-bg-overlay {
     z-index: 11;
 }
 
-/* DESIGNUL SUB-MENIURILOR GLOBAL */
 .dropdown-level-1 a, .dropdown-level-2 a {
     font-size: 13px !important;
     letter-spacing: 1px;
@@ -167,7 +164,6 @@ body.content-page .bunker-bg-overlay {
     box-shadow: -5px 0 10px rgba(255, 69, 0, 0.2);
 }
 
-/* DECLANȘAREA HOVER-ULUI PE DESKTOP */
 @media (min-width: 1024px) {
     .has-dropdown:hover > .dropdown-level-1 {
         display: block;
@@ -186,9 +182,7 @@ body.content-page .bunker-bg-overlay {
     }
 }
 
-/* ==========================================================================
-   5. FOOTER LEGAL COMPONENT & DISCRET HUD STATUS BAR (FIXED TERMINAL)
-   ========================================================================== */
+/* 5. FOOTER & TOGGLE COMPONENTS */
 .mobile-bunker-toggle {
     display: none !important;
     position: fixed;
@@ -261,9 +255,7 @@ body.content-page .bunker-bg-overlay {
     color: var(--text-colorless);
 }
 
-/* ==========================================================================
-   6. GLOBAL CONTENT INTEGRATION (ANTI-BOX CUT EFFECT)
-   ========================================================================== */
+/* 6. GLOBAL CONTENT INTEGRATION */
 .project-card, .chronicle-post, .media-channel-card, .profile-card, .bunker-form-box, .uplink-channels-box {
     background: rgba(0, 0, 0, 0.65) !important;
     backdrop-filter: blur(12px);
@@ -272,9 +264,7 @@ body.content-page .bunker-bg-overlay {
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-/* ==========================================================================
-   7. DESKTOP WORKFLOW FIX (STRUCTURE ALIGNMENT - MASTER GRID)
-   ========================================================================== */
+/* 7. DESKTOP MASTER GRID UI */
 @media (min-width: 1024px) {
     .os-container {
         display: grid !important;
@@ -302,17 +292,13 @@ body.content-page .bunker-bg-overlay {
     }
 }
 
-/* ==========================================================================
-   8. MOBILE RESPONSIVE SWITCH ENGINE (ACORDEON CU SCROLL INTERN IZOLAT)
-   ========================================================================== */
+/* 8. MOBILE RESPONSIVE ENGINE */
 @media (max-width: 1023px) {
     .mobile-bunker-toggle {
         display: block !important;
     }
 
     .os-container {
-        /* FIX DEFINITIV PENTRU IMAGINEA 1000027594.jpg: */
-        /* Crestem padding-bottom masiv ca butoanele de Ebook sa iasa curat deasupra footer-ului la scroll */
         padding: 80px 20px 220px 20px !important;
         flex-direction: column;
         justify-content: flex-start;
@@ -335,8 +321,6 @@ body.content-page .bunker-bg-overlay {
         padding: 100px 30px;
         display: flex;
         flex-direction: column;
-        
-        /* FIX DE COMANDA: Limitare inaltime meniu si scroll izolat pentru a nu deforma footerul */
         max-height: calc(100vh - 150px);
         overflow-y: auto;
         transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1);
@@ -358,22 +342,19 @@ body.content-page .bunker-bg-overlay {
         border-color: #111;
     }
 
-    /* SISTEM ACORDEON MOBIL CONTROLAT: Se deschid doar cand primesc clasa prin script */
     .dropdown-level-1, .dropdown-level-2 {
-        display: none; /* Ascunse standard pana la interactiune */
+        display: none;
         position: relative !important;
         left: 0 !important;
         width: 100% !important;
         pointer-events: auto !important;
     }
 
-    /* Clasele dinamice care vor fi injectate din JavaScript pentru activare */
     .dropdown-level-1.dropdown-open,
     .dropdown-level-2.dropdown-open {
         display: block !important;
     }
 
-    /* Indentare Nivel 1: Sub-pagina X -> Y (> DEAD DROP) */
     .dropdown-level-1 {
         padding-left: 25px !important;
         padding-top: 5px;
@@ -384,7 +365,6 @@ body.content-page .bunker-bg-overlay {
         border-left: 2px solid #333 !important;
     }
 
-    /* Indentare Nivel 2: Sub-pagina Y -> Q (» VOL 1 si » VOL 2) */
     .dropdown-level-2 {
         padding-left: 30px !important;
         padding-top: 5px;
@@ -393,7 +373,7 @@ body.content-page .bunker-bg-overlay {
         font-size: 14px !important;
         padding: 14px 15px !important;
         color: var(--terminal-gray) !important;
-        border-left: 2px dashed var(--magma-orange) !important; /* Ghidaj Magma Neon */
+        border-left: 2px dashed var(--magma-orange) !important;
         background: rgba(255, 69, 0, 0.03) !important;
     }
 
@@ -406,7 +386,6 @@ body.content-page .bunker-bg-overlay {
         pointer-events: none;
     }
 
-    /* FIX COMBAT FOOTER FIXAT: Blocat ferm la baza, sub nivelul meniului */
     .bunker-footer {
         position: fixed !important;
         bottom: 0 !important;
@@ -443,8 +422,61 @@ body.content-page .bunker-bg-overlay {
 }
 
 /* ==========================================================================
-   9. UTILS & ANIMATIONS
+   10. HARDCORE FULL SCREEN OVERRIDES (ANTI-GRID BLOCKING SYSTEM)
    ========================================================================== */
+/* Când containerul intră în Full Screen nativ, spargem grid-ul și îl forțăm pe tot ecranul */
+.viewer-terminal-container:fullscreen {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    background: #000000 !important;
+    padding: 30px !important;
+    box-sizing: border-box !important;
+    z-index: 999999 !important;
+    gap: 25px !important;
+    overflow: hidden !important;
+}
+
+.viewer-terminal-container:fullscreen .main-display-box {
+    height: 100% !important;
+    justify-content: space-between !important;
+}
+
+.viewer-terminal-container:fullscreen .active-image-frame {
+    max-height: 75vh !important;
+}
+
+/* Fallback-ul Pseudo-Fullscreen (pentru Safari Mobile/iOS care blochează Fullscreen API) */
+.viewer-terminal-container.pseudo-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    background: #000000 !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+}
+
+.viewer-terminal-container.pseudo-fullscreen .thumbnails-grid-hud {
+    width: 100% !important;
+    flex-direction: row !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+.viewer-terminal-container.pseudo-fullscreen .active-image-frame {
+    max-height: 60vh !important;
+}
+
+/* 9. UTILS & ANIMATIONS */
 @keyframes pulseStatus {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
