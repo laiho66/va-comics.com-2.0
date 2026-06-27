@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
+    <!-- Sincronizare relativă cu fișierul principal de stil aflat în rădăcină -->
     <link rel="stylesheet" href="../style.css">
     
     <style>
@@ -309,58 +310,75 @@
             padding-bottom: 10px;
         }
 
-        /* COMPATIBILITATE MOBIL // STRUCTURA RE-ALINIATĂ PENTRU TELEFOANE */
+        /* COMPATIBILITATE MOBIL // RE-ALINIERE TOTALĂ STRUCTURALĂ */
         @media (max-width: 768px) {
             .viewer-terminal-container {
-                flex-direction: column; 
-                gap: 20px;
+                flex-direction: column !important; 
+                gap: 20px !important;
+                width: 100% !important;
             }
             .main-display-box {
-                padding: 8px;
-                width: 100%;
+                padding: 10px !important;
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
             }
             
-            /* FIX INJECTAT PENTRU RANDARE IMAGINE PE MOBIL (ANTI-COLLAPSE) */
-            .active-image-frame {
+            /* RESETARE COMPLETĂ PĂRINTE PENTRU A PREVENI STRÂNGEREA LA O PIXELI */
+            .viewport-container {
+                display: block !important;
                 width: 100% !important;
+                min-height: auto !important;
                 height: auto !important;
-                max-height: 55vh !important; 
+                text-align: center !important;
+            }
+
+            /* FORCE DIMENSIONS INJECTED (PATCH ANTI-COLLAPSE DEFINITIV) */
+            .active-image-frame {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
+                height: auto !important;
+                max-height: 70vh !important;
                 object-fit: contain !important;
+                margin: 0 auto !important;
             }
             
             .vector-comic-sandbox {
                 height: 45vh;
             }
             .thumbnails-grid-hud {
-                width: 100%;
-                max-height: none;
-                flex-direction: row; 
-                overflow-x: auto;
-                overflow-y: hidden;
-                justify-content: flex-start;
-                padding: 20px 10px 10px 10px;
-                gap: 10px;
+                width: 100% !important;
+                max-height: none !important;
+                flex-direction: row !important; 
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                justify-content: flex-start !important;
+                padding: 20px 10px 10px 10px !important;
+                gap: 10px !important;
             }
             .thumbnails-grid-hud::before {
                 content: "AVAILABLE_NODES // PAGES";
             }
             .thumb-node {
-                width: 55px; 
-                height: 80px; 
-                flex-shrink: 0;
+                width: 65px !important; 
+                height: 95px !important; 
+                flex-shrink: 0 !important;
             }
             .nav-overlay-zone {
-                width: 30%; 
+                width: 30% !important; 
             }
             .nav-arrow-indicator {
-                font-size: 11px;
-                padding: 6px 10px;
+                font-size: 11px !important;
+                padding: 6px 10px !important;
             }
         }
     </style>
 </head>
 <body class="content-page">
 
+    <!-- Fundalul animat cu overlay specific bunkerului -->
     <div class="bunker-bg-overlay"></div>
 
     <button class="mobile-bunker-toggle">
@@ -369,6 +387,7 @@
 
     <div class="os-container">
         
+        <!-- Meniul global sincronizat perfect cu restul structurii portofoliului tău -->
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
                 <li class="menu-item">
@@ -405,16 +424,22 @@
             
             <h1 class="media-header-title">Graphic Files // Comics Reader Node</h1>
 
+            <!-- Selectorul Interactiv de Numere (Issues 1-12 din Dead Drop Assets) -->
             <div class="issue-selector-hud" id="issueSelector"></div>
 
+            <!-- CONTAINER VIEWER PRINCIPAL -->
             <div class="viewer-terminal-container" id="viewerContainer">
                 
+                <!-- COLOANA STÂNGA: SELECTOR MINIATURI -->
                 <div class="thumbnails-grid-hud" id="nodesContainer"></div>
 
+                <!-- COLOANA DREAPTA: MONITORUL HUD PRINCIPAL -->
                 <div class="main-display-box">
                     
+                    <!-- Viewport-ul pentru imagini cu overlay de navigare rapidă -->
                     <div class="viewport-container">
                         
+                        <!-- Zone de click pentru navigație rapidă stânga/dreapta -->
                         <div class="nav-overlay-zone zone-left" id="zoneLeft">
                             <div class="nav-arrow-indicator">&lt; PREV</div>
                         </div>
@@ -422,15 +447,18 @@
                             <div class="nav-arrow-indicator">NEXT &gt;</div>
                         </div>
 
+                        <!-- Imaginea Activă -->
                         <img id="mainViewerDisplay" 
                              src="" 
                              class="active-image-frame" 
                              alt="Terminal Visual Interface"
                              style="display: none;">
 
+                        <!-- Placeholder-ul vector-art inteligent -->
                         <div id="vectorComicSandbox" class="vector-comic-sandbox"></div>
                     </div>
 
+                    <!-- Bara HUD de Control din subsolul imaginii -->
                     <div class="viewer-control-hud">
                         <div>
                             <span>SYS_STREAM: </span>
@@ -628,13 +656,13 @@
             }
         }
 
-        // COUPLING EVENIMENTE DE NAVIGARE CU ADD_EVENT_LISTENER
+        // COUPLING EVENIMENTE DE NAVIGARE
         btnPrev.addEventListener('click', () => navigatePage(-1));
         btnNext.addEventListener('click', () => navigatePage(1));
         zoneLeft.addEventListener('click', () => navigatePage(-1));
         zoneRight.addEventListener('click', () => navigatePage(1));
 
-        // SISTEM INTEGRAT DE MOD FULL SCREEN (NATIV + PSEUDO FALLBACK PENTRU MOBIL)
+        // MOD FULL SCREEN
         btnFullscreen.addEventListener('click', () => {
             if (viewerContainer.requestFullscreen) {
                 if (!document.fullscreenElement) {
@@ -681,9 +709,7 @@
                 11: { title: "AMURGUL INEVITABIL", accent: "#e11d48" },
                 12: { title: "ULTIMUL SEMNAL", accent: "#10b981" }
             };
-
             const t = themes[issueNum] || themes[1];
-
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" class="w-full h-full max-h-[65vh]" style="background:#030303; border: 1px solid ${t.accent}44;">
                     <style>
@@ -735,13 +761,10 @@
             `;
         }
 
-        // SUPORT PENTRU TASTE SĂGEATĂ
+        // TASTE SĂGEATĂ
         document.addEventListener('keydown', (event) => {
-            if (event.key === "ArrowRight") {
-                navigatePage(1);
-            } else if (event.key === "ArrowLeft") {
-                navigatePage(-1);
-            }
+            if (event.key === "ArrowRight") navigatePage(1);
+            else if (event.key === "ArrowLeft") navigatePage(-1);
         });
 
         // SWIPE PE TELEFOANE
@@ -760,22 +783,17 @@
 
         function handleSwipeGesture() {
             const threshold = 50; 
-            if (touchendX < touchstartX - threshold) {
-                navigatePage(1);
-            }
-            if (touchendX > touchstartX + threshold) {
-                navigatePage(-1);
-            }
+            if (touchendX < touchstartX - threshold) navigatePage(1);
+            if (touchendX > touchstartX + threshold) navigatePage(-1);
         }
 
-        // INTERFAȚĂ MENIU MOBIL (Sincronizat cu style.css)
+        // INTERFAȚĂ MENIU MOBIL
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             nav.classList.toggle('mobile-open');
-            
             if(nav.classList.contains('mobile-open')) {
                 toggleBtn.textContent = "[ X ] CLOSE_MENU";
                 toggleBtn.style.color = "#FF4500";
@@ -788,7 +806,6 @@
             }
         });
 
-        // ACORDEON MOBIL PLIABIL PENTRU SUB-MENIURI
         if (window.innerWidth < 1024) {
             document.querySelectorAll('.mobile-expandable').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -801,7 +818,6 @@
             });
         }
 
-        // Click Outside pentru închiderea meniului mobil
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
