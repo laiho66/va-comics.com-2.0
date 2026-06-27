@@ -5,31 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
     <link rel="stylesheet" href="../style.css">
+    
     <style>
-        /* ==========================================================================
-           CONFIGURAȚIE INTERFAȚĂ SPLIT-SCREEN CINEMATIC (VARIANTA B)
-           ========================================================================== */
+        :root {
+            --magma-orange: #ff4500;
+            --terminal-gray: #888888;
+            --dark-fence: #222222;
+        }
+
+        /* Selectorul de Numere (Issues) în stil Terminal cu Scroll Orizontal */
+        .issue-selector-hud {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px dashed var(--dark-fence, #222);
+            background: rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--magma-orange) #000;
+        }
+
+        .issue-selector-hud::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .issue-selector-hud::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        .issue-selector-hud::-webkit-scrollbar-thumb {
+            background: var(--magma-orange);
+            border-radius: 2px;
+        }
+
+        .issue-selector-hud::before {
+            content: "SELECT_ACTIVE_DATABASE_NODE (ISSUES_01_TO_12)";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #050505;
+            padding: 0 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            color: var(--terminal-gray, #888);
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        .issue-btn {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid var(--dark-fence, #222);
+            color: var(--terminal-gray, #888);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .issue-btn:hover {
+            color: #ffffff;
+            border-color: var(--terminal-gray, #888);
+            background: rgba(30, 30, 30, 0.5);
+        }
+
+        .issue-btn.active-issue {
+            color: #000000 !important;
+            background: var(--magma-orange, #ff4500) !important;
+            border-color: var(--magma-orange, #ff4500) !important;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
+        }
+
         .viewer-terminal-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1050px;
             display: flex;
-            flex-direction: row; /* Aliniere pe orizontală: Miniaturi în stânga, Monitor în dreapta */
+            flex-direction: row; /* Miniaturi în stânga, Display în dreapta */
             gap: 25px;
             align-items: flex-start;
         }
 
-        /* COLOANA STÂNGA: SELECTORUL DE NODURI (MINIATURI VERTICALE) */
+        /* COLOANA STÂNGA: SELECTORUL DE NODURI */
         .thumbnails-grid-hud {
             display: flex;
-            flex-direction: column; /* Forțăm așezarea una sub alta, în stivă */
+            flex-direction: column; 
             gap: 15px;
             position: relative;
             padding: 25px 15px 15px 15px;
-            border: 1px solid var(--dark-fence);
+            border: 1px solid var(--dark-fence, #222);
             background: rgba(0, 0, 0, 0.3);
-            width: 130px; /* Lățime fixă, compactă pentru coloana din stânga */
+            width: 135px; 
+            max-height: 75vh;
+            overflow-y: auto;
             flex-shrink: 0;
             box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--magma-orange) #000;
+        }
+
+        .thumbnails-grid-hud::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .thumbnails-grid-hud::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        .thumbnails-grid-hud::-webkit-scrollbar-thumb {
+            background: var(--magma-orange);
+            border-radius: 2px;
         }
 
         .thumbnails-grid-hud::before {
@@ -41,13 +130,14 @@
             padding: 0 8px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
-            color: var(--terminal-gray);
+            color: var(--terminal-gray, #888);
             letter-spacing: 1px;
+            z-index: 10;
         }
 
         .thumb-node {
             width: 100%;
-            aspect-ratio: 2/3; /* FORMAT PORTRET PERFECT PENTRU COPERȚI / PAGINI CORECTE */
+            aspect-ratio: 2/3; 
             object-fit: cover;
             background: #000000;
             border: 1px solid #151515;
@@ -59,23 +149,27 @@
 
         .thumb-node:hover {
             opacity: 0.9;
-            border-color: var(--terminal-gray);
+            border-color: var(--terminal-gray, #888);
         }
 
         .thumb-node.node-selected {
             opacity: 1 !important;
-            border-color: var(--magma-orange) !important;
+            border-color: var(--magma-orange, #ff4500) !important;
             box-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
         }
 
         /* COLOANA DREAPTA: MONITORUL HUD PRINCIPAL */
         .main-display-box {
-            flex-grow: 1; /* Ocupă automat tot spațiul rămas în dreapta */
+            flex-grow: 1; 
             padding: 15px;
             position: relative;
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--dark-fence);
+            border: 1px solid var(--dark-fence, #222);
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
         }
 
         .main-display-box::before {
@@ -87,35 +181,138 @@
             padding: 0 10px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
-            color: var(--magma-orange);
+            color: var(--magma-orange, #ff4500);
             letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        /* Containerul imaginii cu butoane de navigare invizibile/hover */
+        .viewport-container {
+            position: relative;
+            width: 100%;
+            background: #000000;
+            border: 1px solid #111;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
         }
 
         .active-image-frame {
             width: auto;
             max-width: 100%;
-            max-height: 65vh; /* Împiedică imaginea să devină mai înaltă decât ecranul laptopului */
+            max-height: 65vh; 
             object-fit: contain;
-            background: #000000;
-            border: 1px solid #111;
             display: block;
             margin: 0 auto;
+        }
+
+        /* Mock Canvas container pentru generare pagini virtuale */
+        .vector-comic-sandbox {
+            width: 100%;
+            height: 65vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Zone de navigare stânga/dreapta peste imagine */
+        .nav-overlay-zone {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 20%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 5;
+            background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .nav-overlay-zone.zone-right {
+            right: 0;
+            background: linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .nav-overlay-zone:hover {
+            opacity: 1;
+        }
+
+        .nav-arrow-indicator {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--magma-orange, #ff4500);
+            color: var(--magma-orange, #ff4500);
+            font-family: monospace;
+            padding: 8px 12px;
+            font-size: 13px;
+            pointer-events: none;
+            letter-spacing: 1px;
+        }
+
+        /* Bara HUD Control de sub imagine */
+        .viewer-control-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(5, 5, 5, 0.9);
+            border: 1px solid var(--dark-fence, #222);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: var(--terminal-gray, #888);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hud-page-indicator {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .hud-navigation-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .hud-nav-btn {
+            background: transparent;
+            border: 1px solid var(--dark-fence, #222);
+            color: var(--terminal-gray, #888);
+            padding: 4px 12px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .hud-nav-btn:hover:not(:disabled) {
+            color: var(--magma-orange, #ff4500);
+            border-color: var(--magma-orange, #ff4500);
+        }
+
+        .hud-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         .media-header-title {
             font-size: 24px;
             letter-spacing: 3px;
             text-transform: uppercase;
-            color: var(--magma-orange);
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--dark-fence);
+            color: var(--magma-orange, #ff4500);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--dark-fence, #222);
             padding-bottom: 10px;
         }
 
         /* COMPATIBILITATE MOBIL // STRUCTURA RE-ALINIATĂ PE TELEFOANE */
         @media (max-width: 768px) {
             .viewer-terminal-container {
-                flex-direction: column; /* Trecem de la rând la coloană: monitorul sus, miniaturile jos */
+                flex-direction: column; 
                 gap: 20px;
             }
             .main-display-box {
@@ -123,21 +320,35 @@
                 width: 100%;
             }
             .active-image-frame {
-                max-height: 50vh; /* Lăsăm spațiu pe ecranul telefonului */
+                max-height: 45vh; 
+            }
+            .vector-comic-sandbox {
+                height: 45vh;
             }
             .thumbnails-grid-hud {
                 width: 100%;
-                flex-direction: row; /* Pe mobil devine bandă orizontală de miniaturi */
-                justify-content: center;
+                max-height: none;
+                flex-direction: row; 
+                overflow-x: auto;
+                overflow-y: hidden;
+                justify-content: flex-start;
                 padding: 20px 10px 10px 10px;
                 gap: 10px;
             }
             .thumbnails-grid-hud::before {
-                content: "AVAILABLE_NODES // CONCEPT_ART";
+                content: "AVAILABLE_NODES // PAGES";
             }
             .thumb-node {
-                width: auto;
-                height: 70px; /* Limităm înălțimea bănzii pe mobil */
+                width: 55px; 
+                height: 80px; 
+                flex-shrink: 0;
+            }
+            .nav-overlay-zone {
+                width: 30%; /* Lăsăm zonă mai mare de atingere pe mobil */
+            }
+            .nav-arrow-indicator {
+                font-size: 11px;
+                padding: 6px 10px;
             }
         }
     </style>
@@ -186,39 +397,49 @@
 
         <div class="content-wrapper">
             
-            <h1 class="media-header-title">Graphic Files // Concept Intel</h1>
+            <h1 class="media-header-title">Graphic Files // Comics Reader Node</h1>
+
+            <div class="issue-selector-hud" id="issueSelector"></div>
 
             <div class="viewer-terminal-container">
                 
-                <div class="thumbnails-grid-hud">
-                    
-                    <img src="assets/issue1.webp" 
-                         class="thumb-node node-selected" 
-                         alt="Concept 1" 
-                         data-viewer-src="assets/issue1.webp">
-                         
-                    <img src="assets/cover9.webp" 
-                         class="thumb-node" 
-                         alt="Concept 2" 
-                         data-viewer-src="assets/cover9.webp">
-                         
-                    <img src="assets/issue1.webp" 
-                         class="thumb-node" 
-                         alt="Concept 3" 
-                         data-viewer-src="assets/issue1.webp">
-                         
-                    <img src="https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04" 
-                         class="thumb-node" 
-                         alt="Concept 4" 
-                         data-viewer-src="https://via.placeholder.com/300x450/050505/ff4500?text=NODE_04">
-
-                </div>
+                <div class="thumbnails-grid-hud" id="nodesContainer"></div>
 
                 <div class="main-display-box">
-                    <img id="mainViewerDisplay" 
-                         src="assets/issue1.webp" 
-                         class="active-image-frame" 
-                         alt="Dead Drop Main Intel">
+                    
+                    <div class="viewport-container">
+                        
+                        <div class="nav-overlay-zone zone-left" id="overlayLeft">
+                            <div class="nav-arrow-indicator">&lt; PREV</div>
+                        </div>
+                        <div class="nav-overlay-zone zone-right" id="overlayRight">
+                            <div class="nav-arrow-indicator">NEXT &gt;</div>
+                        </div>
+
+                        <img id="mainViewerDisplay" 
+                             src="" 
+                             class="active-image-frame" 
+                             alt="Terminal Visual Interface"
+                             style="display: none;">
+
+                        <div id="vectorComicSandbox" class="vector-comic-sandbox"></div>
+                    </div>
+
+                    <div class="viewer-control-hud">
+                        <div>
+                            <span>SYS_STREAM: </span>
+                            <span id="hudActiveIssueLabel" style="color: var(--magma-orange, #ff4500);">ISSUE #1</span>
+                        </div>
+                        <div>
+                            <span>NODE_VAL: </span>
+                            <span class="hud-page-indicator" id="hudPageIndicator">[PAGE 01 / 08]</span>
+                        </div>
+                        <div class="hud-navigation-buttons">
+                            <button class="hud-nav-btn" id="btnPrevNode">&lt;&lt; PREV_NODE</button>
+                            <button class="hud-nav-btn" id="btnNextNode">NEXT_NODE &gt;&gt;</button>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -238,27 +459,275 @@
     </div>
 
     <script>
-        // ENGINE MANIPULARE GALERIE (Evenimente Curate)
+        // BAZA DE DATE LOCALĂ MAPATĂ PE STRUCTURA TA REALĂ DE PE GITHUB (/deaddrop/assets/)
+        const COMICS_DATABASE = {
+            1: { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 8, pages: ["/deaddrop/assets/cover1.webp"] },
+            2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 8, pages: ["/deaddrop/assets/cover2.webp"] },
+            3: { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 8, pages: ["/deaddrop/assets/cover3.webp"] },
+            4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: ["/deaddrop/assets/cover4.webp"] },
+            5: { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: ["/deaddrop/assets/cover5.webp"] },
+            6: { title: "Codul Sursă // Volumul I", badge: "ISSUE #6", totalPages: 8, pages: ["/deaddrop/assets/cover6.webp"] },
+            7: { title: "Trădarea // Volumul I", badge: "ISSUE #7", totalPages: 8, pages: ["/deaddrop/assets/cover7.webp"] },
+            8: { title: "Bunkerul // Volumul I", badge: "ISSUE #8", totalPages: 8, pages: ["/deaddrop/assets/cover8.webp"] },
+            9: { title: "Orizonturi NOI // Volumul II", badge: "ISSUE #9", totalPages: 8, pages: ["/deaddrop/assets/cover9.webp"] },
+            10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", totalPages: 8, pages: ["/deaddrop/assets/cover10.webp"] },
+            11: { title: "Amurgul Intel // Volumul II", badge: "ISSUE #11", totalPages: 8, pages: ["/deaddrop/assets/cover11p1.webp", "/deaddrop/assets/cover11p2.webp"] },
+            12: { title: "Ultimul Semnal // Volumul II", badge: "ISSUE #12", totalPages: 8, pages: ["/deaddrop/assets/cover12.webp"] }
+        };
+
+        // STATE MANAGEMENT
+        let viewerState = { activeIssue: 1, activePage: 1 };
+
+        // DOM SELECTION
         const displayImage = document.getElementById('mainViewerDisplay');
-        const thumbnails = document.querySelectorAll('.thumb-node');
+        const vectorSandbox = document.getElementById('vectorComicSandbox');
+        const nodesContainer = document.getElementById('nodesContainer');
+        const issueSelector = document.getElementById('issueSelector');
+        const hudIssueLabel = document.getElementById('hudActiveIssueLabel');
+        const hudPageIndicator = document.getElementById('hudPageIndicator');
+        const btnPrev = document.getElementById('btnPrevNode');
+        const btnNext = document.getElementById('btnNextNode');
+        const overlayLeft = document.getElementById('overlayLeft');
+        const overlayRight = document.getElementById('overlayRight');
 
-        // Sincronizăm imaginea inițială din display cu nodul selectat default
-        const activeNode = document.querySelector('.thumb-node.node-selected');
-        if (activeNode) {
-            displayImage.src = activeNode.getAttribute('data-viewer-src');
-        }
-
-        thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', () => {
-                const targetSrc = thumb.getAttribute('data-viewer-src');
-                displayImage.src = targetSrc;
-                
-                thumbnails.forEach(t => t.classList.remove('node-selected'));
-                thumb.classList.add('node-selected');
-            });
+        // INITIALIZARE VIEWER PÂNĂ LA CAPĂT
+        window.addEventListener('DOMContentLoaded', () => {
+            buildIssueSelector();
+            const urlParams = new URLSearchParams(window.location.search);
+            const issueParam = parseInt(urlParams.get('issue'));
+            if (issueParam && COMICS_DATABASE[issueParam]) {
+                viewerState.activeIssue = issueParam;
+            }
+            loadIssue(viewerState.activeIssue);
         });
 
-        // CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
+        function buildIssueSelector() {
+            issueSelector.innerHTML = '';
+            for (let i = 1; i <= 12; i++) {
+                const btn = document.createElement('button');
+                btn.className = `issue-btn ${i === viewerState.activeIssue ? 'active-issue' : ''}`;
+                btn.id = `issue-btn-${i}`;
+                btn.innerHTML = `[ ISSUE_${String(i).padStart(2, '0')} ]`;
+                btn.addEventListener('click', () => switchIssue(i));
+                issueSelector.appendChild(btn);
+            }
+        }
+
+        function loadIssue(issueId) {
+            viewerState.activeIssue = issueId;
+            viewerState.activePage = 1;
+
+            const buttons = document.querySelectorAll('.issue-btn');
+            buttons.forEach((btn, index) => {
+                if (index + 1 === issueId) {
+                    btn.classList.add('active-issue');
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    btn.classList.remove('active-issue');
+                }
+            });
+
+            renderNodesList();
+            renderActivePage();
+        }
+
+        function switchIssue(issueId) {
+            if (COMICS_DATABASE[issueId]) loadIssue(issueId);
+        }
+
+        function renderNodesList() {
+            nodesContainer.innerHTML = '';
+            const issueData = COMICS_DATABASE[viewerState.activeIssue];
+            const total = issueData.totalPages;
+
+            for (let i = 1; i <= total; i++) {
+                const imgNode = document.createElement('img');
+                imgNode.className = `thumb-node ${i === viewerState.activePage ? 'node-selected' : ''}`;
+                imgNode.alt = `Node Page ${i}`;
+                imgNode.setAttribute('data-page-index', i);
+
+                if (issueData.pages[i - 1]) {
+                    imgNode.src = issueData.pages[i - 1];
+                } else {
+                    imgNode.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="150" viewBox="0 0 100 150" style="background:%23050505;"><rect width="98" height="148" x="1" y="1" fill="none" stroke="%23ff4500" stroke-width="1" opacity="0.3"/><text x="50" y="80" fill="%23888888" font-family="monospace" font-size="11" text-anchor="middle">NODE_${String(i).padStart(2,'0')}</text></svg>`;
+                }
+
+                imgNode.addEventListener('click', () => selectPage(i));
+                nodesContainer.appendChild(imgNode);
+            }
+        }
+
+        function selectPage(pageIndex) {
+            const issueData = COMICS_DATABASE[viewerState.activeIssue];
+            if (pageIndex >= 1 && pageIndex <= issueData.totalPages) {
+                viewerState.activePage = pageIndex;
+                
+                const thumbnails = document.querySelectorAll('.thumb-node');
+                thumbnails.forEach((thumb, idx) => {
+                    if (idx + 1 === pageIndex) {
+                        thumb.classList.add('node-selected');
+                        thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                    } else {
+                        thumb.classList.remove('node-selected');
+                    }
+                });
+
+                renderActivePage();
+            }
+        }
+
+        function renderActivePage() {
+            const issueData = COMICS_DATABASE[viewerState.activeIssue];
+            const current = viewerState.activePage;
+            const total = issueData.totalPages;
+
+            hudIssueLabel.textContent = issueData.badge;
+            hudPageIndicator.textContent = `[PAGE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
+
+            btnPrev.disabled = (current === 1);
+            btnNext.disabled = (current === total);
+
+            const activeImageSrc = issueData.pages[current - 1];
+
+            if (activeImageSrc) {
+                displayImage.src = activeImageSrc;
+                displayImage.style.display = 'block';
+                vectorSandbox.style.display = 'none';
+                
+                displayImage.onerror = () => {
+                    displayImage.style.display = 'none';
+                    vectorSandbox.style.display = 'flex';
+                    vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
+                };
+            } else {
+                displayImage.style.display = 'none';
+                vectorSandbox.style.display = 'flex';
+                vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
+            }
+        }
+
+        function navigatePage(direction) {
+            const issueData = COMICS_DATABASE[viewerState.activeIssue];
+            const targetPage = viewerState.activePage + direction;
+            if (targetPage >= 1 && targetPage <= issueData.totalPages) {
+                selectPage(targetPage);
+            }
+        }
+
+        // EVENIMENTE DE NAVIGARE ASCULTATE CURAT
+        btnPrev.addEventListener('click', () => navigatePage(-1));
+        btnNext.addEventListener('click', () => navigatePage(1));
+        overlayLeft.addEventListener('click', () => navigatePage(-1));
+        overlayRight.addEventListener('click', () => navigatePage(1));
+
+        function generateBunkerComicPanelSVG(issueNum, pageNum) {
+            const themes = {
+                1: { title: "ORIGINEA INTEL", accent: "#ff4500" },
+                2: { title: "REVOLTA ORAȘULUI", accent: "#00ffcc" },
+                3: { title: "CONFRUNTAREA DIRECTĂ", accent: "#ff0055" },
+                4: { title: "INFILTRAREA ÎN SECTOR", accent: "#e2d114" },
+                5: { title: "ALIANȚA SECRETĂ", accent: "#a855f7" },
+                6: { title: "CODUL SURSĂ INTEL", accent: "#22c55e" },
+                7: { title: "TRĂDAREA DIN INTUNERIC", accent: "#ea580c" },
+                8: { title: "BUNKERUL CATACOMBĂ", accent: "#22d3ee" },
+                9: { title: "ORIZONTURI NOI", accent: "#f43f5e" },
+                10: { title: "CĂUTAREA SEMNALULUI", accent: "#3b82f6" },
+                11: { title: "AMURGUL INEVITABIL", accent: "#e11d48" },
+                12: { title: "ULTIMUL SEMNAL", accent: "#10b981" }
+            };
+            const t = themes[issueNum] || themes[1];
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" style="background:#030303; border: 1px solid ${t.accent}44; width:100%; height:100%;">
+                    <style>
+                        .panel-title { font-family: 'Courier New', monospace; font-size: 10px; fill: ${t.accent}; letter-spacing: 1px; }
+                        .comic-speech { font-family: 'Courier New', monospace; font-size: 10px; fill: #000000; font-weight: bold; }
+                        .comic-narration { font-family: 'Courier New', monospace; font-size: 9px; fill: ${t.accent}; }
+                        .reticle { stroke: ${t.accent}; opacity: 0.4; }
+                    </style>
+                    <defs>
+                        <pattern id="bunkerGrid-${issueNum}" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="${t.accent}" stroke-width="0.5" opacity="0.08"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#bunkerGrid-${issueNum})" />
+                    <line x1="20" y1="30" x2="480" y2="30" stroke="${t.accent}" stroke-width="1" opacity="0.3"/>
+                    <text x="25" y="23" class="panel-title">// DATABASE: ${t.title} // ISSUE_0${issueNum}</text>
+                    <text x="475" y="23" class="panel-title" text-anchor="end">NODE_PAGE_${String(pageNum).padStart(2,'0')}</text>
+                    <g transform="translate(20, 50)">
+                        <rect width="460" height="180" fill="#060606" stroke="${t.accent}" stroke-width="1.5" opacity="0.8"/>
+                        <circle cx="230" cy="90" r="60" fill="none" stroke="${t.accent}" stroke-dasharray="4 4" opacity="0.3"/>
+                        <line x1="230" y1="20" x2="230" y2="160" class="reticle" />
+                        <line x1="160" y1="90" x2="300" y2="90" class="reticle" />
+                        <rect x="15" y="15" width="200" height="40" fill="#000000" stroke="${t.accent}" stroke-width="1"/>
+                        <text x="25" y="27" class="comic-narration">SCANNING SECTOR 0${issueNum}...</text>
+                        <text x="25" y="38" class="comic-narration">SIGNALS FOUND IN NODE ${pageNum}.</text>
+                        <path d="M 320,130 C 320,110 380,110 380,130 C 380,138 360,145 350,145 L 340,155 L 343,145 C 325,145 320,138 320,130 Z" fill="#ffffff" stroke="#000" stroke-width="1"/>
+                        <text x="350" y="133" class="comic-speech" text-anchor="middle">Suntem online?</text>
+                    </g>
+                    <g transform="translate(20, 250)">
+                        <rect width="215" height="380" fill="#060606" stroke="${t.accent}" stroke-width="1.5" opacity="0.8"/>
+                        <circle cx="107" cy="190" r="30" fill="none" stroke="${t.accent}" stroke-width="1" opacity="0.3"/>
+                        <line x1="57" y1="140" x2="157" y2="240" stroke="${t.accent}" stroke-width="0.5" opacity="0.4"/>
+                        <rect x="15" y="15" width="120" height="30" fill="#000" stroke="${t.accent}" stroke-width="0.5"/>
+                        <text x="22" y="32" class="comic-narration">// CONECTARE_STABILITĂ</text>
+                        <path d="M 70,270 C 70,250 170,250 170,270 C 170,285 140,290 120,290 L 110,310 L 115,290 C 80,290 70,280 70,270 Z" fill="#ffffff" stroke="#000" stroke-width="1"/>
+                        <text x="120" y="273" class="comic-speech" text-anchor="middle">Sistemul a pornit.</text>
+                    </g>
+                    <g transform="translate(265, 250)">
+                        <rect width="215" height="380" fill="#060606" stroke="${t.accent}" stroke-width="1.5" opacity="0.8"/>
+                        <path d="M 107,130 L 157,210 L 57,210 Z" fill="none" stroke="${t.accent}" stroke-width="2" opacity="0.6"/>
+                        <text x="107" y="190" fill="${t.accent}" font-family="monospace" font-size="24" font-weight="bold" text-anchor="middle" opacity="0.8">!</text>
+                        <rect x="15" y="15" width="140" height="30" fill="#000" stroke="${t.accent}" stroke-width="0.5"/>
+                        <text x="22" y="32" class="comic-narration">// WARNING: SYS_ACTIVE</text>
+                        <path d="M 50,300 C 50,280 160,280 160,300 C 160,315 130,320 110,320 L 100,340 L 105,320 C 60,320 50,310 50,300 Z" fill="#ffffff" stroke="#000" stroke-width="1"/>
+                        <text x="105" y="303" class="comic-speech" text-anchor="middle">Nu deconecta!</text>
+                    </g>
+                    <text x="250" y="665" class="panel-title" text-anchor="middle">VA-COMICS TERMINAL ENGINE // MODEL_MAS_ACTIVE</text>
+                </svg>
+            `;
+        }
+
+        // TASTE SĂGEATĂ DESKTOP
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "ArrowRight") navigatePage(1);
+            else if (event.key === "ArrowLeft") navigatePage(-1);
+        });
+
+        // SWIPE PE MOBIL
+        let touchstartX = 0;
+        let touchendX = 0;
+        const mainViewport = document.querySelector('.viewport-container');
+        
+        mainViewport.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        mainViewport.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        }, { passive: true });
+
+        function handleSwipeGesture() {
+            const threshold = 50;
+            if (touchendX < touchstartX - threshold) navigatePage(1);
+            if (touchendX > touchstartX + threshold) navigatePage(-1);
+        }
+
+        // PARALLAX EFFECTS EFFECTIVE (Desktop)
+        const bg = document.querySelector('.bunker-bg-overlay');
+        const sidebar = document.querySelector('.sidebar-nav');
+        
+        if (window.matchMedia("(min-width: 1024px)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth - 0.5;
+                const mouseY = e.clientY / window.innerHeight - 0.5;
+                bg.style.transform = `translate(${mouseX * -20}px, ${mouseY * -20}px)`;
+                sidebar.style.transform = `translate(${mouseX * 10}px, ${mouseY * 10}px)`;
+                sidebar.style.transition = "transform 0.1s ease-out";
+            });
+        }
+
+        // INTERFAȚĂ MENIU MOBIL (Compact, Unificat cu style.css)
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -278,12 +747,11 @@
             }
         });
 
-        // LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
+        // ACORDEON MECANIC SĂNĂTOS
         if (window.innerWidth < 1024) {
             document.querySelectorAll('.mobile-expandable').forEach(link => {
                 link.addEventListener('click', (e) => {
                     const nextDropdown = link.nextElementSibling;
-                    
                     if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
                         e.preventDefault(); 
                         nextDropdown.classList.add('dropdown-open');
@@ -292,7 +760,7 @@
             });
         }
 
-        // Click Outside: Închidere automată
+        // Click Outside Auto-Close
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
