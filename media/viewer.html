@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
-    <!-- Sincronizare relativă cu fișierul principal de stil aflat în rădăcină -->
     <link rel="stylesheet" href="../style.css">
     
     <style>
@@ -310,7 +309,7 @@
             padding-bottom: 10px;
         }
 
-        /* COMPATIBILITATE MOBIL // STRUCTURA RE-ALINIATĂ PE TELEFOANE */
+        /* COMPATIBILITATE MOBIL // STRUCTURA RE-ALINIATĂ PENTRU TELEFOANE */
         @media (max-width: 768px) {
             .viewer-terminal-container {
                 flex-direction: column; 
@@ -320,9 +319,15 @@
                 padding: 8px;
                 width: 100%;
             }
+            
+            /* FIX INJECTAT PENTRU RANDARE IMAGINE PE MOBIL (ANTI-COLLAPSE) */
             .active-image-frame {
-                max-height: 45vh; 
+                width: 100% !important;
+                height: auto !important;
+                max-height: 55vh !important; 
+                object-fit: contain !important;
             }
+            
             .vector-comic-sandbox {
                 height: 45vh;
             }
@@ -356,7 +361,6 @@
 </head>
 <body class="content-page">
 
-    <!-- Fundalul animat cu overlay specific bunkerului -->
     <div class="bunker-bg-overlay"></div>
 
     <button class="mobile-bunker-toggle">
@@ -365,7 +369,6 @@
 
     <div class="os-container">
         
-        <!-- Meniul global sincronizat perfect cu restul structurii portofoliului tău -->
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
                 <li class="menu-item">
@@ -402,22 +405,16 @@
             
             <h1 class="media-header-title">Graphic Files // Comics Reader Node</h1>
 
-            <!-- Selectorul Interactiv de Numere (Issues 1-12 din Dead Drop Assets) -->
             <div class="issue-selector-hud" id="issueSelector"></div>
 
-            <!-- CONTAINER VIEWER PRINCIPAL -->
             <div class="viewer-terminal-container" id="viewerContainer">
                 
-                <!-- COLOANA STÂNGA: SELECTOR MINIATURI -->
                 <div class="thumbnails-grid-hud" id="nodesContainer"></div>
 
-                <!-- COLOANA DREAPTA: MONITORUL HUD PRINCIPAL -->
                 <div class="main-display-box">
                     
-                    <!-- Viewport-ul pentru imagini cu overlay de navigare rapidă -->
                     <div class="viewport-container">
                         
-                        <!-- Zone de click pentru navigație rapidă stânga/dreapta -->
                         <div class="nav-overlay-zone zone-left" id="zoneLeft">
                             <div class="nav-arrow-indicator">&lt; PREV</div>
                         </div>
@@ -425,18 +422,15 @@
                             <div class="nav-arrow-indicator">NEXT &gt;</div>
                         </div>
 
-                        <!-- Imaginea Activă -->
                         <img id="mainViewerDisplay" 
                              src="" 
                              class="active-image-frame" 
                              alt="Terminal Visual Interface"
                              style="display: none;">
 
-                        <!-- Placeholder-ul vector-art inteligent -->
                         <div id="vectorComicSandbox" class="vector-comic-sandbox"></div>
                     </div>
 
-                    <!-- Bara HUD de Control din subsolul imaginii -->
                     <div class="viewer-control-hud">
                         <div>
                             <span>SYS_STREAM: </span>
@@ -642,7 +636,6 @@
 
         // SISTEM INTEGRAT DE MOD FULL SCREEN (NATIV + PSEUDO FALLBACK PENTRU MOBIL)
         btnFullscreen.addEventListener('click', () => {
-            // Verificăm dacă browserul suportă API-ul nativ (PC, Mac, Android)
             if (viewerContainer.requestFullscreen) {
                 if (!document.fullscreenElement) {
                     viewerContainer.requestFullscreen().then(() => {
@@ -655,7 +648,6 @@
                     document.exitFullscreen();
                 }
             } else {
-                // FALLBACK CORECT PENTRU MOBIL (iOS/Safari) - Modificăm clasa CSS direct
                 viewerContainer.classList.toggle('pseudo-fullscreen');
                 if (viewerContainer.classList.contains('pseudo-fullscreen')) {
                     btnFullscreen.textContent = "[ ✖ EXIT_FULL ]";
@@ -667,7 +659,6 @@
             }
         });
 
-        // Sincronizare stare buton la ieșirea nativă (ex. tasta ESC)
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
                 btnFullscreen.textContent = "[ 🖥️ FULL_SCREEN ]";
