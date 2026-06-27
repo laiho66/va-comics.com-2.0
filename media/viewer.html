@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
+    <!-- Sincronizare relativă cu fișierul principal de stil aflat în rădăcină -->
     <link rel="stylesheet" href="../style.css">
     
     <style>
@@ -259,7 +260,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            background: rgba(5, 5, 5, 0.9);
+            background: rgba(5, 5, 5, 0.95);
             border: 1px solid var(--dark-fence, #222);
             font-family: 'Courier New', Courier, monospace;
             font-size: 12px;
@@ -282,7 +283,7 @@
             background: transparent;
             border: 1px solid var(--dark-fence, #222);
             color: var(--terminal-gray, #888);
-            padding: 4px 12px;
+            padding: 6px 14px;
             cursor: pointer;
             font-family: monospace;
             font-size: 11px;
@@ -344,7 +345,7 @@
                 flex-shrink: 0;
             }
             .nav-overlay-zone {
-                width: 30%; /* Lăsăm zonă mai mare de atingere pe mobil */
+                width: 30%; 
             }
             .nav-arrow-indicator {
                 font-size: 11px;
@@ -355,6 +356,7 @@
 </head>
 <body class="content-page">
 
+    <!-- Fundalul animat cu overlay specific bunkerului -->
     <div class="bunker-bg-overlay"></div>
 
     <button class="mobile-bunker-toggle">
@@ -363,6 +365,7 @@
 
     <div class="os-container">
         
+        <!-- Meniul global sincronizat perfect cu restul structurii portofoliului tău -->
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
                 <li class="menu-item">
@@ -399,32 +402,41 @@
             
             <h1 class="media-header-title">Graphic Files // Comics Reader Node</h1>
 
+            <!-- Selectorul Interactiv de Numere (Issues 1-12 din Dead Drop Assets) -->
             <div class="issue-selector-hud" id="issueSelector"></div>
 
-            <div class="viewer-terminal-container">
+            <!-- CONTAINER VIEWER PRINCIPAL -->
+            <div class="viewer-terminal-container" id="viewerContainer">
                 
+                <!-- COLOANA STÂNGA: SELECTOR MINIATURI -->
                 <div class="thumbnails-grid-hud" id="nodesContainer"></div>
 
+                <!-- COLOANA DREAPTA: MONITORUL HUD PRINCIPAL -->
                 <div class="main-display-box">
                     
+                    <!-- Viewport-ul pentru imagini cu overlay de navigare rapidă -->
                     <div class="viewport-container">
                         
-                        <div class="nav-overlay-zone zone-left" id="overlayLeft">
+                        <!-- Zone de click pentru navigație rapidă stânga/dreapta -->
+                        <div class="nav-overlay-zone zone-left" id="zoneLeft">
                             <div class="nav-arrow-indicator">&lt; PREV</div>
                         </div>
-                        <div class="nav-overlay-zone zone-right" id="overlayRight">
+                        <div class="nav-overlay-zone zone-right" id="zoneRight">
                             <div class="nav-arrow-indicator">NEXT &gt;</div>
                         </div>
 
+                        <!-- Imaginea Activă -->
                         <img id="mainViewerDisplay" 
                              src="" 
                              class="active-image-frame" 
                              alt="Terminal Visual Interface"
                              style="display: none;">
 
+                        <!-- Placeholder-ul vector-art inteligent -->
                         <div id="vectorComicSandbox" class="vector-comic-sandbox"></div>
                     </div>
 
+                    <!-- Bara HUD de Control din subsolul imaginii -->
                     <div class="viewer-control-hud">
                         <div>
                             <span>SYS_STREAM: </span>
@@ -434,12 +446,11 @@
                             <span>NODE_VAL: </span>
                             <span class="hud-page-indicator" id="hudPageIndicator">[PAGE 01 / 08]</span>
                         </div>
-                       <div class="hud-navigation-buttons">
-    <button class="hud-nav-btn" id="btnPrevNode">&lt;&lt; PREV_NODE</button>
-    <!-- Butonul nou pentru Full Screen -->
-    <button class="hud-nav-btn" id="btnFullscreen">[ 🖥️ FULL_SCREEN ]</button>
-    <button class="hud-nav-btn" id="btnNextNode">NEXT_NODE &gt;&gt;</button>
-</div>
+                        <div class="hud-navigation-buttons">
+                            <button class="hud-nav-btn" id="btnPrevNode">&lt;&lt; PREV_NODE</button>
+                            <button class="hud-nav-btn" id="btnFullscreen">[ 🖥️ FULL_SCREEN ]</button>
+                            <button class="hud-nav-btn" id="btnNextNode">NEXT_NODE &gt;&gt;</button>
+                        </div>
                     </div>
 
                 </div>
@@ -471,7 +482,7 @@
             6: { title: "Codul Sursă // Volumul I", badge: "ISSUE #6", totalPages: 8, pages: ["/deaddrop/assets/cover6.webp"] },
             7: { title: "Trădarea // Volumul I", badge: "ISSUE #7", totalPages: 8, pages: ["/deaddrop/assets/cover7.webp"] },
             8: { title: "Bunkerul // Volumul I", badge: "ISSUE #8", totalPages: 8, pages: ["/deaddrop/assets/cover8.webp"] },
-            9: { title: "Orizonturi NOI // Volumul II", badge: "ISSUE #9", totalPages: 8, pages: ["/deaddrop/assets/cover9.webp"] },
+            9: { title: "Orizonturi Noi // Volumul II", badge: "ISSUE #9", totalPages: 8, pages: ["/deaddrop/assets/cover9.webp"] },
             10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", totalPages: 8, pages: ["/deaddrop/assets/cover10.webp"] },
             11: { title: "Amurgul Intel // Volumul II", badge: "ISSUE #11", totalPages: 8, pages: ["/deaddrop/assets/cover11p1.webp", "/deaddrop/assets/cover11p2.webp"] },
             12: { title: "Ultimul Semnal // Volumul II", badge: "ISSUE #12", totalPages: 8, pages: ["/deaddrop/assets/cover12.webp"] }
@@ -489,10 +500,12 @@
         const hudPageIndicator = document.getElementById('hudPageIndicator');
         const btnPrev = document.getElementById('btnPrevNode');
         const btnNext = document.getElementById('btnNextNode');
-        const overlayLeft = document.getElementById('overlayLeft');
-        const overlayRight = document.getElementById('overlayRight');
+        const btnFullscreen = document.getElementById('btnFullscreen');
+        const viewerContainer = document.getElementById('viewerContainer');
+        const zoneLeft = document.getElementById('zoneLeft');
+        const zoneRight = document.getElementById('zoneRight');
 
-        // INITIALIZARE VIEWER PÂNĂ LA CAPĂT
+        // INITIALIZARE VIEWER LA ÎNCĂRCAREA PAGINII
         window.addEventListener('DOMContentLoaded', () => {
             buildIssueSelector();
             const urlParams = new URLSearchParams(window.location.search);
@@ -534,7 +547,9 @@
         }
 
         function switchIssue(issueId) {
-            if (COMICS_DATABASE[issueId]) loadIssue(issueId);
+            if (COMICS_DATABASE[issueId]) {
+                loadIssue(issueId);
+            }
         }
 
         function renderNodesList() {
@@ -554,7 +569,10 @@
                     imgNode.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="150" viewBox="0 0 100 150" style="background:%23050505;"><rect width="98" height="148" x="1" y="1" fill="none" stroke="%23ff4500" stroke-width="1" opacity="0.3"/><text x="50" y="80" fill="%23888888" font-family="monospace" font-size="11" text-anchor="middle">NODE_${String(i).padStart(2,'0')}</text></svg>`;
                 }
 
-                imgNode.addEventListener('click', () => selectPage(i));
+                imgNode.addEventListener('click', () => {
+                    selectPage(i);
+                });
+
                 nodesContainer.appendChild(imgNode);
             }
         }
@@ -616,11 +634,46 @@
             }
         }
 
-        // EVENIMENTE DE NAVIGARE ASCULTATE CURAT
+        // COUPLING EVENIMENTE DE NAVIGARE CU ADD_EVENT_LISTENER
         btnPrev.addEventListener('click', () => navigatePage(-1));
         btnNext.addEventListener('click', () => navigatePage(1));
-        overlayLeft.addEventListener('click', () => navigatePage(-1));
-        overlayRight.addEventListener('click', () => navigatePage(1));
+        zoneLeft.addEventListener('click', () => navigatePage(-1));
+        zoneRight.addEventListener('click', () => navigatePage(1));
+
+        // SISTEM INTEGRAT DE MOD FULL SCREEN (NATIV + PSEUDO FALLBACK PENTRU MOBIL)
+        btnFullscreen.addEventListener('click', () => {
+            // Verificăm dacă browserul suportă API-ul nativ (PC, Mac, Android)
+            if (viewerContainer.requestFullscreen) {
+                if (!document.fullscreenElement) {
+                    viewerContainer.requestFullscreen().then(() => {
+                        btnFullscreen.textContent = "[ ✖ EXIT_FULL ]";
+                        btnFullscreen.style.color = "var(--magma-orange)";
+                    }).catch(err => {
+                        console.error(`Eroare Fullscreen: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            } else {
+                // FALLBACK CORECT PENTRU MOBIL (iOS/Safari) - Modificăm clasa CSS direct
+                viewerContainer.classList.toggle('pseudo-fullscreen');
+                if (viewerContainer.classList.contains('pseudo-fullscreen')) {
+                    btnFullscreen.textContent = "[ ✖ EXIT_FULL ]";
+                    btnFullscreen.style.color = "var(--magma-orange)";
+                } else {
+                    btnFullscreen.textContent = "[ 🖥️ FULL_SCREEN ]";
+                    btnFullscreen.style.color = "var(--terminal-gray)";
+                }
+            }
+        });
+
+        // Sincronizare stare buton la ieșirea nativă (ex. tasta ESC)
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                btnFullscreen.textContent = "[ 🖥️ FULL_SCREEN ]";
+                btnFullscreen.style.color = "var(--terminal-gray)";
+            }
+        });
 
         function generateBunkerComicPanelSVG(issueNum, pageNum) {
             const themes = {
@@ -637,9 +690,11 @@
                 11: { title: "AMURGUL INEVITABIL", accent: "#e11d48" },
                 12: { title: "ULTIMUL SEMNAL", accent: "#10b981" }
             };
+
             const t = themes[issueNum] || themes[1];
+
             return `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" style="background:#030303; border: 1px solid ${t.accent}44; width:100%; height:100%;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" class="w-full h-full max-h-[65vh]" style="background:#030303; border: 1px solid ${t.accent}44;">
                     <style>
                         .panel-title { font-family: 'Courier New', monospace; font-size: 10px; fill: ${t.accent}; letter-spacing: 1px; }
                         .comic-speech { font-family: 'Courier New', monospace; font-size: 10px; fill: #000000; font-weight: bold; }
@@ -689,13 +744,16 @@
             `;
         }
 
-        // TASTE SĂGEATĂ DESKTOP
+        // SUPORT PENTRU TASTE SĂGEATĂ
         document.addEventListener('keydown', (event) => {
-            if (event.key === "ArrowRight") navigatePage(1);
-            else if (event.key === "ArrowLeft") navigatePage(-1);
+            if (event.key === "ArrowRight") {
+                navigatePage(1);
+            } else if (event.key === "ArrowLeft") {
+                navigatePage(-1);
+            }
         });
 
-        // SWIPE PE MOBIL
+        // SWIPE PE TELEFOANE
         let touchstartX = 0;
         let touchendX = 0;
         const mainViewport = document.querySelector('.viewport-container');
@@ -710,26 +768,16 @@
         }, { passive: true });
 
         function handleSwipeGesture() {
-            const threshold = 50;
-            if (touchendX < touchstartX - threshold) navigatePage(1);
-            if (touchendX > touchstartX + threshold) navigatePage(-1);
+            const threshold = 50; 
+            if (touchendX < touchstartX - threshold) {
+                navigatePage(1);
+            }
+            if (touchendX > touchstartX + threshold) {
+                navigatePage(-1);
+            }
         }
 
-        // PARALLAX EFFECTS EFFECTIVE (Desktop)
-        const bg = document.querySelector('.bunker-bg-overlay');
-        const sidebar = document.querySelector('.sidebar-nav');
-        
-        if (window.matchMedia("(min-width: 1024px)").matches) {
-            window.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX / window.innerWidth - 0.5;
-                const mouseY = e.clientY / window.innerHeight - 0.5;
-                bg.style.transform = `translate(${mouseX * -20}px, ${mouseY * -20}px)`;
-                sidebar.style.transform = `translate(${mouseX * 10}px, ${mouseY * 10}px)`;
-                sidebar.style.transition = "transform 0.1s ease-out";
-            });
-        }
-
-        // INTERFAȚĂ MENIU MOBIL (Compact, Unificat cu style.css)
+        // INTERFAȚĂ MENIU MOBIL (Sincronizat cu style.css)
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -749,7 +797,7 @@
             }
         });
 
-        // ACORDEON MECANIC SĂNĂTOS
+        // ACORDEON MOBIL PLIABIL PENTRU SUB-MENIURI
         if (window.innerWidth < 1024) {
             document.querySelectorAll('.mobile-expandable').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -762,7 +810,7 @@
             });
         }
 
-        // Click Outside Auto-Close
+        // Click Outside pentru închiderea meniului mobil
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
