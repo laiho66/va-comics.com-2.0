@@ -6,7 +6,7 @@
     <title>VA Comics // MEDIA // VIDEO_PROMOS</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* CONFIGURAȚIE CORECTATĂ PENTRU CONSOLA VIDEO GRID */
+        /* CONFIGURAȚIE CONSOLA VIDEO GRID */
         .video-terminal-container {
             width: 100%;
             max-width: 1100px;
@@ -52,7 +52,7 @@
             letter-spacing: 1px;
         }
 
-        /* Container Proporțional 16:9 Cinema pentru Ecranul Central */
+        /* Container Proporțional 16:9 Cinema Purtat de Sistem */
         .video-theater-screen {
             position: relative;
             width: 100%;
@@ -71,13 +71,30 @@
             border: 0;
         }
 
-        /* Listă tactică de selecție video */
+        /* Listă tactică de selecție video cu scroll controlat */
         .feed-nodes-list {
             list-style: none;
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-top: 10px;
+            max-height: 65vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--magma-orange) #000;
+        }
+
+        .feed-nodes-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .feed-nodes-list::-webkit-scrollbar-track {
+            background: #050505;
+        }
+
+        .feed-nodes-list::-webkit-scrollbar-thumb {
+            background: var(--magma-orange);
+            border-radius: 2px;
         }
 
         .feed-node-item {
@@ -185,27 +202,15 @@
                 <div class="main-screen-box">
                     <div class="video-theater-screen">
                         <iframe id="videoMonitor" 
-                                src="https://www.youtube.com/embed/Sd7--V8R1ks?rel=0" 
-                                title="Dead Drop Teaser"
+                                src="" 
+                                title="Dead Drop Video Player"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen></iframe>
                     </div>
                 </div>
 
                 <div class="video-feed-selector">
-                    <ul class="feed-nodes-list">
-                        
-                        <li class="feed-node-item node-active" data-video-src="https://www.youtube.com/embed/Sd7--V8R1ks?rel=0">
-                            <span class="feed-title">> Teaser General // Dead Drop</span>
-                            <span class="feed-meta">PROTOCOL: OVERVIEW // SECURE_STREAM</span>
-                        </li>
-
-                        <li class="feed-node-item" data-video-src="https://www.youtube.com/embed/pzDrUI8Jr7Q?rel=0">
-                            <span class="feed-title">> Teaser Issue #12 // The Game</span>
-                            <span class="feed-meta">PROTOCOL: DATA_UPDATE // LAUNCH_PROMO</span>
-                        </li>
-
-                    </ul>
+                    <ul class="feed-nodes-list" id="videoNodesList"></ul>
                 </div>
 
             </div>
@@ -225,24 +230,73 @@
     </div>
 
     <script>
-        // ENGINE SCHIMBARE MONITOARE VIDEO (Evenimente Moderne)
-        const monitor = document.getElementById('videoMonitor');
-        const feedNodes = document.querySelectorAll('.feed-node-item');
+        // BAZA DE DATE MULTIMEDIA CU INTEGRALIZAREA PLAYLIST-ULUI TĂU REAL
+        const VIDEO_DATABASE = [
+            {
+                type: "single",
+                id: "Sd7--V8R1ks",
+                title: "Teaser General // Dead Drop",
+                meta: "PROTOCOL: OVERVIEW // SECURE_STREAM"
+            },
+            {
+                type: "single",
+                id: "pzDrUI8Jr7Q",
+                title: "Teaser Issue #12 // The Game",
+                meta: "PROTOCOL: DATA_UPDATE // LAUNCH_PROMO"
+            },
+            {
+                type: "playlist",
+                id: "PL7uIs3aHHCVHBqWa_5UHw__PntAHUyNdf",
+                title: "Official Soundtrack // Full Playlist",
+                meta: "PROTOCOL: AUDIO_SYNTH // SUNO_TRACKS_DATABASE"
+            }
+        ];
 
-        feedNodes.forEach(node => {
-            node.addEventListener('click', () => {
-                const videoSrc = node.getAttribute('data-video-src');
-                
-                // Forțăm încărcarea curată a iframe-ului
-                monitor.setAttribute('src', videoSrc);
-                
-                // Actualizare selectori vizuali
-                feedNodes.forEach(n => n.classList.remove('node-active'));
-                node.classList.add('node-active');
+        const monitor = document.getElementById('videoMonitor');
+        const videoListContainer = document.getElementById('videoNodesList');
+
+        function buildEmbedUrl(clip) {
+            if (clip.type === "playlist") {
+                return `https://www.youtube.com/embed?listType=playlist&list=${clip.id}&rel=0`;
+            } else {
+                return `https://www.youtube.com/embed/${clip.id}?rel=0`;
+            }
+        }
+
+        function initVideoHub() {
+            videoListContainer.innerHTML = '';
+            if (VIDEO_DATABASE.length === 0) return;
+
+            // Încărcăm primul nod video nativ la pornire
+            monitor.setAttribute('src', buildEmbedUrl(VIDEO_DATABASE[0]));
+
+            VIDEO_DATABASE.forEach((clip, index) => {
+                const li = document.createElement('li');
+                li.className = `feed-node-item ${index === 0 ? 'node-active' : ''}`;
+
+                li.innerHTML = `
+                    <span class="feed-title">> ${clip.title}</span>
+                    <span class="feed-meta">${clip.meta}</span>
+                `;
+
+                li.addEventListener('click', () => {
+                    monitor.setAttribute('src', buildEmbedUrl(clip));
+                    
+                    document.querySelectorAll('.feed-node-item').forEach(node => {
+                        node.classList.remove('node-active');
+                    });
+                    li.classList.add('node-active');
+                });
+
+                videoListContainer.appendChild(li);
             });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initVideoHub();
         });
 
-        // CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
+        // CONTROL INTERFAȚĂ MOBIL (Patch definitiv de sincronizare toggle)
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -262,21 +316,19 @@
             }
         });
 
-        // LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
-        if (window.innerWidth < 1024) {
-            document.querySelectorAll('.mobile-expandable').forEach(link => {
-                link.addEventListener('click', (e) => {
+        document.querySelectorAll('.mobile-expandable').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (window.innerWidth < 1024) {
                     const nextDropdown = link.nextElementSibling;
-                    
-                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
+                    if (nextDropdown) {
                         e.preventDefault(); 
-                        nextDropdown.classList.add('dropdown-open');
+                        e.stopPropagation();
+                        nextDropdown.classList.toggle('dropdown-open');
                     }
-                });
+                }
             });
-        }
+        });
 
-        // Click Outside: Închidere automată
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
