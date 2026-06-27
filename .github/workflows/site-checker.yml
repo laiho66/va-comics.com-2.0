@@ -1,1 +1,48 @@
+name: "Agent de Verificare Site"
 
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Cod
+      uses: actions/checkout@v4
+
+    - name: Configurare Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-node-version: '20'
+
+    - name: Instalare unelte de test
+      run: |
+        npm install -g broken-link-checker-local
+
+    - name: 🔍 Scanare imagini supradimensionate
+      run: |
+        echo "Se verifică dacă există imagini mai mari de 2MB care pot încetini site-ul..."
+        LARGE_FILES=$(find . -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \) -size +2M)
+        if [ ! -z "$LARGE_FILES" ]; then
+          echo "⚠️ ATENȚIE: S-au găsit imagini prea mari:"
+          echo "$LARGE_FILES"
+          echo "Ar fi bine să le optimizezi înainte de deploy!"
+        else
+          echo "✅ Toate imaginile au dimensiuni ok pentru web."
+        fi
+
+    - name: 🛠️ Test de simulare Build local
+      run: |
+        echo "Se rulează instalarea pachetelor pentru a ne asigura că nu crapă pe Cloudflare..."
+        if [ -f package.json ]; then
+          npm install
+          if npm run | grep -q 'build'; then
+            npm run build
+          fi
+        else
+          echo "Nu s-a găsit package.json, se sare peste build-ul local."
+        fi
