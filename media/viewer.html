@@ -504,7 +504,7 @@
         // 2. ABIA ACUM DECLARĂM BAZA DE DATE CARE APELEAZĂ FUNCȚIA DE MAI SUS
         const COMICS_DATABASE = {
             1: { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 23, pages: generatePagesList(1, 23) },
-            2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(1, 22) },
+            2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(2, 22) },
             3: { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 8, pages: generatePagesList(3, 8) },
             4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: generatePagesList(4, 8) },
             5: { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: generatePagesList(5, 8) },
@@ -767,6 +767,78 @@
                 </svg>
             `;
         }
+
+        // TASTE SĂGEATĂ
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "ArrowRight") navigatePage(1);
+            else if (event.key === "ArrowLeft") navigatePage(-1);
+        });
+
+        // SWIPE PE TELEFOANE
+        let touchstartX = 0;
+        let touchendX = 0;
+        const mainViewport = document.querySelector('.viewport-container');
+        
+        mainViewport.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        mainViewport.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        }, { passive: true });
+
+        function handleSwipeGesture() {
+            const threshold = 50; 
+            if (touchendX < touchstartX - threshold) navigatePage(1);
+            if (touchendX > touchstartX + threshold) navigatePage(-1);
+        }
+
+        // INTERFAȚĂ MENIU MOBIL - RECONFIGURATĂ PENTRU REZOLUȚII DINAMICE
+        const nav = document.getElementById('globalNav');
+        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            nav.classList.toggle('mobile-open');
+            if(nav.classList.contains('mobile-open')) {
+                toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                toggleBtn.style.color = "#FF4500";
+            } else {
+                toggleBtn.textContent = "[ = ] SYS_MENU";
+                toggleBtn.style.color = "#ffffff";
+                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                    el.classList.remove('dropdown-open');
+                });
+            }
+        });
+
+        // REPARARE ȘI COMPATIBILIZARE DROP-DOWN-URI SUB-PORTAL PE MOBIL (TOGGLE REAL)
+        document.querySelectorAll('.mobile-expandable').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (window.innerWidth < 1024) {
+                    const nextDropdown = link.nextElementSibling;
+                    if (nextDropdown) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        nextDropdown.classList.toggle('dropdown-open');
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
+                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    nav.classList.remove('mobile-open');
+                    toggleBtn.textContent = "[ = ] SYS_MENU";
+                    toggleBtn.style.color = "#ffffff";
+                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                        el.classList.remove('dropdown-open');
+                    });
+                }
+            }
+        });
     </script>
 </body>
 </html>
