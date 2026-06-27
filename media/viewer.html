@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
-    <!-- Sincronizare relativă cu fișierul principal de stil aflat în rădăcină -->
     <link rel="stylesheet" href="../style.css">
     
     <style>
@@ -384,7 +383,6 @@
 </head>
 <body class="content-page">
 
-    <!-- Fundalul animat cu overlay specific bunkerului -->
     <div class="bunker-bg-overlay"></div>
 
     <button class="mobile-bunker-toggle">
@@ -393,7 +391,6 @@
 
     <div class="os-container">
         
-        <!-- Meniul global sincronizat perfect cu restul structurii portofoliului tău -->
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
                 <li class="menu-item">
@@ -430,22 +427,16 @@
             
             <h1 class="media-header-title">Graphic Files // Comics Reader Node</h1>
 
-            <!-- Selectorul Interactiv de Numere (Issues 1-12 din Dead Drop Assets) -->
             <div class="issue-selector-hud" id="issueSelector"></div>
 
-            <!-- CONTAINER VIEWER PRINCIPAL -->
             <div class="viewer-terminal-container" id="viewerContainer">
                 
-                <!-- COLOANA STÂNGA: SELECTOR MINIATURI -->
                 <div class="thumbnails-grid-hud" id="nodesContainer"></div>
 
-                <!-- COLOANA DREAPTA: MONITORUL HUD PRINCIPAL -->
                 <div class="main-display-box">
                     
-                    <!-- Viewport-ul pentru imagini cu overlay de navigare rapidă -->
                     <div class="viewport-container">
                         
-                        <!-- Zone de click pentru navigație rapidă stânga/dreapta -->
                         <div class="nav-overlay-zone zone-left" id="zoneLeft">
                             <div class="nav-arrow-indicator">&lt; PREV</div>
                         </div>
@@ -453,18 +444,15 @@
                             <div class="nav-arrow-indicator">NEXT &gt;</div>
                         </div>
 
-                        <!-- Imaginea Activă -->
                         <img id="mainViewerDisplay" 
                              src="" 
                              class="active-image-frame" 
                              alt="Terminal Visual Interface"
                              style="display: none;">
 
-                        <!-- Placeholder-ul vector-art inteligent -->
                         <div id="vectorComicSandbox" class="vector-comic-sandbox"></div>
                     </div>
 
-                    <!-- Bara HUD de Control din subsolul imaginii -->
                     <div class="viewer-control-hud">
                         <div>
                             <span>SYS_STREAM: </span>
@@ -500,20 +488,33 @@
     </div>
 
     <script>
-        // BAZA DE DATE LOCALĂ MAPATĂ PE STRUCTURA TA REALĂ DE PE GITHUB (/deaddrop/assets/)
+        // 1. INJECTĂM MAI ÎNTÂI GENERATORUL DE CĂI ASSETS PENTRU SUBFOLDERE
+        function generatePagesList(issueNumber, totalPages) {
+            let pagesArray = [];
+            // Coperta principala din folderul dedicat
+            pagesArray.push(`/deaddrop/assets/issue${issueNumber}/cover.webp`);
+            
+            // Generam dinamic restul paginilor (page2, page3...)
+            for (let p = 2; p <= totalPages; p++) {
+                pagesArray.push(`/deaddrop/assets/issue${issueNumber}/page${p}.webp`);
+            }
+            return pagesArray;
+        }
+
+        // 2. ABIA ACUM DECLARĂM BAZA DE DATE CARE APELEAZĂ FUNCȚIA DE MAI SUS
         const COMICS_DATABASE = {
             1: { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 23, pages: generatePagesList(1, 23) },
-            2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 8, pages: ["/deaddrop/assets/cover2.webp"] },
-            3: { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 8, pages: ["/deaddrop/assets/cover3.webp"] },
-            4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: ["/deaddrop/assets/cover4.webp"] },
-            5: { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: ["/deaddrop/assets/cover5.webp"] },
-            6: { title: "Codul Sursă // Volumul I", badge: "ISSUE #6", totalPages: 8, pages: ["/deaddrop/assets/cover6.webp"] },
-            7: { title: "Trădarea // Volumul I", badge: "ISSUE #7", totalPages: 8, pages: ["/deaddrop/assets/cover7.webp"] },
-            8: { title: "Bunkerul // Volumul I", badge: "ISSUE #8", totalPages: 8, pages: ["/deaddrop/assets/cover8.webp"] },
-            9: { title: "Orizonturi Noi // Volumul II", badge: "ISSUE #9", totalPages: 8, pages: ["/deaddrop/assets/cover9.webp"] },
-            10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", totalPages: 8, pages: ["/deaddrop/assets/cover10.webp"] },
-            11: { title: "Amurgul Intel // Volumul II", badge: "ISSUE #11", totalPages: 8, pages: ["/deaddrop/assets/cover11p1.webp", "/deaddrop/assets/cover11p2.webp"] },
-            12: { title: "Ultimul Semnal // Volumul II", badge: "ISSUE #12", totalPages: 8, pages: ["/deaddrop/assets/cover12.webp"] }
+            2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 8, pages: generatePagesList(2, 8) },
+            3: { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 8, pages: generatePagesList(3, 8) },
+            4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: generatePagesList(4, 8) },
+            5: { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: generatePagesList(5, 8) },
+            6: { title: "Codul Sursă // Volumul I", badge: "ISSUE #6", totalPages: 8, pages: generatePagesList(6, 8) },
+            7: { title: "Trădarea // Volumul I", badge: "ISSUE #7", totalPages: 8, pages: generatePagesList(7, 8) },
+            8: { title: "Bunkerul // Volumul I", badge: "ISSUE #8", totalPages: 8, pages: generatePagesList(8, 8) },
+            9: { title: "Orizonturi Noi // Volumul II", badge: "ISSUE #9", totalPages: 8, pages: generatePagesList(9, 8) },
+            10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", totalPages: 8, pages: generatePagesList(10, 8) },
+            11: { title: "Amurgul Intel // Volumul II", badge: "ISSUE #11", totalPages: 8, pages: generatePagesList(11, 8) },
+            12: { title: "Ultimul Semnal // Volumul II", badge: "ISSUE #12", totalPages: 8, pages: generatePagesList(12, 8) }
         };
 
         // STATE MANAGEMENT
@@ -668,7 +669,7 @@
         zoneLeft.addEventListener('click', () => navigatePage(-1));
         zoneRight.addEventListener('click', () => navigatePage(1));
 
-        // MOD FULL SCREEN
+        // MOD FULL SCREEN (NATIV CU FALLBACK)
         btnFullscreen.addEventListener('click', () => {
             if (viewerContainer.requestFullscreen) {
                 if (!document.fullscreenElement) {
@@ -766,76 +767,6 @@
                 </svg>
             `;
         }
-
-        // TASTE SĂGEATĂ
-        document.addEventListener('keydown', (event) => {
-            if (event.key === "ArrowRight") navigatePage(1);
-            else if (event.key === "ArrowLeft") navigatePage(-1);
-        });
-
-        // SWIPE PE TELEFOANE
-        let touchstartX = 0;
-        let touchendX = 0;
-        const mainViewport = document.querySelector('.viewport-container');
-        
-        mainViewport.addEventListener('touchstart', e => {
-            touchstartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        mainViewport.addEventListener('touchend', e => {
-            touchendX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
-        }, { passive: true });
-
-        function handleSwipeGesture() {
-            const threshold = 50; 
-            if (touchendX < touchstartX - threshold) navigatePage(1);
-            if (touchendX > touchstartX + threshold) navigatePage(-1);
-        }
-
-        // INTERFAȚĂ MENIU MOBIL
-        const nav = document.getElementById('globalNav');
-        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
-
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            nav.classList.toggle('mobile-open');
-            if(nav.classList.contains('mobile-open')) {
-                toggleBtn.textContent = "[ X ] CLOSE_MENU";
-                toggleBtn.style.color = "#FF4500";
-            } else {
-                toggleBtn.textContent = "[ = ] SYS_MENU";
-                toggleBtn.style.color = "#ffffff";
-                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                    el.classList.remove('dropdown-open');
-                });
-            }
-        });
-
-        if (window.innerWidth < 1024) {
-            document.querySelectorAll('.mobile-expandable').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const nextDropdown = link.nextElementSibling;
-                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
-                        e.preventDefault(); 
-                        nextDropdown.classList.add('dropdown-open');
-                    }
-                });
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-                    nav.classList.remove('mobile-open');
-                    toggleBtn.textContent = "[ = ] SYS_MENU";
-                    toggleBtn.style.color = "#ffffff";
-                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                        el.classList.remove('dropdown-open');
-                    });
-                }
-            }
-        });
     </script>
 </body>
 </html>
