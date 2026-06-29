@@ -488,25 +488,26 @@
     </div>
 
     <script>
-        // 1. INJECTĂM MAI ÎNTÂI GENERATORUL DE CĂI ASSETS PENTRU SUBFOLDERE
+        // 1. GENERATORUL DE CĂI ASSETS RECONFIGURAT CORECT (INCLUDE ȘI PAGE1)
         function generatePagesList(issueNumber, totalPages) {
             let pagesArray = [];
-            // Coperta principala din folderul dedicat
+            
+            // Adăugăm coperta pe prima poziție (Elementul 0)
             pagesArray.push(`/deaddrop/assets/issue${issueNumber}/cover.webp`);
             
-            // Generam dinamic restul paginilor (page2, page3...)
-            for (let p = 2; p <= totalPages; p++) {
+            // Generăm dinamic restul paginilor, PORNING DE LA 1 ca să prindem și page1.webp
+            for (let p = 1; p <= totalPages; p++) {
                 pagesArray.push(`/deaddrop/assets/issue${issueNumber}/page${p}.webp`);
             }
             return pagesArray;
         }
 
-        // 2. ABIA ACUM DECLARĂM BAZA DE DATE CARE APELEAZĂ FUNCȚIA DE MAI SUS
+        // 2. BAZA DE DATE ACTUALIZATĂ CU TOTALELE REALE (FĂRĂ COPERTĂ)
         const COMICS_DATABASE = {
             1: { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 23, pages: generatePagesList(1, 23) },
             2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(2, 22) },
             3: { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 23, pages: generatePagesList(3, 23) },
-            4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: generatePagesList(4, 24) },
+            4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: generatePagesList(4, 8) }, // Reparata din 24 in 8
             5: { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: generatePagesList(5, 8) },
             6: { title: "Codul Sursă // Volumul I", badge: "ISSUE #6", totalPages: 8, pages: generatePagesList(6, 8) },
             7: { title: "Trădarea // Volumul I", badge: "ISSUE #7", totalPages: 8, pages: generatePagesList(7, 8) },
@@ -584,7 +585,7 @@
         function renderNodesList() {
             nodesContainer.innerHTML = '';
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
-            const total = issueData.totalPages;
+            const total = issueData.pages.length; // Citim lungimea totala reala a array-ului generat
 
             for (let i = 1; i <= total; i++) {
                 const imgNode = document.createElement('img');
@@ -608,7 +609,7 @@
 
         function selectPage(pageIndex) {
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
-            if (pageIndex >= 1 && pageIndex <= issueData.totalPages) {
+            if (pageIndex >= 1 && pageIndex <= issueData.pages.length) {
                 viewerState.activePage = pageIndex;
                 
                 const thumbnails = document.querySelectorAll('.thumb-node');
@@ -628,7 +629,7 @@
         function renderActivePage() {
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
             const current = viewerState.activePage;
-            const total = issueData.totalPages;
+            const total = issueData.pages.length;
 
             hudIssueLabel.textContent = issueData.badge;
             hudPageIndicator.textContent = `[PAGE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
@@ -658,7 +659,7 @@
         function navigatePage(direction) {
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
             const targetPage = viewerState.activePage + direction;
-            if (targetPage >= 1 && targetPage <= issueData.totalPages) {
+            if (targetPage >= 1 && targetPage <= issueData.pages.length) {
                 selectPage(targetPage);
             }
         }
@@ -669,7 +670,7 @@
         zoneLeft.addEventListener('click', () => navigatePage(-1));
         zoneRight.addEventListener('click', () => navigatePage(1));
 
-        // MOD FULL SCREEN (NATIV CU FALLBACK)
+        // MOD FULL SCREEN
         btnFullscreen.addEventListener('click', () => {
             if (viewerContainer.requestFullscreen) {
                 if (!document.fullscreenElement) {
@@ -794,7 +795,7 @@
             if (touchendX > touchstartX + threshold) navigatePage(-1);
         }
 
-        // INTERFAȚĂ MENIU MOBIL - RECONFIGURATĂ PENTRU REZOLUȚII DINAMICE
+        // INTERFAȚĂ MENIU MOBIL
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -813,7 +814,6 @@
             }
         });
 
-        // REPARARE ȘI COMPATIBILIZARE DROP-DOWN-URI SUB-PORTAL PE MOBIL (TOGGLE REAL)
         document.querySelectorAll('.mobile-expandable').forEach(link => {
             link.addEventListener('click', (e) => {
                 if (window.innerWidth < 1024) {
