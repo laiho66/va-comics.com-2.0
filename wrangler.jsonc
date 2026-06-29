@@ -5,12 +5,12 @@
   "observability": {
     "enabled": true
   },
-  "assets": {
-    "directory": "."
+  "experimental_assets": {
+    "directory": ".",
+    "exclude": [
+      ".git/**"
+    ]
   },
-  "exclude": [
-    ".git/**"
-  ],
   "compatibility_flags": [
     "nodejs_compat"
   ]
