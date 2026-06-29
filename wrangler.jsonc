@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "icy-sun-9f9e",
+  "compatibility_date": "2026-06-29",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    "exclude": [
+      ".git/**"
+    ]
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
