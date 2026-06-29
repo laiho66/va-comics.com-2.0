@@ -6,11 +6,11 @@
     "enabled": true
   },
   "assets": {
-    "directory": ".",
-    "exclude": [
-      ".git/**"
-    ]
+    "directory": "."
   },
+  "exclude": [
+    ".git/**"
+  ],
   "compatibility_flags": [
     "nodejs_compat"
   ]
