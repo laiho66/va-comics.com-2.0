@@ -1,2189 +1,844 @@
 <!DOCTYPE html>
-
 <html lang="ro">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>VA Comics // MEDIA // GRAPHIC_FILES</title>
-
     <link rel="stylesheet" href="../style.css">
-
     
-
     <style>
-
         :root {
-
             --magma-orange: #ff4500;
-
             --terminal-gray: #888888;
-
             --dark-fence: #222222;
-
         }
-
-
 
         /* Selectorul de Numere (Issues) în stil Terminal cu Scroll Orizontal */
-
         .issue-selector-hud {
-
             display: flex;
-
             gap: 10px;
-
             margin-bottom: 25px;
-
             padding: 15px;
-
             border: 1px dashed var(--dark-fence, #222);
-
             background: rgba(0, 0, 0, 0.4);
-
             position: relative;
-
             overflow-x: auto;
-
             scrollbar-width: thin;
-
             scrollbar-color: var(--magma-orange) #000;
-
         }
-
-
 
         .issue-selector-hud::-webkit-scrollbar {
-
             height: 4px;
-
         }
-
-
 
         .issue-selector-hud::-webkit-scrollbar-track {
-
             background: #050505;
-
         }
-
-
 
         .issue-selector-hud::-webkit-scrollbar-thumb {
-
             background: var(--magma-orange);
-
             border-radius: 2px;
-
         }
-
-
 
         .issue-selector-hud::before {
-
             content: "SELECT_ACTIVE_DATABASE_NODE (ISSUES_01_TO_12)";
-
             position: absolute;
-
             top: -10px;
-
             left: 15px;
-
             background: #050505;
-
             padding: 0 8px;
-
             font-family: 'Courier New', Courier, monospace;
-
             font-size: 10px;
-
             color: var(--terminal-gray, #888);
-
             letter-spacing: 1px;
-
             z-index: 10;
-
         }
-
-
 
         .issue-btn {
-
             background: rgba(10, 10, 10, 0.8);
-
             border: 1px solid var(--dark-fence, #222);
-
             color: var(--terminal-gray, #888);
-
             font-family: 'Courier New', Courier, monospace;
-
             font-size: 11px;
-
             font-weight: bold;
-
             padding: 6px 14px;
-
             cursor: pointer;
-
             transition: all 0.2s ease;
-
             text-transform: uppercase;
-
             flex-shrink: 0;
-
         }
-
-
 
         .issue-btn:hover {
-
             color: #ffffff;
-
             border-color: var(--terminal-gray, #888);
-
             background: rgba(30, 30, 30, 0.5);
-
         }
-
-
 
         .issue-btn.active-issue {
-
             color: #000000 !important;
-
             background: var(--magma-orange, #ff4500) !important;
-
             border-color: var(--magma-orange, #ff4500) !important;
-
             box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
-
         }
-
-
 
         .viewer-terminal-container {
-
             width: 100%;
-
             max-width: 1050px;
-
             display: flex;
-
             flex-direction: row; /* Miniaturi în stânga, Display în dreapta */
-
             gap: 25px;
-
             align-items: flex-start;
-
         }
-
-
 
         /* COLOANA STÂNGA: SELECTORUL DE NODURI */
-
         .thumbnails-grid-hud {
-
             display: flex;
-
             flex-direction: column; 
-
             gap: 15px;
-
             position: relative;
-
             padding: 25px 15px 15px 15px;
-
             border: 1px solid var(--dark-fence, #222);
-
             background: rgba(0, 0, 0, 0.3);
-
             width: 135px; 
-
             max-height: 75vh;
-
             overflow-y: auto;
-
             flex-shrink: 0;
-
             box-sizing: border-box;
-
             scrollbar-width: thin;
-
             scrollbar-color: var(--magma-orange) #000;
-
         }
-
-
 
         .thumbnails-grid-hud::-webkit-scrollbar {
-
             width: 4px;
-
         }
-
-
 
         .thumbnails-grid-hud::-webkit-scrollbar-track {
-
             background: #050505;
-
         }
-
-
 
         .thumbnails-grid-hud::-webkit-scrollbar-thumb {
-
             background: var(--magma-orange);
-
             border-radius: 2px;
-
         }
-
-
 
         .thumbnails-grid-hud::before {
-
             content: "NODES";
-
             position: absolute;
-
             top: -10px;
-
             left: 15px;
-
             background: #050505;
-
             padding: 0 8px;
-
             font-family: 'Courier New', Courier, monospace;
-
             font-size: 11px;
-
             color: var(--terminal-gray, #888);
-
             letter-spacing: 1px;
-
             z-index: 10;
-
         }
-
-
 
         .thumb-node {
-
             width: 100%;
-
             aspect-ratio: 2/3; 
-
             object-fit: cover;
-
             background: #000000;
-
             border: 1px solid #151515;
-
             cursor: pointer;
-
             transition: all 0.2s ease;
-
             opacity: 0.5;
-
             display: block;
-
         }
-
-
 
         .thumb-node:hover {
-
             opacity: 0.9;
-
             border-color: var(--terminal-gray, #888);
-
         }
-
-
 
         .thumb-node.node-selected {
-
             opacity: 1 !important;
-
             border-color: var(--magma-orange, #ff4500) !important;
-
             box-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
-
         }
-
-
 
         /* COLOANA DREAPTA: MONITORUL HUD PRINCIPAL */
-
         .main-display-box {
-
             flex-grow: 1; 
-
             padding: 15px;
-
             position: relative;
-
             background: rgba(0, 0, 0, 0.5);
-
             border: 1px solid var(--dark-fence, #222);
-
             box-sizing: border-box;
-
             display: flex;
-
             flex-direction: column;
-
             gap: 15px;
-
             width: 100%;
-
         }
-
-
 
         .main-display-box::before {
-
             content: "IMAGE_VIEWER // HIGH_RESOLUTION_FEED";
-
             position: absolute;
-
             top: -10px;
-
             left: 20px;
-
             background: #050505;
-
             padding: 0 10px;
-
             font-family: 'Courier New', Courier, monospace;
-
             font-size: 11px;
-
             color: var(--magma-orange, #ff4500);
-
             letter-spacing: 1px;
-
             z-index: 10;
-
         }
-
-
 
         /* Containerul imaginii cu butoane de navigare invizibile/hover */
-
         .viewport-container {
-
             position: relative;
-
             width: 100%;
-
             background: #000000;
-
             border: 1px solid #111;
-
             overflow: hidden;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             min-height: 50vh;
-
         }
-
-
 
         .active-image-frame {
-
             width: auto;
-
             max-width: 100%;
-
             max-height: 65vh; 
-
             object-fit: contain;
-
             display: block;
-
             margin: 0 auto;
-
         }
-
-
 
         /* Mock Canvas container pentru generare pagini virtuale */
-
         .vector-comic-sandbox {
-
             width: 100%;
-
             height: 65vh;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
         }
-
-
 
         /* Zone de navigare stânga/dreapta peste imagine */
-
         .nav-overlay-zone {
-
             position: absolute;
-
             top: 0;
-
             bottom: 0;
-
             width: 20%;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             cursor: pointer;
-
             opacity: 0;
-
             transition: opacity 0.2s ease;
-
             z-index: 5;
-
             background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
-
         }
-
-
 
         .nav-overlay-zone.zone-right {
-
             right: 0;
-
             background: linear-gradient(to left, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
-
         }
-
-
 
         .nav-overlay-zone:hover {
-
             opacity: 1;
-
         }
-
-
 
         .nav-arrow-indicator {
-
             background: rgba(0, 0, 0, 0.9);
-
             border: 1px solid var(--magma-orange, #ff4500);
-
             color: var(--magma-orange, #ff4500);
-
             font-family: monospace;
-
             padding: 8px 12px;
-
             font-size: 13px;
-
             pointer-events: none;
-
             letter-spacing: 1px;
-
         }
-
-
 
         /* Bara HUD Control de sub imagine */
-
         .viewer-control-hud {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             padding: 12px;
-
             background: rgba(5, 5, 5, 0.95);
-
             border: 1px solid var(--dark-fence, #222);
-
             font-family: 'Courier New', Courier, monospace;
-
             font-size: 12px;
-
             color: var(--terminal-gray, #888);
-
             flex-wrap: wrap;
-
             gap: 10px;
-
         }
-
-
 
         .hud-page-indicator {
-
             color: #ffffff;
-
             font-weight: bold;
-
         }
-
-
 
         .hud-navigation-buttons {
-
             display: flex;
-
             gap: 10px;
-
         }
-
-
 
         .hud-nav-btn {
-
             background: transparent;
-
             border: 1px solid var(--dark-fence, #222);
-
             color: var(--terminal-gray, #888);
-
             padding: 6px 14px;
-
             cursor: pointer;
-
             font-family: monospace;
-
             font-size: 11px;
-
             transition: all 0.2s ease;
-
         }
-
-
 
         .hud-nav-btn:hover:not(:disabled) {
-
             color: var(--magma-orange, #ff4500);
-
             border-color: var(--magma-orange, #ff4500);
-
         }
-
-
 
         .hud-nav-btn:disabled {
-
             opacity: 0.3;
-
             cursor: not-allowed;
-
         }
-
-
 
         .media-header-title {
-
             font-size: 24px;
-
             letter-spacing: 3px;
-
             text-transform: uppercase;
-
             color: var(--magma-orange, #ff4500);
-
             margin-bottom: 20px;
-
             border-bottom: 1px solid var(--dark-fence, #222);
-
             padding-bottom: 10px;
-
         }
-
-
 
         /* COMPATIBILITATE MOBIL // RE-ALINIERE TOTALĂ STRUCTURALĂ */
-
         @media (max-width: 768px) {
-
             
-
             /* ASCUNDEM BUTONUL DE FULL SCREEN PE MOBIL (VARIANTA A) */
-
             #btnFullscreen {
-
                 display: none !important;
-
             }
-
-
 
             .viewer-terminal-container {
-
                 flex-direction: column !important; 
-
                 gap: 20px !important;
-
                 width: 100% !important;
-
             }
-
             .main-display-box {
-
                 padding: 10px !important;
-
                 width: 100% !important;
-
                 display: flex !important;
-
                 flex-direction: column !important;
-
             }
-
             
-
             /* RESETARE COMPLETĂ PĂRINTE PENTRU A PREVENI STRÂNGEREA LA O PIXELI */
-
             .viewport-container {
-
                 display: block !important;
-
                 width: 100% !important;
-
                 min-height: auto !important;
-
                 height: auto !important;
-
                 text-align: center !important;
-
             }
-
-
 
             /* FORCE DIMENSIONS INJECTED (PATCH ANTI-COLLAPSE DEFINITIV) */
-
             .active-image-frame {
-
                 display: block !important;
-
                 width: 100% !important;
-
                 max-width: 100% !important;
-
                 min-width: 100% !important;
-
                 height: auto !important;
-
                 max-height: 70vh !important;
-
                 object-fit: contain !important;
-
                 margin: 0 auto !important;
-
             }
-
             
-
             .vector-comic-sandbox {
-
                 height: 45vh;
-
             }
-
             .thumbnails-grid-hud {
-
                 width: 100% !important;
-
                 max-height: none !important;
-
                 flex-direction: row !important; 
-
                 overflow-x: auto !important;
-
                 overflow-y: hidden !important;
-
                 justify-content: flex-start !important;
-
                 padding: 20px 10px 10px 10px !important;
-
                 gap: 10px !important;
-
             }
-
             .thumbnails-grid-hud::before {
-
                 content: "AVAILABLE_NODES // PAGES";
-
             }
-
             .thumb-node {
-
                 width: 65px !important; 
-
                 height: 95px !important; 
-
                 flex-shrink: 0 !important;
-
             }
-
             .nav-overlay-zone {
-
                 width: 30% !important; 
-
             }
-
             .nav-arrow-indicator {
-
                 font-size: 11px !important;
-
                 padding: 6px 10px !important;
-
             }
-
         }
-
     </style>
-
 </head>
-
 <body class="content-page">
-
-
 
     <div class="bunker-bg-overlay"></div>
 
-
-
     <button class="mobile-bunker-toggle">
-
         [ = ] SYS_MENU
-
     </button>
 
-
-
     <div class="os-container">
-
         
-
         <nav class="sidebar-nav" id="globalNav">
-
             <ul class="main-menu">
-
                 <li class="menu-item">
-
                     <a href="/index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a>
-
                 </li>
-
                 <li class="menu-item has-dropdown">
-
                     <a href="/projects.html" class="nav-link mobile-expandable"><span class="node-num">[02]</span> PROJECTS</a>
-
                     <ul class="dropdown-level-1">
-
                         <li class="dropdown-item has-sub-dropdown">
-
                             <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
-
                             <ul class="dropdown-level-2">
-
                                 <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
-
                                 <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
-
                             </ul>
-
                         </li>
-
                     </ul>
-
                 </li>
-
                 <li class="menu-item">
-
                     <a href="/chronicles.html" class="nav-link"><span class="node-num">[03]</span> CHRONICLES</a>
-
                 </li>
-
                 <li class="menu-item active">
-
                     <a href="/media.html" class="nav-link"><span class="node-num">[04]</span> MEDIA </a>
-
                 </li>
-
                 <li class="menu-item">
-
                     <a href="/about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a>
-
                 </li>
-
                 <li class="menu-item">
-
                     <a href="/contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a>
-
                 </li>
-
             </ul>
-
         </nav>
 
-
-
         <div class="content-wrapper">
-
             
-
             <h1 class="media-header-title">Graphic Files // Comics Reader Node</h1>
-
-
 
             <div class="issue-selector-hud" id="issueSelector"></div>
 
-
-
             <div class="viewer-terminal-container" id="viewerContainer">
-
                 
-
                 <div class="thumbnails-grid-hud" id="nodesContainer"></div>
 
-
-
                 <div class="main-display-box">
-
                     
-
                     <div class="viewport-container">
-
                         
-
                         <div class="nav-overlay-zone zone-left" id="zoneLeft">
-
                             <div class="nav-arrow-indicator">&lt; PREV</div>
-
                         </div>
-
                         <div class="nav-overlay-zone zone-right" id="zoneRight">
-
                             <div class="nav-arrow-indicator">NEXT &gt;</div>
-
                         </div>
-
-
 
                         <img id="mainViewerDisplay" 
-
                              src="" 
-
                              class="active-image-frame" 
-
                              alt="Terminal Visual Interface"
-
                              style="display: none;">
 
-
-
                         <div id="vectorComicSandbox" class="vector-comic-sandbox"></div>
-
                     </div>
-
-
 
                     <div class="viewer-control-hud">
-
                         <div>
-
                             <span>SYS_STREAM: </span>
-
                             <span id="hudActiveIssueLabel" style="color: var(--magma-orange, #ff4500);">ISSUE #1</span>
-
                         </div>
-
                         <div>
-
                             <span>NODE_VAL: </span>
-
                             <span class="hud-page-indicator" id="hudPageIndicator">[PAGE 01 / 08]</span>
-
                         </div>
-
                         <div class="hud-navigation-buttons">
-
                             <button class="hud-nav-btn" id="btnPrevNode">&lt;&lt; PREV_NODE</button>
-
                             <button class="hud-nav-btn" id="btnFullscreen">[ 🖥️ FULL_SCREEN ]</button>
-
                             <button class="hud-nav-btn" id="btnNextNode">NEXT_NODE &gt;&gt;</button>
-
                         </div>
-
                     </div>
-
-
 
                 </div>
 
-
-
             </div>
-
         </div>
 
-
-
         <footer class="bunker-footer">
-
             <div class="hud-status-bar">
-
                 <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
-
             </div>
-
             <div class="legal-bindings">
-
                 <a href="/terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-
                 <a href="/privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-
                 <a href="/cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
-
             </div>
-
         </footer>
-
-
 
     </div>
 
-
-
     <script>
-
         // 1. GENERATORUL DE CĂI ASSETS RECONFIGURAT CORECT (INCLUDE ȘI PAGE1)
-
         function generatePagesList(issueNumber, totalPages) {
-
             let pagesArray = [];
-
             
-
             // Adăugăm coperta pe prima poziție (Elementul 0)
-
             pagesArray.push(`/deaddrop/assets/issue${issueNumber}/cover.webp`);
-
             
-
             // Generăm dinamic restul paginilor, PORNING DE LA 1 ca să prindem și page1.webp
-
             for (let p = 1; p <= totalPages; p++) {
-
                 pagesArray.push(`/deaddrop/assets/issue${issueNumber}/page${p}.webp`);
-
             }
-
             return pagesArray;
-
         }
-
-
 
         // 2. BAZA DE DATE ACTUALIZATĂ CU TOTALELE REALE (FĂRĂ COPERTĂ)
-
         const COMICS_DATABASE = {
-
             1: { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 23, pages: generatePagesList(1, 23) },
-
             2: { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(2, 22) },
-
             3: { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 23, pages: generatePagesList(3, 23) },
-
             4: { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 24, pages: generatePagesList(4, 24) }, // Reparata din 24 in 8
-
             5: { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: generatePagesList(5, 8) },
-
             6: { title: "Codul Sursă // Volumul I", badge: "ISSUE #6", totalPages: 8, pages: generatePagesList(6, 8) },
-
             7: { title: "Trădarea // Volumul I", badge: "ISSUE #7", totalPages: 8, pages: generatePagesList(7, 8) },
-
             8: { title: "Bunkerul // Volumul I", badge: "ISSUE #8", totalPages: 8, pages: generatePagesList(8, 8) },
-
             9: { title: "Orizonturi Noi // Volumul II", badge: "ISSUE #9", totalPages: 8, pages: generatePagesList(9, 8) },
-
             10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", totalPages: 8, pages: generatePagesList(10, 8) },
-
             11: { title: "Amurgul Intel // Volumul II", badge: "ISSUE #11", totalPages: 8, pages: generatePagesList(11, 8) },
-
             12: { title: "Ultimul Semnal // Volumul II", badge: "ISSUE #12", totalPages: 8, pages: generatePagesList(12, 8) }
-
         };
 
-
-
         // STATE MANAGEMENT
-
         let viewerState = { activeIssue: 1, activePage: 1 };
 
-
-
         // DOM SELECTION
-
         const displayImage = document.getElementById('mainViewerDisplay');
-
         const vectorSandbox = document.getElementById('vectorComicSandbox');
-
         const nodesContainer = document.getElementById('nodesContainer');
-
         const issueSelector = document.getElementById('issueSelector');
-
         const hudIssueLabel = document.getElementById('hudActiveIssueLabel');
-
         const hudPageIndicator = document.getElementById('hudPageIndicator');
-
         const btnPrev = document.getElementById('btnPrevNode');
-
         const btnNext = document.getElementById('btnNextNode');
-
         const btnFullscreen = document.getElementById('btnFullscreen');
-
         const viewerContainer = document.getElementById('viewerContainer');
-
         const zoneLeft = document.getElementById('zoneLeft');
-
         const zoneRight = document.getElementById('zoneRight');
 
-
-
         // INITIALIZARE VIEWER LA ÎNCĂRCAREA PAGINII
-
         window.addEventListener('DOMContentLoaded', () => {
-
             buildIssueSelector();
-
             const urlParams = new URLSearchParams(window.location.search);
-
             const issueParam = parseInt(urlParams.get('issue'));
-
             if (issueParam && COMICS_DATABASE[issueParam]) {
-
                 viewerState.activeIssue = issueParam;
-
             }
-
             loadIssue(viewerState.activeIssue);
-
         });
 
-
-
         function buildIssueSelector() {
-
             issueSelector.innerHTML = '';
-
             for (let i = 1; i <= 12; i++) {
-
                 const btn = document.createElement('button');
-
                 btn.className = `issue-btn ${i === viewerState.activeIssue ? 'active-issue' : ''}`;
-
                 btn.id = `issue-btn-${i}`;
-
                 btn.innerHTML = `[ ISSUE_${String(i).padStart(2, '0')} ]`;
-
                 btn.addEventListener('click', () => switchIssue(i));
-
                 issueSelector.appendChild(btn);
-
             }
-
         }
-
-
 
         function loadIssue(issueId) {
-
             viewerState.activeIssue = issueId;
-
             viewerState.activePage = 1;
 
-
-
             const buttons = document.querySelectorAll('.issue-btn');
-
             buttons.forEach((btn, index) => {
-
                 if (index + 1 === issueId) {
-
                     btn.classList.add('active-issue');
-
                     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-
                 } else {
-
                     btn.classList.remove('active-issue');
-
                 }
-
             });
 
-
-
             renderNodesList();
-
             renderActivePage();
-
         }
-
-
 
         function switchIssue(issueId) {
-
             if (COMICS_DATABASE[issueId]) {
-
                 loadIssue(issueId);
-
             }
-
         }
-
-
 
         function renderNodesList() {
-
             nodesContainer.innerHTML = '';
-
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
-
             const total = issueData.pages.length; // Citim lungimea totala reala a array-ului generat
 
-
-
             for (let i = 1; i <= total; i++) {
-
                 const imgNode = document.createElement('img');
-
                 imgNode.className = `thumb-node ${i === viewerState.activePage ? 'node-selected' : ''}`;
-
                 imgNode.alt = `Node Page ${i}`;
-
                 imgNode.setAttribute('data-page-index', i);
 
-
-
                 if (issueData.pages[i - 1]) {
-
                     imgNode.src = issueData.pages[i - 1];
-
                 } else {
-
                     imgNode.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="150" viewBox="0 0 100 150" style="background:%23050505;"><rect width="98" height="148" x="1" y="1" fill="none" stroke="%23ff4500" stroke-width="1" opacity="0.3"/><text x="50" y="80" fill="%23888888" font-family="monospace" font-size="11" text-anchor="middle">NODE_${String(i).padStart(2,'0')}</text></svg>`;
-
                 }
 
-
-
                 imgNode.addEventListener('click', () => {
-
                     selectPage(i);
-
                 });
-
-
 
                 nodesContainer.appendChild(imgNode);
-
             }
-
         }
-
-
 
         function selectPage(pageIndex) {
-
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
-
             if (pageIndex >= 1 && pageIndex <= issueData.pages.length) {
-
                 viewerState.activePage = pageIndex;
-
                 
-
                 const thumbnails = document.querySelectorAll('.thumb-node');
-
                 thumbnails.forEach((thumb, idx) => {
-
                     if (idx + 1 === pageIndex) {
-
                         thumb.classList.add('node-selected');
-
                         thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-
                     } else {
-
                         thumb.classList.remove('node-selected');
-
                     }
-
                 });
 
-
-
                 renderActivePage();
-
             }
-
         }
 
-
-
         function renderActivePage() {
-
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
-
             const current = viewerState.activePage;
-
             const total = issueData.pages.length;
 
-
-
             hudIssueLabel.textContent = issueData.badge;
-
             hudPageIndicator.textContent = `[PAGE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
 
-
-
             btnPrev.disabled = (current === 1);
-
             btnNext.disabled = (current === total);
-
-
 
             const activeImageSrc = issueData.pages[current - 1];
 
-
-
             if (activeImageSrc) {
-
                 displayImage.src = activeImageSrc;
-
                 displayImage.style.display = 'block';
-
                 vectorSandbox.style.display = 'none';
-
                 
-
                 displayImage.onerror = () => {
-
                     displayImage.style.display = 'none';
-
                     vectorSandbox.style.display = 'flex';
-
                     vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
-
                 };
-
             } else {
-
                 displayImage.style.display = 'none';
-
                 vectorSandbox.style.display = 'flex';
-
                 vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
-
             }
-
         }
-
-
 
         function navigatePage(direction) {
-
             const issueData = COMICS_DATABASE[viewerState.activeIssue];
-
             const targetPage = viewerState.activePage + direction;
-
             if (targetPage >= 1 && targetPage <= issueData.pages.length) {
-
                 selectPage(targetPage);
-
             }
-
         }
-
-
 
         // COUPLING EVENIMENTE DE NAVIGARE
-
         btnPrev.addEventListener('click', () => navigatePage(-1));
-
         btnNext.addEventListener('click', () => navigatePage(1));
-
         zoneLeft.addEventListener('click', () => navigatePage(-1));
-
         zoneRight.addEventListener('click', () => navigatePage(1));
 
-
-
         // MOD FULL SCREEN
-
         btnFullscreen.addEventListener('click', () => {
-
             if (viewerContainer.requestFullscreen) {
-
                 if (!document.fullscreenElement) {
-
                     viewerContainer.requestFullscreen().then(() => {
-
                         btnFullscreen.textContent = "[ ✖ EXIT_FULL ]";
-
                         btnFullscreen.style.color = "var(--magma-orange)";
-
                     }).catch(err => {
-
                         console.error(`Eroare Fullscreen: ${err.message}`);
-
                     });
-
                 } else {
-
                     document.exitFullscreen();
-
                 }
-
             } else {
-
                 viewerContainer.classList.toggle('pseudo-fullscreen');
-
                 if (viewerContainer.classList.contains('pseudo-fullscreen')) {
-
                     btnFullscreen.textContent = "[ ✖ EXIT_FULL ]";
-
                     btnFullscreen.style.color = "var(--magma-orange)";
-
                 } else {
-
                     btnFullscreen.textContent = "[ 🖥️ FULL_SCREEN ]";
-
                     btnFullscreen.style.color = "var(--terminal-gray)";
-
                 }
-
             }
-
         });
-
-
 
         document.addEventListener('fullscreenchange', () => {
-
             if (!document.fullscreenElement) {
-
                 btnFullscreen.textContent = "[ 🖥️ FULL_SCREEN ]";
-
                 btnFullscreen.style.color = "var(--terminal-gray)";
-
             }
-
         });
-
-
 
         function generateBunkerComicPanelSVG(issueNum, pageNum) {
-
             const themes = {
-
                 1: { title: "ORIGINEA INTEL", accent: "#ff4500" },
-
                 2: { title: "REVOLTA ORAȘULUI", accent: "#00ffcc" },
-
                 3: { title: "CONFRUNTAREA DIRECTĂ", accent: "#ff0055" },
-
                 4: { title: "INFILTRAREA ÎN SECTOR", accent: "#e2d114" },
-
                 5: { title: "ALIANȚA SECRETĂ", accent: "#a855f7" },
-
                 6: { title: "CODUL SURSĂ INTEL", accent: "#22c55e" },
-
                 7: { title: "TRĂDAREA DIN INTUNERIC", accent: "#ea580c" },
-
                 8: { title: "BUNKERUL CATACOMBĂ", accent: "#22d3ee" },
-
                 9: { title: "ORIZONTURI NOI", accent: "#f43f5e" },
-
                 10: { title: "CĂUTAREA SEMNALULUI", accent: "#3b82f6" },
-
                 11: { title: "AMURGUL INEVITABIL", accent: "#e11d48" },
-
                 12: { title: "ULTIMUL SEMNAL", accent: "#10b981" }
-
             };
-
             const t = themes[issueNum] || themes[1];
-
             return `
-
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" class="w-full h-full max-h-[65vh]" style="background:#030303; border: 1px solid ${t.accent}44;">
-
                     <style>
-
                         .panel-title { font-family: 'Courier New', monospace; font-size: 10px; fill: ${t.accent}; letter-spacing: 1px; }
-
                         .comic-speech { font-family: 'Courier New', monospace; font-size: 10px; fill: #000000; font-weight: bold; }
-
                         .comic-narration { font-family: 'Courier New', monospace; font-size: 9px; fill: ${t.accent}; }
-
                         .reticle { stroke: ${t.accent}; opacity: 0.4; }
-
                     </style>
-
                     <defs>
-
                         <pattern id="bunkerGrid-${issueNum}" width="20" height="20" patternUnits="userSpaceOnUse">
-
                             <path d="M 20 0 L 0 0 0 20" fill="none" stroke="${t.accent}" stroke-width="0.5" opacity="0.08"/>
-
                         </pattern>
-
                     </defs>
-
                     <rect width="100%" height="100%" fill="url(#bunkerGrid-${issueNum})" />
-
                     <line x1="20" y1="30" x2="480" y2="30" stroke="${t.accent}" stroke-width="1" opacity="0.3"/>
-
                     <text x="25" y="23" class="panel-title">// DATABASE: ${t.title} // ISSUE_0${issueNum}</text>
-
                     <text x="475" y="23" class="panel-title" text-anchor="end">NODE_PAGE_${String(pageNum).padStart(2,'0')}</text>
-
                     <g transform="translate(20, 50)">
-
                         <rect width="460" height="180" fill="#060606" stroke="${t.accent}" stroke-width="1.5" opacity="0.8"/>
-
                         <circle cx="230" cy="90" r="60" fill="none" stroke="${t.accent}" stroke-dasharray="4 4" opacity="0.3"/>
-
                         <line x1="230" y1="20" x2="230" y2="160" class="reticle" />
-
                         <line x1="160" y1="90" x2="300" y2="90" class="reticle" />
-
                         <rect x="15" y="15" width="200" height="40" fill="#000000" stroke="${t.accent}" stroke-width="1"/>
-
                         <text x="25" y="27" class="comic-narration">SCANNING SECTOR 0${issueNum}...</text>
-
                         <text x="25" y="38" class="comic-narration">SIGNALS FOUND IN NODE ${pageNum}.</text>
-
                         <path d="M 320,130 C 320,110 380,110 380,130 C 380,138 360,145 350,145 L 340,155 L 343,145 C 325,145 320,138 320,130 Z" fill="#ffffff" stroke="#000" stroke-width="1"/>
-
                         <text x="350" y="133" class="comic-speech" text-anchor="middle">Suntem online?</text>
-
                     </g>
-
                     <g transform="translate(20, 250)">
-
                         <rect width="215" height="380" fill="#060606" stroke="${t.accent}" stroke-width="1.5" opacity="0.8"/>
-
                         <circle cx="107" cy="190" r="30" fill="none" stroke="${t.accent}" stroke-width="1" opacity="0.3"/>
-
                         <line x1="57" y1="140" x2="157" y2="240" stroke="${t.accent}" stroke-width="0.5" opacity="0.4"/>
-
                         <rect x="15" y="15" width="120" height="30" fill="#000" stroke="${t.accent}" stroke-width="0.5"/>
-
                         <text x="22" y="32" class="comic-narration">// CONECTARE_STABILITĂ</text>
-
                         <path d="M 70,270 C 70,250 170,250 170,270 C 170,285 140,290 120,290 L 110,310 L 115,290 C 80,290 70,280 70,270 Z" fill="#ffffff" stroke="#000" stroke-width="1"/>
-
                         <text x="120" y="273" class="comic-speech" text-anchor="middle">Sistemul a pornit.</text>
-
                     </g>
-
                     <g transform="translate(265, 250)">
-
                         <rect width="215" height="380" fill="#060606" stroke="${t.accent}" stroke-width="1.5" opacity="0.8"/>
-
                         <path d="M 107,130 L 157,210 L 57,210 Z" fill="none" stroke="${t.accent}" stroke-width="2" opacity="0.6"/>
-
                         <text x="107" y="190" fill="${t.accent}" font-family="monospace" font-size="24" font-weight="bold" text-anchor="middle" opacity="0.8">!</text>
-
                         <rect x="15" y="15" width="140" height="30" fill="#000" stroke="${t.accent}" stroke-width="0.5"/>
-
                         <text x="22" y="32" class="comic-narration">// WARNING: SYS_ACTIVE</text>
-
                         <path d="M 50,300 C 50,280 160,280 160,300 C 160,315 130,320 110,320 L 100,340 L 105,320 C 60,320 50,310 50,300 Z" fill="#ffffff" stroke="#000" stroke-width="1"/>
-
                         <text x="105" y="303" class="comic-speech" text-anchor="middle">Nu deconecta!</text>
-
                     </g>
-
                     <text x="250" y="665" class="panel-title" text-anchor="middle">VA-COMICS TERMINAL ENGINE // MODEL_MAS_ACTIVE</text>
-
                 </svg>
-
             `;
-
         }
-
-
 
         // TASTE SĂGEATĂ
-
         document.addEventListener('keydown', (event) => {
-
             if (event.key === "ArrowRight") navigatePage(1);
-
             else if (event.key === "ArrowLeft") navigatePage(-1);
-
         });
-
-
 
         // SWIPE PE TELEFOANE
-
         let touchstartX = 0;
-
         let touchendX = 0;
-
         const mainViewport = document.querySelector('.viewport-container');
-
         
-
         mainViewport.addEventListener('touchstart', e => {
-
             touchstartX = e.changedTouches[0].screenX;
-
         }, { passive: true });
-
-
 
         mainViewport.addEventListener('touchend', e => {
-
             touchendX = e.changedTouches[0].screenX;
-
             handleSwipeGesture();
-
         }, { passive: true });
 
-
-
         function handleSwipeGesture() {
-
             const threshold = 50; 
-
             if (touchendX < touchstartX - threshold) navigatePage(1);
-
             if (touchendX > touchstartX + threshold) navigatePage(-1);
-
         }
-
-
 
         // INTERFAȚĂ MENIU MOBIL
-
         const nav = document.getElementById('globalNav');
-
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
-
-
         toggleBtn.addEventListener('click', (e) => {
-
             e.stopPropagation();
-
             nav.classList.toggle('mobile-open');
-
             if(nav.classList.contains('mobile-open')) {
-
                 toggleBtn.textContent = "[ X ] CLOSE_MENU";
-
                 toggleBtn.style.color = "#FF4500";
-
             } else {
-
                 toggleBtn.textContent = "[ = ] SYS_MENU";
-
                 toggleBtn.style.color = "#ffffff";
-
                 document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-
                     el.classList.remove('dropdown-open');
-
                 });
-
             }
-
         });
-
-
 
         document.querySelectorAll('.mobile-expandable').forEach(link => {
-
             link.addEventListener('click', (e) => {
-
                 if (window.innerWidth < 1024) {
-
                     const nextDropdown = link.nextElementSibling;
-
                     if (nextDropdown) {
-
                         e.preventDefault();
-
                         e.stopPropagation();
-
                         nextDropdown.classList.toggle('dropdown-open');
-
                     }
-
                 }
-
             });
-
         });
-
-
 
         document.addEventListener('click', (e) => {
-
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-
                     nav.classList.remove('mobile-open');
-
                     toggleBtn.textContent = "[ = ] SYS_MENU";
-
                     toggleBtn.style.color = "#ffffff";
-
                     document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-
                         el.classList.remove('dropdown-open');
-
                     });
-
                 }
-
             }
-
         });
-
     </script>
-
 </body>
-
-</html>
-
-
-
-chronicles.
-
-
-
-<!DOCTYPE html>
-
-<html lang="ro">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>VA Comics // CHRONICLES // FIELD_REPORTS</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-
-        /* CONFIGURAȚIE APERIODICĂ PENTRU RAPOARTE / CHRONICLES */
-
-        .chronicles-container {
-
-            width: 100%;
-
-            max-width: 800px; /* Limităm lățimea textului pentru o lizibilitate maximă */
-
-            margin-top: 40px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 40px;
-
-        }
-
-
-
-        .chronicle-post {
-
-            background: rgba(0, 0, 0, 0.85);
-
-            border: 1px solid var(--dark-fence);
-
-            padding: 30px;
-
-            position: relative;
-
-        }
-
-
-
-        .chronicle-post::before {
-
-            content: "REPORT_LOG // TRANSMISSION_OK";
-
-            position: absolute;
-
-            top: -10px;
-
-            left: 20px;
-
-            background: #050505;
-
-            padding: 0 10px;
-
-            font-family: 'Courier New', Courier, monospace;
-
-            font-size: 11px;
-
-            color: var(--magma-orange);
-
-            letter-spacing: 1px;
-
-        }
-
-
-
-        .chronicle-header {
-
-            border-bottom: 1px solid #1a1a1a;
-
-            padding-bottom: 15px;
-
-            margin-bottom: 20px;
-
-        }
-
-
-
-        .chronicle-title {
-
-            font-size: 22px;
-
-            text-transform: uppercase;
-
-            letter-spacing: 1px;
-
-            color: var(--text-colorless);
-
-            margin-bottom: 5px;
-
-        }
-
-
-
-        .chronicle-date {
-
-            font-family: 'Courier New', Courier, monospace;
-
-            font-size: 12px;
-
-            color: var(--terminal-gray);
-
-        }
-
-
-
-        .chronicle-body {
-
-            font-size: 16px;
-
-            line-height: 1.7;
-
-            color: #dddddd; /* Text ușor gri pentru a nu obosi ochii la citit pe întuneric */
-
-        }
-
-
-
-        .chronicle-body p {
-
-            margin-bottom: 15px;
-
-        }
-
-
-
-        /* Împingem conținutul în dreapta meniului fix pe Desktop */
-
-        .content-wrapper {
-
-            margin-left: 0;
-
-            width: 100%;
-
-            margin-top: 40px;
-
-        }
-
-
-
-        @media (min-width: 1024px) {
-
-            .content-wrapper {
-
-                margin-left: 380px;
-
-                margin-top: 0;
-
-            }
-
-            .os-container {
-
-                flex-direction: row;
-
-                flex-wrap: wrap;
-
-                align-content: space-between;
-
-            }
-
-        }
-
-
-
-        /* Optimizări stricte pentru ecrane mici (Mobil) */
-
-        @media (max-width: 1023px) {
-
-            .chronicle-post {
-
-                padding: 20px;
-
-            }
-
-            .chronicle-title {
-
-                font-size: 18px;
-
-            }
-
-            .chronicle-body {
-
-                font-size: 15px;
-
-                line-height: 1.6;
-
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body class="content-page">
-
-
-
-    <div class="bunker-bg-overlay"></div>
-
-
-
-    <button class="mobile-bunker-toggle">
-
-        [ = ] SYS_MENU
-
-    </button>
-
-
-
-    <div class="os-container">
-
-        
-
-        <nav class="sidebar-nav" id="globalNav">
-
-            <ul class="main-menu">
-
-                <li class="menu-item">
-
-                    <a href="/index.html" class="nav-link">
-
-                        <span class="node-num Pisica">[01]</span> HOME
-
-                    </a>
-
-                </li>
-
-                
-
-                <li class="menu-item has-dropdown">
-
-                    <a href="/projects.html" class="nav-link mobile-expandable">
-
-                        <span class="node-num">[02]</span> PROJECTS
-
-                    </a>
-
-                    <ul class="dropdown-level-1">
-
-                        <li class="dropdown-item has-sub-dropdown">
-
-                            <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
-
-                            <ul class="dropdown-level-2">
-
-                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
-
-                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
-
-                            </ul>
-
-                        </li>
-
-                    </ul>
-
-                </li>
-
-
-
-                <li class="menu-item active">
-
-                    <a href="/chronicles.html" class="nav-link">
-
-                        <span class="node-num">[03]</span> CHRONICLES
-
-                    </a>
-
-                </li>
-
-
-
-                <li class="menu-item has-dropdown">
-
-                    <a href="/media.html" class="nav-link mobile-expandable">
-
-                        <span class="node-num">[04]</span> MEDIA
-
-                    </a>
-
-                    <ul class="dropdown-level-1">
-
-                        <li><a href="/media/music.html" class="sub-nav-link">» MUSIC</a></li>
-
-                        <li><a href="/media/video.html" class="sub-nav-link">» VIDEO</a></li>
-
-                        <li><a href="/media/viewer.html" class="sub-nav-link">» VIEWER</a></li>
-
-                    </ul>
-
-                </li>
-
-
-
-                <li class="menu-item">
-
-                    <a href="/about.html" class="nav-link">
-
-                        <span class="node-num">[05]</span> ABOUT US
-
-                    </a>
-
-                </li>
-
-                <li class="menu-item">
-
-                    <a href="/contact.html" class="nav-link">
-
-                        <span class="node-num">[06]</span> CONTACT
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </nav>
-
-
-
-        <div class="content-wrapper">
-
-            <div class="projects-grid">
-
-                <div class="chronicles-container" id="chroniclesFeed">
-
-                    
-
-                    <div class="chronicle-post">
-
-                        <div class="chronicle-header">
-
-                            <h2 class="chronicle-title">Lansare Proiect VA Comics v2.0</h2>
-
-                            <div class="chronicle-date">SYS_TIME: 2026-06-11 // AUTHOR: Aris</div>
-
-                        </div>
-
-                        <div class="chronicle-body">
-
-                            <p>test git</p>
-
-                            <p>2</p>
-
-                        </div>
-
-                    </div>
-
-
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <footer class="bunker-footer">
-
-            <div class="hud-status-bar">
-
-                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
-
-            </div>
-
-            <div class="legal-bindings">
-
-                <a href="/terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-
-                <a href="/privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-
-                <a href="/cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
-
-            </div>
-
-        </footer>
-
-
-
-    </div>
-
-
-
-    <script>
-
-        // 1. CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
-
-        const nav = document.getElementById('globalNav');
-
-        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
-
-
-
-        toggleBtn.addEventListener('click', (e) => {
-
-            e.stopPropagation();
-
-            nav.classList.toggle('mobile-open');
-
-            
-
-            if(nav.classList.contains('mobile-open')) {
-
-                toggleBtn.textContent = "[ X ] CLOSE_MENU";
-
-                toggleBtn.style.color = "#FF4500";
-
-            } else {
-
-                toggleBtn.textContent = "[ = ] SYS_MENU";
-
-                toggleBtn.style.color = "#ffffff";
-
-                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-
-                    el.classList.remove('dropdown-open');
-
-                });
-
-            }
-
-        });
-
-
-
-        // 2. LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
-
-        if (window.innerWidth < 1024) {
-
-            document.querySelectorAll('.mobile-expandable').forEach(link => {
-
-                link.addEventListener('click', (e) => {
-
-                    const nextDropdown = link.nextElementSibling;
-
-                    
-
-                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
-
-                        e.preventDefault(); 
-
-                        nextDropdown.classList.add('dropdown-open');
-
-                    }
-
-                });
-
-            });
-
-        }
-
-
-
-        // Click Outside: Închidere automată
-
-        document.addEventListener('click', (e) => {
-
-            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-
-                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-
-                    nav.classList.remove('mobile-open');
-
-                    toggleBtn.textContent = "[ = ] SYS_MENU";
-
-                    toggleBtn.style.color = "#ffffff";
-
-                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-
-                        el.classList.remove('dropdown-open');
-
-                    });
-
-                }
-
-            }
-
-        });
-
-    </script>
-
-</body>
-
 </html>
