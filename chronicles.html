@@ -6,10 +6,10 @@
     <title>VA Comics // CHRONICLES // FIELD_REPORTS</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CONFIGURAȚIE APERIODICĂ PENTRU RAPOARTE / CHRONICLES */
+        /* CONFIGURAÈIE APERIODICÄ PENTRU RAPOARTE / CHRONICLES */
         .chronicles-container {
             width: 100%;
-            max-width: 800px; /* Limităm lățimea textului pentru o lizibilitate maximă */
+            max-width: 800px; /* LimitÄm lÄÈimea textului pentru o lizibilitate maximÄ */
             margin-top: 40px;
             display: flex;
             flex-direction: column;
@@ -59,14 +59,14 @@
         .chronicle-body {
             font-size: 16px;
             line-height: 1.7;
-            color: #dddddd; /* Text ușor gri pentru a nu obosi ochii la citit pe întuneric */
+            color: #dddddd; /* Text uÈor gri pentru a nu obosi ochii la citit pe Ã®ntuneric */
         }
 
         .chronicle-body p {
             margin-bottom: 15px;
         }
 
-        /* Împingem conținutul în dreapta meniului fix pe Desktop */
+        /* Ãmpingem conÈinutul Ã®n dreapta meniului fix pe Desktop */
         .content-wrapper {
             margin-left: 0;
             width: 100%;
@@ -85,7 +85,7 @@
             }
         }
 
-        /* Optimizări stricte pentru ecrane mici (Mobil) */
+        /* OptimizÄri stricte pentru ecrane mici (Mobil) */
         @media (max-width: 1023px) {
             .chronicle-post {
                 padding: 20px;
@@ -126,8 +126,8 @@
                         <li class="dropdown-item has-sub-dropdown">
                             <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
                             <ul class="dropdown-level-2">
-                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
+                                <li><a href="/deaddrop/vol1.html" class="vol-link">Â» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="/deaddrop/vol2.html" class="vol-link">Â» VOL 2 (ISSUES 9-12+)</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -144,9 +144,9 @@
                         <span class="node-num">[04]</span> MEDIA
                     </a>
                     <ul class="dropdown-level-1">
-                        <li><a href="/media/music.html" class="sub-nav-link">» MUSIC</a></li>
-                        <li><a href="/media/video.html" class="sub-nav-link">» VIDEO</a></li>
-                        <li><a href="/media/viewer.html" class="sub-nav-link">» VIEWER</a></li>
+                        <li><a href="/media/music.html" class="sub-nav-link">Â» MUSIC</a></li>
+                        <li><a href="/media/video.html" class="sub-nav-link">Â» VIDEO</a></li>
+                        <li><a href="/media/viewer.html" class="sub-nav-link">Â» VIEWER</a></li>
                     </ul>
                 </li>
 
@@ -166,6 +166,24 @@
         <div class="content-wrapper">
             <div class="projects-grid">
                 <div class="chronicles-container" id="chroniclesFeed">
+
+      <!-- CHRONICLE ENTRY: 2026-07-31 - APP TEST -->
+      <article class="chronicle-post" id="post-1785529756414">
+        <header class="post-header">
+          <div class="post-badge font-mono-hud">TRANSMISSION // DEADDROP BUNKER</div>
+          <h2 class="post-title">App test</h2>
+          <div class="post-meta font-mono-hud">
+            <span class="meta-item">AUTHOR: <strong class="meta-author">Aris</strong></span>
+            <span class="meta-divider">//</span>
+            <span class="meta-item">DATE: <time>2026-07-31</time></span>
+          </div>
+        </header>
+        <div class="post-body">
+<p class="chronicle-p">app test chronicle.</p>
+
+        </div>
+      </article>
+
                     
                     <div class="chronicle-post">
                         <div class="chronicle-header">
@@ -196,7 +214,7 @@
     </div>
 
     <script>
-        // 1. CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
+        // 1. CONTROL INTERFAÈÄ MOBIL (Compact & Anti-Blocaj)
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -216,7 +234,7 @@
             }
         });
 
-        // 2. LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
+        // 2. LOGICÄ ACORDEON MECANIC (Pentru mobil/tabletÄ)
         if (window.innerWidth < 1024) {
             document.querySelectorAll('.mobile-expandable').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -230,7 +248,7 @@
             });
         }
 
-        // Click Outside: Închidere automată
+        // Click Outside: Ãnchidere automatÄ
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
