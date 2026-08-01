@@ -9,7 +9,7 @@
         /* CONFIGURAȚIE APERIODICĂ PENTRU RAPOARTE / CHRONICLES */
         .chronicles-container {
             width: 100%;
-            max-width: 800px; /* Limităm lățimea textului pentru o lizibilitate maximă */
+            max-width: 800px;
             margin-top: 40px;
             display: flex;
             flex-direction: column;
@@ -59,14 +59,13 @@
         .chronicle-body {
             font-size: 16px;
             line-height: 1.7;
-            color: #dddddd; /* Text ușor gri pentru a nu obosi ochii la citit pe întuneric */
+            color: #dddddd;
         }
 
         .chronicle-body p {
             margin-bottom: 15px;
         }
 
-        /* Împingem conținutul în dreapta meniului fix pe Desktop */
         .content-wrapper {
             margin-left: 0;
             width: 100%;
@@ -85,7 +84,6 @@
             }
         }
 
-        /* Optimizări stricte pentru ecrane mici (Mobil) */
         @media (max-width: 1023px) {
             .chronicle-post {
                 padding: 20px;
@@ -163,7 +161,16 @@
             </ul>
         </nav>
 
-        
+        <!-- AICI ERA ZONA LIPSĂ PE CARE AM RESTAURAT-O -->
+        <div class="content-wrapper">
+            <div class="projects-grid">
+                <div class="chronicles-container" id="chroniclesFeed">
+                    <!-- Postările noi de la Foundry vor apărea aici -->
+                </div>
+            </div>
+        </div>
+        <!-- // SFÂRȘIT ZONĂ RESTAURATĂ -->
+
         <footer class="bunker-footer">
             <div class="hud-status-bar">
                 <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
@@ -178,7 +185,6 @@
     </div>
 
     <script>
-        // 1. CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -198,7 +204,6 @@
             }
         });
 
-        // 2. LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
         if (window.innerWidth < 1024) {
             document.querySelectorAll('.mobile-expandable').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -212,7 +217,6 @@
             });
         }
 
-        // Click Outside: Închidere automată
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
@@ -228,117 +232,3 @@
     </script>
 </body>
 </html>
-
-
-      <!-- CHRONICLE ENTRY: 2026-08-01 - REPORT #409 // TRANSMISSION FROM BUNKER -->
-      <article class="chronicle-post" id="post-1785593361457">
-        <header class="post-header">
-          <div class="post-badge font-mono-hud">TRANSMISSION // DEADDROP BUNKER</div>
-          <h2 class="post-title">REPORT #409 // TRANSMISSION FROM BUNKER</h2>
-          <div class="post-meta font-mono-hud">
-            <span class="meta-item">AUTHOR: <strong class="meta-author">Aris</strong></span>
-            <span class="meta-divider">//</span>
-            <span class="meta-item">DATE: <time>2026-08-01</time></span>
-          </div>
-        </header>
-        <div class="post-body">
-<h3 class="chronicle-heading">DEAD DROP // BUNKER UPDATE</h3>
-<p class="chronicle-p"><strong class="text-magma">STATUS:</strong> System operational. Issue #13 transmission sequence complete.</p>
-<blockquote class="cyber-callout">"The grid holds. All signal relays are broadcasting at nominal frequency."</blockquote>
-<h4 class="chronicle-subheading">FIELD OBSERVATIONS</h4>
-<ul class="cyber-list">
-  <li>Automated pipeline established via <strong class="text-magma">FOUNDRY</strong>.</li>
-  <li>All WebP assets compressed and mirrored to Cloudflare CDNs.</li>
-  <li><span class="text-cyan font-mono-hud">SIGNAL_LOCK: 100%</span></li>
-</ul>
-
-        </div>
-      </article>
-
-
-      <!-- CHRONICLE ENTRY: 2026-08-01 - TEST 1 -->
-      <article class="chronicle-post" id="post-1785593456033">
-        <header class="post-header">
-          <div class="post-badge font-mono-hud">TRANSMISSION // DEADDROP BUNKER</div>
-          <h2 class="post-title">test 1</h2>
-          <div class="post-meta font-mono-hud">
-            <span class="meta-item">AUTHOR: <strong class="meta-author">Aris</strong></span>
-            <span class="meta-divider">//</span>
-            <span class="meta-item">DATE: <time>2026-08-01</time></span>
-          </div>
-        </header>
-        <div class="post-body">
-<p class="chronicle-p">test 1</p>
-
-        </div>
-      </article>
-
-
-      <!-- CHRONICLE ENTRY: 2026-08-01 - REPORT #409 // TRANSMISSION FROM BUNKER -->
-      <article class="chronicle-post" id="post-1785594251621">
-        <header class="post-header">
-          <div class="post-badge font-mono-hud">TRANSMISSION // DEADDROP BUNKER</div>
-          <h2 class="post-title">REPORT #409 // TRANSMISSION FROM BUNKER</h2>
-          <div class="post-meta font-mono-hud">
-            <span class="meta-item">AUTHOR: <strong class="meta-author">Aris</strong></span>
-            <span class="meta-divider">//</span>
-            <span class="meta-item">DATE: <time>2026-08-01</time></span>
-          </div>
-        </header>
-        <div class="post-body">
-<h3 class="chronicle-heading">DEAD DROP // BUNKER UPDATE</h3>
-<p class="chronicle-p"><strong class="text-magma">STATUS:</strong> System operational. Issue #13 transmission sequence complete.</p>
-<blockquote class="cyber-callout">"The grid holds. All signal relays are broadcasting at nominal frequency."</blockquote>
-<h4 class="chronicle-subheading">FIELD OBSERVATIONS</h4>
-<ul class="cyber-list">
-  <li>Automated pipeline established via <strong class="text-magma">FOUNDRY</strong>.</li>
-  <li>All WebP assets compressed and mirrored to Cloudflare CDNs.</li>
-  <li><span class="text-cyan font-mono-hud">SIGNAL_LOCK: 100%</span></li>
-</ul>
-
-        </div>
-      </article>
-
-
-      <!-- CHRONICLE ENTRY: 2026-08-01 - REPORT #409 // TRANSMISSION FROM BUNKER -->
-      <article class="chronicle-post" id="post-1785594405234">
-        <header class="post-header">
-          <div class="post-badge font-mono-hud">TRANSMISSION // DEADDROP BUNKER</div>
-          <h2 class="post-title">REPORT #409 // TRANSMISSION FROM BUNKER</h2>
-          <div class="post-meta font-mono-hud">
-            <span class="meta-item">AUTHOR: <strong class="meta-author">Aris</strong></span>
-            <span class="meta-divider">//</span>
-            <span class="meta-item">DATE: <time>2026-08-01</time></span>
-          </div>
-        </header>
-        <div class="post-body">
-<h3 class="chronicle-heading">DEAD DROP // BUNKER UPDATE</h3>
-<p class="chronicle-p"><strong class="text-magma">STATUS:</strong> System operational. Issue #13 transmission sequence complete.</p>
-<blockquote class="cyber-callout">"The grid holds. All signal relays are broadcasting at nominal frequency."</blockquote>
-<h4 class="chronicle-subheading">FIELD OBSERVATIONS</h4>
-<ul class="cyber-list">
-  <li>Automated pipeline established via <strong class="text-magma">FOUNDRY</strong>.</li>
-  <li>All WebP assets compressed and mirrored to Cloudflare CDNs.</li>
-  <li><span class="text-cyan font-mono-hud">SIGNAL_LOCK: 100%</span></li>
-</ul>
-
-        </div>
-      </article>
-
-
-      <!-- CHRONICLE ENTRY: 2026-08-01 - TEST 2 -->
-      <article class="chronicle-post" id="post-1785595599173">
-        <header class="post-header">
-          <div class="post-badge font-mono-hud">TRANSMISSION // DEADDROP BUNKER</div>
-          <h2 class="post-title">test 2</h2>
-          <div class="post-meta font-mono-hud">
-            <span class="meta-item">AUTHOR: <strong class="meta-author">Aris</strong></span>
-            <span class="meta-divider">//</span>
-            <span class="meta-item">DATE: <time>2026-08-01</time></span>
-          </div>
-        </header>
-        <div class="post-body">
-<p class="chronicle-p">test 2</p>
-
-        </div>
-      </article>
