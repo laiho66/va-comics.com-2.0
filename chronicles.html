@@ -6,10 +6,10 @@
     <title>VA Comics // CHRONICLES // FIELD_REPORTS</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CONFIGURAÃÂÃÂIE APERIODICÃÂÃÂ PENTRU RAPOARTE / CHRONICLES */
+        /* CONFIGURAȚIE APERIODICĂ PENTRU RAPOARTE / CHRONICLES */
         .chronicles-container {
             width: 100%;
-            max-width: 800px; /* LimitÃÂÃÂm lÃÂÃÂÃÂÃÂimea textului pentru o lizibilitate maximÃÂÃÂ */
+            max-width: 800px; /* Limităm lățimea textului pentru o lizibilitate maximă */
             margin-top: 40px;
             display: flex;
             flex-direction: column;
@@ -59,14 +59,14 @@
         .chronicle-body {
             font-size: 16px;
             line-height: 1.7;
-            color: #dddddd; /* Text uÃÂÃÂor gri pentru a nu obosi ochii la citit pe ÃÂÃÂ®ntuneric */
+            color: #dddddd; /* Text ușor gri pentru a nu obosi ochii la citit pe întuneric */
         }
 
         .chronicle-body p {
             margin-bottom: 15px;
         }
 
-        /* ÃÂÃÂmpingem conÃÂÃÂinutul ÃÂÃÂ®n dreapta meniului fix pe Desktop */
+        /* Împingem conținutul în dreapta meniului fix pe Desktop */
         .content-wrapper {
             margin-left: 0;
             width: 100%;
@@ -85,7 +85,7 @@
             }
         }
 
-        /* OptimizÃÂÃÂri stricte pentru ecrane mici (Mobil) */
+        /* Optimizări stricte pentru ecrane mici (Mobil) */
         @media (max-width: 1023px) {
             .chronicle-post {
                 padding: 20px;
@@ -126,8 +126,8 @@
                         <li class="dropdown-item has-sub-dropdown">
                             <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
                             <ul class="dropdown-level-2">
-                                <li><a href="/deaddrop/vol1.html" class="vol-link">ÃÂÃÂ» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="/deaddrop/vol2.html" class="vol-link">ÃÂÃÂ» VOL 2 (ISSUES 9-12+)</a></li>
+                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -144,9 +144,9 @@
                         <span class="node-num">[04]</span> MEDIA
                     </a>
                     <ul class="dropdown-level-1">
-                        <li><a href="/media/music.html" class="sub-nav-link">ÃÂÃÂ» MUSIC</a></li>
-                        <li><a href="/media/video.html" class="sub-nav-link">ÃÂÃÂ» VIDEO</a></li>
-                        <li><a href="/media/viewer.html" class="sub-nav-link">ÃÂÃÂ» VIEWER</a></li>
+                        <li><a href="/media/music.html" class="sub-nav-link">» MUSIC</a></li>
+                        <li><a href="/media/video.html" class="sub-nav-link">» VIDEO</a></li>
+                        <li><a href="/media/viewer.html" class="sub-nav-link">» VIEWER</a></li>
                     </ul>
                 </li>
 
@@ -192,10 +192,6 @@
         </div>
       </article>
 
-
-      
-
-                    
                     <div class="chronicle-post">
                         <div class="chronicle-header">
                             <h2 class="chronicle-title">Lansare Proiect VA Comics v2.0</h2>
@@ -225,7 +221,7 @@
     </div>
 
     <script>
-        // 1. CONTROL INTERFAÃÂÃÂÃÂÃÂ MOBIL (Compact & Anti-Blocaj)
+        // 1. CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
@@ -245,7 +241,7 @@
             }
         });
 
-        // 2. LOGICÃÂÃÂ ACORDEON MECANIC (Pentru mobil/tabletÃÂÃÂ)
+        // 2. LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
         if (window.innerWidth < 1024) {
             document.querySelectorAll('.mobile-expandable').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -259,7 +255,7 @@
             });
         }
 
-        // Click Outside: ÃÂÃÂnchidere automatÃÂÃÂ
+        // Click Outside: Închidere automată
         document.addEventListener('click', (e) => {
             if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
