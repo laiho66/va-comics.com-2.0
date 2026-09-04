@@ -480,26 +480,23 @@
     </div>
 
     <script>
-        // 1. LINK DE BAZĂ CĂTRE CLOUDFLARE R2
-        const R2_BASE_URL = "https://assets.va-comics.com/deaddrop";
+        // 1. LINK DE BAZĂ CLOUDFLARE R2 (.r2.dev funcțional direct)
+        const R2_BASE_URL = "https://pub-b3a8a09f297e48cfaca67d22b3826089.r2.dev/deaddrop";
 
         function generatePagesList(issueNumber, totalPages) {
             let pagesArray = [];
             
-            // Coperta (Elementul 0)
-            pagesArray.push(`${R2_BASE_URL}/issue${issueNumber}/cover.webp`);
-            
-            // Generare pagini page1.webp, page2.webp ...
-            for (let p = 1; p <= totalPages; p++) {
+            // Generare automată începând de la page0.webp (coperta) până la totalPages
+            for (let p = 0; p <= totalPages; p++) {
                 pagesArray.push(`${R2_BASE_URL}/issue${issueNumber}/page${p}.webp`);
             }
             return pagesArray;
         }
 
-        // 2. BAZA DE DATE CURĂȚATĂ
+        // 2. BAZA DE DATE CONFIGURATĂ (totalPages reprezintă numărul ultimei pagini numerotate)
         const COMICS_DATABASE = {
             1:  { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 23, pages: generatePagesList(1, 23) },
-            2:  { title: "Revolta // Volumul I", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(2, 22) },
+            2:  { title: "Dead Drop: Ghost Mark", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(2, 22) },
             3:  { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 8, pages: generatePagesList(3, 8) },
             4:  { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: generatePagesList(4, 8) },
             5:  { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: generatePagesList(5, 8) },
@@ -543,7 +540,6 @@
 
         function buildIssueSelector() {
             issueSelector.innerHTML = '';
-            // Configurat până la numărul 13 inclusiv
             for (let i = 1; i <= 13; i++) {
                 const btn = document.createElement('button');
                 btn.className = `issue-btn ${i === viewerState.activeIssue ? 'active-issue' : ''}`;
@@ -586,7 +582,7 @@
             for (let i = 1; i <= total; i++) {
                 const imgNode = document.createElement('img');
                 imgNode.className = `thumb-node ${i === viewerState.activePage ? 'node-selected' : ''}`;
-                imgNode.alt = `Node Page ${i}`;
+                imgNode.alt = `Node Page ${i - 1}`;
                 imgNode.setAttribute('data-page-index', i);
 
                 if (issueData.pages[i - 1]) {
@@ -626,7 +622,7 @@
             const total = issueData.pages.length;
 
             hudIssueLabel.textContent = issueData.badge;
-            hudPageIndicator.textContent = `[PAGE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
+            hudPageIndicator.textContent = `[NODE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
 
             btnPrev.disabled = (current === 1);
             btnNext.disabled = (current === total);
