@@ -452,12 +452,12 @@
                         </div>
                         <div>
                             <span>NODE_VAL: </span>
-                            <span class="hud-page-indicator" id="hudPageIndicator">[PAGE 01 / 08]</span>
+                            <span class="hud-page-indicator" id="hudPageIndicator">[SCANNING DATABASE...]</span>
                         </div>
                         <div class="hud-navigation-buttons">
-                            <button class="hud-nav-btn" id="btnPrevNode">&lt;&lt; PREV_NODE</button>
+                            <button class="hud-nav-btn" id="btnPrevNode" disabled>&lt;&lt; PREV_NODE</button>
                             <button class="hud-nav-btn" id="btnFullscreen">[ + ] FULL_SCREEN</button>
-                            <button class="hud-nav-btn" id="btnNextNode">NEXT_NODE &gt;&gt;</button>
+                            <button class="hud-nav-btn" id="btnNextNode" disabled>NEXT_NODE &gt;&gt;</button>
                         </div>
                     </div>
 
@@ -480,38 +480,35 @@
     </div>
 
     <script>
-        // 1. LINK DE BAZĂ CLOUDFLARE R2 (.r2.dev funcțional direct)
+        // 1. LINK DE BAZĂ CLOUDFLARE R2
         const R2_BASE_URL = "https://pub-b3a8a09f297e48cfaca67d22b3826089.r2.dev/deaddrop";
 
-        function generatePagesList(issueNumber, totalPages) {
-            let pagesArray = [];
-            
-            // Generare automată începând de la page0.webp (coperta) până la totalPages
-            for (let p = 0; p <= totalPages; p++) {
-                pagesArray.push(`${R2_BASE_URL}/issue${issueNumber}/page${p}.webp`);
-            }
-            return pagesArray;
-        }
-
-        // 2. BAZA DE DATE CONFIGURATĂ (totalPages reprezintă numărul ultimei pagini numerotate)
+        // 2. METADATE TITLURI (Paginile sunt detectate 100% automat din R2)
         const COMICS_DATABASE = {
-            1:  { title: "Originea // Volumul I", badge: "ISSUE #1", totalPages: 23, pages: generatePagesList(1, 23) },
-            2:  { title: "Dead Drop: Ghost Mark", badge: "ISSUE #2", totalPages: 22, pages: generatePagesList(2, 22) },
-            3:  { title: "Confruntarea // Volumul I", badge: "ISSUE #3", totalPages: 8, pages: generatePagesList(3, 8) },
-            4:  { title: "Infiltrarea // Volumul I", badge: "ISSUE #4", totalPages: 8, pages: generatePagesList(4, 8) },
-            5:  { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5", totalPages: 8, pages: generatePagesList(5, 8) },
-            6:  { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #6", totalPages: 23, pages: generatePagesList(6, 23) },
-            7:  { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #7", totalPages: 23, pages: generatePagesList(7, 23) },
-            8:  { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #8", totalPages: 25, pages: generatePagesList(8, 25) },
-            9:  { title: "Dead Drop: Zero Collateral", badge: "ISSUE #9", totalPages: 26, pages: generatePagesList(9, 26) },
-            10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", totalPages: 8, pages: generatePagesList(10, 8) },
-            11: { title: "Dead Drop - The New Order Part 1&2", badge: "ISSUE #11", totalPages: 88, pages: generatePagesList(11, 88) },
-            12: { title: "Dead Drop - The Game", badge: "ISSUE #12", totalPages: 48, pages: generatePagesList(12, 48) },
-            13: { title: "Dead Drop - Open Season", badge: "ISSUE #13", totalPages: 50, pages: generatePagesList(13, 50) }
+            1:  { title: "Originea // Volumul I", badge: "ISSUE #1" },
+            2:  { title: "Dead Drop: Ghost Mark", badge: "ISSUE #2" },
+            3:  { title: "Confruntarea // Volumul I", badge: "ISSUE #3" },
+            4:  { title: "Infiltrarea // Volumul I", badge: "ISSUE #4" },
+            5:  { title: "Alianța Secretă // Volumul I", badge: "ISSUE #5" },
+            6:  { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #6" },
+            7:  { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #7" },
+            8:  { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #8" },
+            9:  { title: "Dead Drop: Zero Collateral", badge: "ISSUE #9" },
+            10: { title: "Căutarea // Volumul II", badge: "ISSUE #10" },
+            11: { title: "Dead Drop - The New Order Part 1&2", badge: "ISSUE #11" },
+            12: { title: "Dead Drop - The Game", badge: "ISSUE #12" },
+            13: { title: "Dead Drop - Open Season", badge: "ISSUE #13" }
         };
 
+        // Cache local pentru paginile scanate
+        const detectedPagesCache = {};
+
         // STATE MANAGEMENT
-        let viewerState = { activeIssue: 1, activePage: 1 };
+        let viewerState = { 
+            activeIssue: 1, 
+            activePage: 1, 
+            pages: [] 
+        };
 
         // DOM SELECTION
         const displayImage = document.getElementById('mainViewerDisplay');
@@ -526,6 +523,55 @@
         const viewerContainer = document.getElementById('viewerContainer');
         const zoneLeft = document.getElementById('zoneLeft');
         const zoneRight = document.getElementById('zoneRight');
+
+        // VERIFICARE EXISTENȚĂ IMAGINE ÎN BUCKET
+        function checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        }
+
+        // AUTO-PROBE: Scanează automat fișierele din R2 (suportă page0, cover și oricâte pagini 50+)
+        async function discoverPagesForIssue(issueNumber) {
+            if (detectedPagesCache[issueNumber]) {
+                return detectedPagesCache[issueNumber];
+            }
+
+            let foundPages = [];
+            const issueBase = `${R2_BASE_URL}/issue${issueNumber}`;
+
+            // Testăm dacă există page0.webp sau cover.webp
+            const hasPageZero = await checkImageExists(`${issueBase}/page0.webp`);
+            if (hasPageZero) {
+                foundPages.push(`${issueBase}/page0.webp`);
+            } else {
+                const hasCover = await checkImageExists(`${issueBase}/cover.webp`);
+                if (hasCover) foundPages.push(`${issueBase}/cover.webp`);
+            }
+
+            // Detectăm continuu page1, page2, page3... până la 120 pagini max
+            let pageIndex = 1;
+            let consecutiveFails = 0;
+
+            while (consecutiveFails < 2 && pageIndex <= 120) {
+                const pageUrl = `${issueBase}/page${pageIndex}.webp`;
+                const exists = await checkImageExists(pageUrl);
+
+                if (exists) {
+                    foundPages.push(pageUrl);
+                    consecutiveFails = 0;
+                } else {
+                    consecutiveFails++;
+                }
+                pageIndex++;
+            }
+
+            detectedPagesCache[issueNumber] = foundPages;
+            return foundPages;
+        }
 
         // INITIALIZARE
         window.addEventListener('DOMContentLoaded', () => {
@@ -550,9 +596,10 @@
             }
         }
 
-        function loadIssue(issueId) {
+        async function loadIssue(issueId) {
             viewerState.activeIssue = issueId;
             viewerState.activePage = 1;
+            viewerState.pages = [];
 
             const buttons = document.querySelectorAll('.issue-btn');
             buttons.forEach((btn, index) => {
@@ -563,6 +610,14 @@
                     btn.classList.remove('active-issue');
                 }
             });
+
+            hudIssueLabel.textContent = COMICS_DATABASE[issueId]?.badge || `ISSUE #${issueId}`;
+            hudPageIndicator.textContent = "[SCANNING NODES...]";
+            nodesContainer.innerHTML = '<span style="color:#666; font-size:10px; font-family:monospace; padding:10px;">SCANNING...</span>';
+
+            // Scanăm R2 automat
+            const pages = await discoverPagesForIssue(issueId);
+            viewerState.pages = pages;
 
             renderNodesList();
             renderActivePage();
@@ -576,18 +631,19 @@
 
         function renderNodesList() {
             nodesContainer.innerHTML = '';
-            const issueData = COMICS_DATABASE[viewerState.activeIssue];
-            const total = issueData.pages.length;
+            const total = viewerState.pages.length;
+
+            if (total === 0) {
+                nodesContainer.innerHTML = '<span style="color:#ff4500; font-size:10px; font-family:monospace; padding:10px;">NO DATA</span>';
+                return;
+            }
 
             for (let i = 1; i <= total; i++) {
                 const imgNode = document.createElement('img');
                 imgNode.className = `thumb-node ${i === viewerState.activePage ? 'node-selected' : ''}`;
-                imgNode.alt = `Node Page ${i - 1}`;
+                imgNode.alt = `Node Page ${i}`;
                 imgNode.setAttribute('data-page-index', i);
-
-                if (issueData.pages[i - 1]) {
-                    imgNode.src = issueData.pages[i - 1];
-                }
+                imgNode.src = viewerState.pages[i - 1];
 
                 imgNode.addEventListener('click', () => {
                     selectPage(i);
@@ -598,8 +654,7 @@
         }
 
         function selectPage(pageIndex) {
-            const issueData = COMICS_DATABASE[viewerState.activeIssue];
-            if (pageIndex >= 1 && pageIndex <= issueData.pages.length) {
+            if (pageIndex >= 1 && pageIndex <= viewerState.pages.length) {
                 viewerState.activePage = pageIndex;
                 
                 const thumbnails = document.querySelectorAll('.thumb-node');
@@ -617,17 +672,24 @@
         }
 
         function renderActivePage() {
-            const issueData = COMICS_DATABASE[viewerState.activeIssue];
             const current = viewerState.activePage;
-            const total = issueData.pages.length;
+            const total = viewerState.pages.length;
 
-            hudIssueLabel.textContent = issueData.badge;
-            hudPageIndicator.textContent = `[NODE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
+            if (total === 0) {
+                hudPageIndicator.textContent = `[PAGE 00 / 00]`;
+                btnPrev.disabled = true;
+                btnNext.disabled = true;
+                displayImage.style.display = 'none';
+                vectorSandbox.style.display = 'flex';
+                vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, 0);
+                return;
+            }
 
+            hudPageIndicator.textContent = `[PAGE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
             btnPrev.disabled = (current === 1);
             btnNext.disabled = (current === total);
 
-            const activeImageSrc = issueData.pages[current - 1];
+            const activeImageSrc = viewerState.pages[current - 1];
 
             if (activeImageSrc) {
                 displayImage.src = activeImageSrc;
@@ -639,17 +701,12 @@
                     vectorSandbox.style.display = 'flex';
                     vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
                 };
-            } else {
-                displayImage.style.display = 'none';
-                vectorSandbox.style.display = 'flex';
-                vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
             }
         }
 
         function navigatePage(direction) {
-            const issueData = COMICS_DATABASE[viewerState.activeIssue];
             const targetPage = viewerState.activePage + direction;
-            if (targetPage >= 1 && targetPage <= issueData.pages.length) {
+            if (targetPage >= 1 && targetPage <= viewerState.pages.length) {
                 selectPage(targetPage);
             }
         }
