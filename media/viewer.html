@@ -13,32 +13,42 @@
             --dark-fence: #222222;
         }
 
-        /* Selectorul de Numere (Issues) în stil Terminal cu Scroll Orizontal */
+        /* Selectorul de Numere (Issues) stabilizat pentru Desktop și Mobile */
         .issue-selector-hud {
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
-            padding: 15px;
+            padding: 18px 15px 15px 15px;
             border: 1px dashed var(--dark-fence, #222);
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.6);
             position: relative;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             overflow-x: auto;
+            overflow-y: hidden;
             scrollbar-width: thin;
-            scrollbar-color: var(--magma-orange) #000;
+            scrollbar-color: var(--magma-orange) #050505;
             -webkit-overflow-scrolling: touch;
         }
 
         .issue-selector-hud::-webkit-scrollbar {
-            height: 4px;
+            height: 10px;
         }
 
         .issue-selector-hud::-webkit-scrollbar-track {
             background: #050505;
+            border: 1px solid #1a1a1a;
         }
 
         .issue-selector-hud::-webkit-scrollbar-thumb {
             background: var(--magma-orange);
-            border-radius: 2px;
+            border-radius: 0;
+            cursor: pointer;
+        }
+
+        .issue-selector-hud::-webkit-scrollbar-thumb:hover {
+            background: #ff5e22;
         }
 
         .issue-selector-hud::before {
@@ -573,7 +583,16 @@
             buttons.forEach(function(btn) {
                 if (btn.id === 'issue-btn-' + viewerState.activeIssue) {
                     btn.classList.add('active-issue');
-                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    
+                    // Scroll orizontal STRICT în cadrul containerului, fără să afecteze pagina părinte
+                    if (issueSelector) {
+                        const targetLeft = btn.offsetLeft - issueSelector.offsetLeft;
+                        const centerPos = targetLeft - (issueSelector.clientWidth / 2) + (btn.clientWidth / 2);
+                        issueSelector.scrollTo({
+                            left: Math.max(0, centerPos),
+                            behavior: 'smooth'
+                        });
+                    }
                 } else {
                     btn.classList.remove('active-issue');
                 }
