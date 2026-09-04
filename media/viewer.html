@@ -13,7 +13,7 @@
             --dark-fence: #222222;
         }
 
-        /* Selectorul de Numere (Issues) în stil Terminal cu Scroll Orizontal Permanent */
+        /* Selectorul de Numere (Issues) cu Linia HUD Magma Activă */
         .issue-selector-hud {
             display: flex;
             gap: 10px;
@@ -22,33 +22,42 @@
             border: 1px dashed var(--dark-fence, #222);
             background: rgba(0, 0, 0, 0.4);
             position: relative;
-            overflow-x: scroll !important;
+            overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: thin;
-            scrollbar-color: var(--magma-orange) #000;
+            scrollbar-width: none; /* Ascunde bara nativă gri */
+            -ms-overflow-style: none;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Forțare Bară Portocalie pe Desktop (Chrome, Edge, Brave, etc.) */
         .issue-selector-hud::-webkit-scrollbar {
-            height: 6px !important;
-            display: block !important;
+            display: none; /* Ascunde bara nativă WebKit */
         }
 
-        .issue-selector-hud::-webkit-scrollbar-track {
-            background: #050505 !important;
-            border-top: 1px solid #151515;
-            border-radius: 3px;
+        /* Șina de fundal întunecată a slider-ului */
+        .issue-selector-hud::after {
+            content: "";
+            position: absolute;
+            bottom: 8px;
+            left: 15px;
+            right: 15px;
+            height: 3px;
+            background: #111111;
+            border-radius: 2px;
+            pointer-events: none;
         }
 
-        .issue-selector-hud::-webkit-scrollbar-thumb {
-            background: var(--magma-orange, #ff4500) !important;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
-        }
-
-        .issue-selector-hud::-webkit-scrollbar-thumb:hover {
-            background: #ff5e1a !important;
+        /* Linia activă portocalie Magma Neon */
+        .issue-selector-hud-track {
+            position: absolute;
+            bottom: 8px;
+            left: 15px;
+            height: 3px;
+            background: var(--magma-orange, #ff4500);
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.7);
+            border-radius: 2px;
+            transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 5;
         }
 
         .issue-selector-hud::before {
@@ -511,7 +520,7 @@
         // 1. LINK BAZĂ CLOUDFLARE R2
         const R2_BASE_URL = "https://pub-b3a8a09f297e48cfaca67d22b3826089.r2.dev/deaddrop";
 
-        // Funcția de generare pagini (page1.webp -> totalPages)
+        // Generator pagini (page1.webp -> totalPages)
         function buildPages(folderName, totalPages) {
             var pages = [];
             for (var i = 1; i <= totalPages; i++) {
@@ -520,22 +529,22 @@
             return pages;
         }
 
-        // 2. BAZA DE DATE CURATĂ ȘI UNIFORMIZATĂ
+        // 2. BAZA DE DATE CONFIGURATĂ
         const COMICS_DATABASE = {
             "1":    { title: "Originea // Volumul I", badge: "ISSUE #01", pages: buildPages("issue1", 23) },
             "2":    { title: "Dead Drop: Ghost Mark", badge: "ISSUE #02", pages: buildPages("issue2", 22) },
             "3":    { title: "Confruntarea // Volumul I", badge: "ISSUE #03", pages: buildPages("issue3", 24) },
-            "4":    { title: "Infiltrarea // Volumul I", badge: "ISSUE #04", pages: buildPages("issue4", 24) },
-            "5":    { title: "Alianța Secretă // Volumul I", badge: "ISSUE #05", pages: buildPages("issue5", 24) },
-            "6":    { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #06", pages: buildPages("issue6", 23) },
-            "7":    { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #07", pages: buildPages("issue7", 23) },
-            "8":    { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #08", pages: buildPages("issue8", 25) },
-            "9":    { title: "Dead Drop: Zero Collateral", badge: "ISSUE #09", pages: buildPages("issue9", 26) },
-            "10":   { title: "Căutarea // Volumul II", badge: "ISSUE #10", pages: buildPages("issue10", 24) },
+            "4":    { title: "Infiltrarea // Volumul I", badge: "ISSUE #04", pages: buildPages("issue4", 25) },
+            "5":    { title: "Alianța Secretă // Volumul I", badge: "ISSUE #05", pages: buildPages("issue5", 25) },
+            "6":    { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #06", pages: buildPages("issue6", 24) },
+            "7":    { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #07", pages: buildPages("issue7", 24) },
+            "8":    { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #08", pages: buildPages("issue8", 26) },
+            "9":    { title: "Dead Drop: Zero Collateral", badge: "ISSUE #09", pages: buildPages("issue9", 27) },
+            "10":   { title: "Căutarea // Volumul II", badge: "ISSUE #10", pages: buildPages("issue10", 29) },
             "11_1": { title: "Dead Drop - The New Order Part 1", badge: "ISSUE #11 [PT 1]", pages: buildPages("issue11_p1", 25) },
             "11_2": { title: "Dead Drop - The New Order Part 2", badge: "ISSUE #11 [PT 2]", pages: buildPages("issue11_p2", 36) },
-            "12":   { title: "Dead Drop - The Game", badge: "ISSUE #12", pages: buildPages("issue12", 48) },
-            "13":   { title: "Dead Drop - Open Season", badge: "ISSUE #13", pages: buildPages("issue13", 50) }
+            "12":   { title: "Dead Drop - The Game", badge: "ISSUE #12", pages: buildPages("issue12", 50) },
+            "13":   { title: "Dead Drop - Open Season", badge: "ISSUE #13", pages: buildPages("issue13", 51) }
         };
 
         // STATE MANAGEMENT
@@ -558,6 +567,15 @@
         const zoneLeft = document.getElementById('zoneLeft');
         const zoneRight = document.getElementById('zoneRight');
 
+        function updateHudSlider() {
+            const activeBtn = document.getElementById('issue-btn-' + viewerState.activeIssue);
+            const track = document.getElementById('hudActiveTrack');
+            if (activeBtn && track) {
+                track.style.left = activeBtn.offsetLeft + 'px';
+                track.style.width = activeBtn.offsetWidth + 'px';
+            }
+        }
+
         function buildIssueSelector() {
             if (!issueSelector) return;
             issueSelector.innerHTML = '';
@@ -574,6 +592,12 @@
                 });
                 issueSelector.appendChild(btn);
             });
+
+            // Adăugăm elementul dedicat al liniei portocalii
+            const track = document.createElement('div');
+            track.className = 'issue-selector-hud-track';
+            track.id = 'hudActiveTrack';
+            issueSelector.appendChild(track);
         }
 
         function loadIssue(issueId) {
@@ -593,8 +617,12 @@
             if (hudIssueLabel) {
                 hudIssueLabel.textContent = COMICS_DATABASE[viewerState.activeIssue] ? COMICS_DATABASE[viewerState.activeIssue].badge : ('ISSUE #' + viewerState.activeIssue);
             }
+            
             renderNodesList();
             renderActivePage();
+
+            // Sincronizăm poziția indicatorului
+            setTimeout(updateHudSlider, 50);
         }
 
         function switchIssue(issueId) {
@@ -754,6 +782,8 @@
             if (event.key === "ArrowRight") navigatePage(1);
             else if (event.key === "ArrowLeft") navigatePage(-1);
         });
+
+        window.addEventListener('resize', updateHudSlider);
 
         function initReader() {
             buildIssueSelector();
