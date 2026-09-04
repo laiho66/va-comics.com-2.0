@@ -41,7 +41,7 @@
         }
 
         .issue-selector-hud::before {
-            content: "SELECT_ACTIVE_DATABASE_NODE (ISSUES_01_TO_13)";
+            content: "SELECT_ACTIVE_DATABASE_NODE (ISSUES_ARCHIVE)";
             position: absolute;
             top: -10px;
             left: 15px;
@@ -448,7 +448,7 @@
                     <div class="viewer-control-hud">
                         <div>
                             <span>SYS_STREAM: </span>
-                            <span id="hudActiveIssueLabel" style="color: var(--magma-orange, #ff4500);">ISSUE #1</span>
+                            <span id="hudActiveIssueLabel" style="color: var(--magma-orange, #ff4500);">ISSUE #01</span>
                         </div>
                         <div>
                             <span>NODE_VAL: </span>
@@ -483,23 +483,23 @@
         // 1. LINK DE BAZĂ CLOUDFLARE R2
         const R2_BASE_URL = "https://pub-b3a8a09f297e48cfaca67d22b3826089.r2.dev/deaddrop";
 
-        // 2. METADATE TITLURI (Paginile sunt detectate 100% automat din R2)
+        // 2. METADATE TITLURI & RAPPING PE FOLDERELE EXACTE DIN R2
         const COMICS_DATABASE = {
-    1:  { title: "Originea // Volumul I", badge: "ISSUE #01", folder: "issue1" },
-    2:  { title: "Dead Drop: Ghost Mark", badge: "ISSUE #02", folder: "issue2" },
-    3:  { title: "Confruntarea // Volumul I", badge: "ISSUE #03", folder: "issue3" },
-    4:  { title: "Infiltrarea // Volumul I", badge: "ISSUE #04", folder: "issue4" },
-    5:  { title: "Alianța Secretă // Volumul I", badge: "ISSUE #05", folder: "issue5" },
-    6:  { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #06", folder: "issue6" },
-    7:  { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #07", folder: "issue7" },
-    8:  { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #08", folder: "issue8" },
-    9:  { title: "Dead Drop: Zero Collateral", badge: "ISSUE #09", folder: "issue9" },
-    10: { title: "Căutarea // Volumul II", badge: "ISSUE #10", folder: "issue10" },
-    "11_1": { title: "The New Order (Part 1)", badge: "ISSUE #11 [PT 1]", folder: "issue11_pt1" },
-    "11_2": { title: "The New Order (Part 2)", badge: "ISSUE #11 [PT 2]", folder: "issue11_pt2" },
-    12: { title: "Dead Drop - The Game", badge: "ISSUE #12", folder: "issue12" },
-    13: { title: "Dead Drop - Open Season", badge: "ISSUE #13", folder: "issue13" }
-};
+            1:      { title: "Originea // Volumul I", badge: "ISSUE #01", folder: "issue1" },
+            2:      { title: "Dead Drop: Ghost Mark", badge: "ISSUE #02", folder: "issue2" },
+            3:      { title: "Confruntarea // Volumul I", badge: "ISSUE #03", folder: "issue3" },
+            4:      { title: "Infiltrarea // Volumul I", badge: "ISSUE #04", folder: "issue4" },
+            5:      { title: "Alianța Secretă // Volumul I", badge: "ISSUE #05", folder: "issue5" },
+            6:      { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #06", folder: "issue6" },
+            7:      { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #07", folder: "issue7" },
+            8:      { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #08", folder: "issue8" },
+            9:      { title: "Dead Drop: Zero Collateral", badge: "ISSUE #09", folder: "issue9" },
+            10:     { title: "Căutarea // Volumul II", badge: "ISSUE #10", folder: "issue10" },
+            "11_1": { title: "Dead Drop - The New Order Part 1", badge: "ISSUE #11 [PT 1]", folder: "issue11_pt1" },
+            "11_2": { title: "Dead Drop - The New Order Part 2", badge: "ISSUE #11 [PT 2]", folder: "issue11_pt2" },
+            12:     { title: "Dead Drop - The Game", badge: "ISSUE #12", folder: "issue12" },
+            13:     { title: "Dead Drop - Open Season", badge: "ISSUE #13", folder: "issue13" }
+        };
 
         // Cache local pentru paginile scanate
         const detectedPagesCache = {};
@@ -535,14 +535,15 @@
             });
         }
 
-        // AUTO-PROBE: Scanează automat fișierele din R2 (suportă page0, cover și oricâte pagini 50+)
-        async function discoverPagesForIssue(issueNumber) {
-            if (detectedPagesCache[issueNumber]) {
-                return detectedPagesCache[issueNumber];
+        // AUTO-PROBE: Scanează automat fișierele din folderul specificat în COMICS_DATABASE
+        async function discoverPagesForIssue(issueKey) {
+            if (detectedPagesCache[issueKey]) {
+                return detectedPagesCache[issueKey];
             }
 
             let foundPages = [];
-            const issueBase = `${R2_BASE_URL}/issue${issueNumber}`;
+            const folderName = COMICS_DATABASE[issueKey]?.folder || `issue${issueKey}`;
+            const issueBase = `${R2_BASE_URL}/${folderName}`;
 
             // Testăm dacă există page0.webp sau cover.webp
             const hasPageZero = await checkImageExists(`${issueBase}/page0.webp`);
@@ -553,7 +554,7 @@
                 if (hasCover) foundPages.push(`${issueBase}/cover.webp`);
             }
 
-            // Detectăm continuu page1, page2, page3... până la 120 pagini max
+            // Detectăm automat page1, page2, page3... până la 120 pagini max
             let pageIndex = 1;
             let consecutiveFails = 0;
 
@@ -570,7 +571,7 @@
                 pageIndex++;
             }
 
-            detectedPagesCache[issueNumber] = foundPages;
+            detectedPagesCache[issueKey] = foundPages;
             return foundPages;
         }
 
@@ -578,7 +579,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             buildIssueSelector();
             const urlParams = new URLSearchParams(window.location.search);
-            const issueParam = parseInt(urlParams.get('issue'));
+            const issueParam = urlParams.get('issue');
             if (issueParam && COMICS_DATABASE[issueParam]) {
                 viewerState.activeIssue = issueParam;
             }
@@ -587,14 +588,15 @@
 
         function buildIssueSelector() {
             issueSelector.innerHTML = '';
-            for (let i = 1; i <= 13; i++) {
+            Object.keys(COMICS_DATABASE).forEach(key => {
+                const item = COMICS_DATABASE[key];
                 const btn = document.createElement('button');
-                btn.className = `issue-btn ${i === viewerState.activeIssue ? 'active-issue' : ''}`;
-                btn.id = `issue-btn-${i}`;
-                btn.innerHTML = `[ ISSUE_${String(i).padStart(2, '0')} ]`;
-                btn.addEventListener('click', () => switchIssue(i));
+                btn.className = `issue-btn ${String(key) === String(viewerState.activeIssue) ? 'active-issue' : ''}`;
+                btn.id = `issue-btn-${key}`;
+                btn.innerHTML = `[ ${item.badge} ]`;
+                btn.addEventListener('click', () => switchIssue(key));
                 issueSelector.appendChild(btn);
-            }
+            });
         }
 
         async function loadIssue(issueId) {
@@ -603,8 +605,8 @@
             viewerState.pages = [];
 
             const buttons = document.querySelectorAll('.issue-btn');
-            buttons.forEach((btn, index) => {
-                if (index + 1 === issueId) {
+            buttons.forEach((btn) => {
+                if (btn.id === `issue-btn-${issueId}`) {
                     btn.classList.add('active-issue');
                     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 } else {
@@ -616,7 +618,7 @@
             hudPageIndicator.textContent = "[SCANNING NODES...]";
             nodesContainer.innerHTML = '<span style="color:#666; font-size:10px; font-family:monospace; padding:10px;">SCANNING...</span>';
 
-            // Scanăm R2 automat
+            // Scanăm R2 pe folderul aferent
             const pages = await discoverPagesForIssue(issueId);
             viewerState.pages = pages;
 
@@ -753,7 +755,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" class="w-full h-full max-h-[65vh]" style="background:#030303; border: 1px solid #ff450044;">
                     <rect width="100%" height="100%" fill="#030303" />
                     <line x1="20" y1="30" x2="480" y2="30" stroke="#ff4500" stroke-width="1" opacity="0.3"/>
-                    <text x="25" y="23" fill="#ff4500" font-family="'Courier New', monospace" font-size="10" letter-spacing="1">// ISSUE_0${issueNum} // NODE_PAGE_${String(pageNum).padStart(2,'0')}</text>
+                    <text x="25" y="23" fill="#ff4500" font-family="'Courier New', monospace" font-size="10" letter-spacing="1">// NODE_${issueNum} // PAGE_${String(pageNum).padStart(2,'0')}</text>
                     <g transform="translate(20, 100)">
                         <rect width="460" height="400" fill="#060606" stroke="#ff4500" stroke-width="1" opacity="0.6"/>
                         <text x="230" y="190" fill="#888888" font-family="monospace" font-size="12" text-anchor="middle">// FEED OFFLINE</text>
