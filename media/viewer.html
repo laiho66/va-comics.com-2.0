@@ -23,12 +23,14 @@
             background: rgba(0, 0, 0, 0.4);
             position: relative;
             overflow-x: auto;
+            white-space: nowrap;
             scrollbar-width: thin;
             scrollbar-color: var(--magma-orange) #000;
+            -webkit-overflow-scrolling: touch;
         }
 
         .issue-selector-hud::-webkit-scrollbar {
-            height: 4px;
+            height: 5px;
         }
 
         .issue-selector-hud::-webkit-scrollbar-track {
@@ -61,11 +63,12 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
             font-weight: bold;
-            padding: 6px 14px;
+            padding: 8px 16px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-transform: uppercase;
             flex-shrink: 0;
+            display: inline-block;
         }
 
         .issue-btn:hover {
@@ -311,11 +314,22 @@
                 display: none !important;
             }
 
+            .issue-selector-hud {
+                padding: 12px 10px !important;
+                margin-bottom: 15px !important;
+            }
+
+            .issue-btn {
+                padding: 6px 12px !important;
+                font-size: 10px !important;
+            }
+
             .viewer-terminal-container {
                 flex-direction: column !important; 
                 gap: 20px !important;
                 width: 100% !important;
             }
+
             .main-display-box {
                 padding: 10px !important;
                 width: 100% !important;
@@ -345,6 +359,7 @@
             .vector-comic-sandbox {
                 height: 45vh;
             }
+
             .thumbnails-grid-hud {
                 width: 100% !important;
                 max-height: none !important;
@@ -355,17 +370,21 @@
                 padding: 20px 10px 10px 10px !important;
                 gap: 10px !important;
             }
+
             .thumbnails-grid-hud::before {
                 content: "AVAILABLE_NODES // PAGES";
             }
+
             .thumb-node {
                 width: 65px !important; 
                 height: 95px !important; 
                 flex-shrink: 0 !important;
             }
+
             .nav-overlay-zone {
                 width: 30% !important; 
             }
+
             .nav-arrow-indicator {
                 font-size: 11px !important;
                 padding: 6px 10px !important;
@@ -452,7 +471,7 @@
                         </div>
                         <div>
                             <span>NODE_VAL: </span>
-                            <span class="hud-page-indicator" id="hudPageIndicator">[SCANNING DATABASE...]</span>
+                            <span class="hud-page-indicator" id="hudPageIndicator">[PAGE 01 / 01]</span>
                         </div>
                         <div class="hud-navigation-buttons">
                             <button class="hud-nav-btn" id="btnPrevNode" disabled>&lt;&lt; PREV_NODE</button>
@@ -480,35 +499,40 @@
     </div>
 
     <script>
-        // 1. LINK DE BAZĂ CLOUDFLARE R2
+        // 1. LINK BAZĂ CLOUDFLARE R2
         const R2_BASE_URL = "https://pub-b3a8a09f297e48cfaca67d22b3826089.r2.dev/deaddrop";
 
-        // 2. METADATE TITLURI & RAPPING PE FOLDERELE EXACTE DIN R2
+        // Funcția de generare pagini (page1.webp -> totalPages)
+        function buildPages(folderName, totalPages) {
+            var pages = [];
+            for (var i = 1; i <= totalPages; i++) {
+                pages.push(R2_BASE_URL + "/" + folderName + "/page" + i + ".webp");
+            }
+            return pages;
+        }
+
+        // 2. BAZA DE DATE CURATĂ ȘI UNIFORMIZATĂ
         const COMICS_DATABASE = {
-            1:      { title: "Originea // Volumul I", badge: "ISSUE #01", folder: "issue1" },
-            2:      { title: "Dead Drop: Ghost Mark", badge: "ISSUE #02", folder: "issue2" },
-            3:      { title: "Confruntarea // Volumul I", badge: "ISSUE #03", folder: "issue3" },
-            4:      { title: "Infiltrarea // Volumul I", badge: "ISSUE #04", folder: "issue4" },
-            5:      { title: "Alianța Secretă // Volumul I", badge: "ISSUE #05", folder: "issue5" },
-            6:      { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #06", folder: "issue6" },
-            7:      { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #07", folder: "issue7" },
-            8:      { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #08", folder: "issue8" },
-            9:      { title: "Dead Drop: Zero Collateral", badge: "ISSUE #09", folder: "issue9" },
-            10:     { title: "Căutarea // Volumul II", badge: "ISSUE #10", folder: "issue10" },
+            "1":    { title: "Originea // Volumul I", badge: "ISSUE #01", pages: buildPages("issue1", 23) },
+            "2":    { title: "Dead Drop: Ghost Mark", badge: "ISSUE #02", pages: buildPages("issue2", 22) },
+            "3":    { title: "Confruntarea // Volumul I", badge: "ISSUE #03", pages: buildPages("issue3", 24) },
+            "4":    { title: "Infiltrarea // Volumul I", badge: "ISSUE #04", pages: buildPages("issue4", 24) },
+            "5":    { title: "Alianța Secretă // Volumul I", badge: "ISSUE #05", pages: buildPages("issue5", 24) },
+            "6":    { title: "Dead Drop: Terminal Protocol Part 1", badge: "ISSUE #06", pages: buildPages("issue6", 23) },
+            "7":    { title: "Dead Drop: Terminal Protocol Part 2", badge: "ISSUE #07", pages: buildPages("issue7", 23) },
+            "8":    { title: "Dead Drop - Terminal Protocol Part 3", badge: "ISSUE #08", pages: buildPages("issue8", 25) },
+            "9":    { title: "Dead Drop: Zero Collateral", badge: "ISSUE #09", pages: buildPages("issue9", 26) },
+            "10":   { title: "Căutarea // Volumul II", badge: "ISSUE #10", pages: buildPages("issue10", 24) },
             "11_1": { title: "Dead Drop - The New Order Part 1", badge: "ISSUE #11 [PT 1]", pages: buildPages("issue11_p1", 25) },
             "11_2": { title: "Dead Drop - The New Order Part 2", badge: "ISSUE #11 [PT 2]", pages: buildPages("issue11_p2", 36) },
-            12:     { title: "Dead Drop - The Game", badge: "ISSUE #12", folder: "issue12" },
-            13:     { title: "Dead Drop - Open Season", badge: "ISSUE #13", folder: "issue13" }
+            "12":   { title: "Dead Drop - The Game", badge: "ISSUE #12", pages: buildPages("issue12", 48) },
+            "13":   { title: "Dead Drop - Open Season", badge: "ISSUE #13", pages: buildPages("issue13", 50) }
         };
-
-        // Cache local pentru paginile scanate
-        const detectedPagesCache = {};
 
         // STATE MANAGEMENT
         let viewerState = { 
-            activeIssue: 1, 
-            activePage: 1, 
-            pages: [] 
+            activeIssue: "1", 
+            activePage: 1 
         };
 
         // DOM SELECTION
@@ -525,88 +549,31 @@
         const zoneLeft = document.getElementById('zoneLeft');
         const zoneRight = document.getElementById('zoneRight');
 
-        // VERIFICARE EXISTENȚĂ IMAGINE ÎN BUCKET
-        function checkImageExists(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        }
-
-        // AUTO-PROBE: Scanează automat fișierele din folderul specificat în COMICS_DATABASE
-        async function discoverPagesForIssue(issueKey) {
-            if (detectedPagesCache[issueKey]) {
-                return detectedPagesCache[issueKey];
-            }
-
-            let foundPages = [];
-            const folderName = COMICS_DATABASE[issueKey]?.folder || `issue${issueKey}`;
-            const issueBase = `${R2_BASE_URL}/${folderName}`;
-
-            // Testăm dacă există page0.webp sau cover.webp
-            const hasPageZero = await checkImageExists(`${issueBase}/page0.webp`);
-            if (hasPageZero) {
-                foundPages.push(`${issueBase}/page0.webp`);
-            } else {
-                const hasCover = await checkImageExists(`${issueBase}/cover.webp`);
-                if (hasCover) foundPages.push(`${issueBase}/cover.webp`);
-            }
-
-            // Detectăm automat page1, page2, page3... până la 120 pagini max
-            let pageIndex = 1;
-            let consecutiveFails = 0;
-
-            while (consecutiveFails < 2 && pageIndex <= 120) {
-                const pageUrl = `${issueBase}/page${pageIndex}.webp`;
-                const exists = await checkImageExists(pageUrl);
-
-                if (exists) {
-                    foundPages.push(pageUrl);
-                    consecutiveFails = 0;
-                } else {
-                    consecutiveFails++;
-                }
-                pageIndex++;
-            }
-
-            detectedPagesCache[issueKey] = foundPages;
-            return foundPages;
-        }
-
-        // INITIALIZARE
-        window.addEventListener('DOMContentLoaded', () => {
-            buildIssueSelector();
-            const urlParams = new URLSearchParams(window.location.search);
-            const issueParam = urlParams.get('issue');
-            if (issueParam && COMICS_DATABASE[issueParam]) {
-                viewerState.activeIssue = issueParam;
-            }
-            loadIssue(viewerState.activeIssue);
-        });
-
         function buildIssueSelector() {
+            if (!issueSelector) return;
             issueSelector.innerHTML = '';
-            Object.keys(COMICS_DATABASE).forEach(key => {
+            
+            Object.keys(COMICS_DATABASE).forEach(function(key) {
                 const item = COMICS_DATABASE[key];
                 const btn = document.createElement('button');
-                btn.className = `issue-btn ${String(key) === String(viewerState.activeIssue) ? 'active-issue' : ''}`;
-                btn.id = `issue-btn-${key}`;
-                btn.innerHTML = `[ ${item.badge} ]`;
-                btn.addEventListener('click', () => switchIssue(key));
+                btn.type = "button";
+                btn.className = 'issue-btn' + (String(key) === String(viewerState.activeIssue) ? ' active-issue' : '');
+                btn.id = 'issue-btn-' + key;
+                btn.innerHTML = '[ ' + item.badge + ' ]';
+                btn.addEventListener('click', function() {
+                    switchIssue(key);
+                });
                 issueSelector.appendChild(btn);
             });
         }
 
-        async function loadIssue(issueId) {
-            viewerState.activeIssue = issueId;
+        function loadIssue(issueId) {
+            viewerState.activeIssue = String(issueId);
             viewerState.activePage = 1;
-            viewerState.pages = [];
 
             const buttons = document.querySelectorAll('.issue-btn');
-            buttons.forEach((btn) => {
-                if (btn.id === `issue-btn-${issueId}`) {
+            buttons.forEach(function(btn) {
+                if (btn.id === 'issue-btn-' + viewerState.activeIssue) {
                     btn.classList.add('active-issue');
                     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 } else {
@@ -614,14 +581,9 @@
                 }
             });
 
-            hudIssueLabel.textContent = COMICS_DATABASE[issueId]?.badge || `ISSUE #${issueId}`;
-            hudPageIndicator.textContent = "[SCANNING NODES...]";
-            nodesContainer.innerHTML = '<span style="color:#666; font-size:10px; font-family:monospace; padding:10px;">SCANNING...</span>';
-
-            // Scanăm R2 pe folderul aferent
-            const pages = await discoverPagesForIssue(issueId);
-            viewerState.pages = pages;
-
+            if (hudIssueLabel) {
+                hudIssueLabel.textContent = COMICS_DATABASE[viewerState.activeIssue] ? COMICS_DATABASE[viewerState.activeIssue].badge : ('ISSUE #' + viewerState.activeIssue);
+            }
             renderNodesList();
             renderActivePage();
         }
@@ -633,8 +595,11 @@
         }
 
         function renderNodesList() {
+            if (!nodesContainer) return;
             nodesContainer.innerHTML = '';
-            const total = viewerState.pages.length;
+            const issueData = COMICS_DATABASE[viewerState.activeIssue];
+            const pages = issueData ? issueData.pages : [];
+            const total = pages.length;
 
             if (total === 0) {
                 nodesContainer.innerHTML = '<span style="color:#ff4500; font-size:10px; font-family:monospace; padding:10px;">NO DATA</span>';
@@ -643,12 +608,12 @@
 
             for (let i = 1; i <= total; i++) {
                 const imgNode = document.createElement('img');
-                imgNode.className = `thumb-node ${i === viewerState.activePage ? 'node-selected' : ''}`;
-                imgNode.alt = `Node Page ${i}`;
+                imgNode.className = 'thumb-node' + (i === viewerState.activePage ? ' node-selected' : '');
+                imgNode.alt = 'Node Page ' + i;
                 imgNode.setAttribute('data-page-index', i);
-                imgNode.src = viewerState.pages[i - 1];
+                imgNode.src = pages[i - 1];
 
-                imgNode.addEventListener('click', () => {
+                imgNode.addEventListener('click', function() {
                     selectPage(i);
                 });
 
@@ -657,11 +622,12 @@
         }
 
         function selectPage(pageIndex) {
-            if (pageIndex >= 1 && pageIndex <= viewerState.pages.length) {
+            const pages = COMICS_DATABASE[viewerState.activeIssue] ? COMICS_DATABASE[viewerState.activeIssue].pages : [];
+            if (pageIndex >= 1 && pageIndex <= pages.length) {
                 viewerState.activePage = pageIndex;
                 
                 const thumbnails = document.querySelectorAll('.thumb-node');
-                thumbnails.forEach((thumb, idx) => {
+                thumbnails.forEach(function(thumb, idx) {
                     if (idx + 1 === pageIndex) {
                         thumb.classList.add('node-selected');
                         thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
@@ -675,76 +641,86 @@
         }
 
         function renderActivePage() {
+            const pages = COMICS_DATABASE[viewerState.activeIssue] ? COMICS_DATABASE[viewerState.activeIssue].pages : [];
             const current = viewerState.activePage;
-            const total = viewerState.pages.length;
+            const total = pages.length;
 
             if (total === 0) {
-                hudPageIndicator.textContent = `[PAGE 00 / 00]`;
-                btnPrev.disabled = true;
-                btnNext.disabled = true;
-                displayImage.style.display = 'none';
-                vectorSandbox.style.display = 'flex';
-                vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, 0);
+                if (hudPageIndicator) hudPageIndicator.textContent = '[PAGE 00 / 00]';
+                if (btnPrev) btnPrev.disabled = true;
+                if (btnNext) btnNext.disabled = true;
+                if (displayImage) displayImage.style.display = 'none';
+                if (vectorSandbox) {
+                    vectorSandbox.style.display = 'flex';
+                    vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, 0);
+                }
                 return;
             }
 
-            hudPageIndicator.textContent = `[PAGE ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')}]`;
-            btnPrev.disabled = (current === 1);
-            btnNext.disabled = (current === total);
+            if (hudPageIndicator) {
+                hudPageIndicator.textContent = '[PAGE ' + String(current).padStart(2, '0') + ' / ' + String(total).padStart(2, '0') + ']';
+            }
+            if (btnPrev) btnPrev.disabled = (current === 1);
+            if (btnNext) btnNext.disabled = (current === total);
 
-            const activeImageSrc = viewerState.pages[current - 1];
+            const activeImageSrc = pages[current - 1];
 
-            if (activeImageSrc) {
+            if (activeImageSrc && displayImage) {
                 displayImage.src = activeImageSrc;
                 displayImage.style.display = 'block';
-                vectorSandbox.style.display = 'none';
+                if (vectorSandbox) vectorSandbox.style.display = 'none';
                 
-                displayImage.onerror = () => {
+                displayImage.onerror = function() {
                     displayImage.style.display = 'none';
-                    vectorSandbox.style.display = 'flex';
-                    vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
+                    if (vectorSandbox) {
+                        vectorSandbox.style.display = 'flex';
+                        vectorSandbox.innerHTML = generateBunkerComicPanelSVG(viewerState.activeIssue, current);
+                    }
                 };
             }
         }
 
         function navigatePage(direction) {
+            const pages = COMICS_DATABASE[viewerState.activeIssue] ? COMICS_DATABASE[viewerState.activeIssue].pages : [];
             const targetPage = viewerState.activePage + direction;
-            if (targetPage >= 1 && targetPage <= viewerState.pages.length) {
+            if (targetPage >= 1 && targetPage <= pages.length) {
                 selectPage(targetPage);
             }
         }
 
-        btnPrev.addEventListener('click', () => navigatePage(-1));
-        btnNext.addEventListener('click', () => navigatePage(1));
-        zoneLeft.addEventListener('click', () => navigatePage(-1));
-        zoneRight.addEventListener('click', () => navigatePage(1));
+        if (btnPrev) btnPrev.addEventListener('click', function() { navigatePage(-1); });
+        if (btnNext) btnNext.addEventListener('click', function() { navigatePage(1); });
+        if (zoneLeft) zoneLeft.addEventListener('click', function() { navigatePage(-1); });
+        if (zoneRight) zoneRight.addEventListener('click', function() { navigatePage(1); });
 
-        btnFullscreen.addEventListener('click', () => {
-            if (viewerContainer.requestFullscreen) {
-                if (!document.fullscreenElement) {
-                    viewerContainer.requestFullscreen().then(() => {
+        if (btnFullscreen) {
+            btnFullscreen.addEventListener('click', function() {
+                if (viewerContainer.requestFullscreen) {
+                    if (!document.fullscreenElement) {
+                        viewerContainer.requestFullscreen().then(function() {
+                            btnFullscreen.textContent = "[ X ] EXIT_FULL";
+                            btnFullscreen.style.color = "var(--magma-orange)";
+                        }).catch(function(err) {
+                            console.error('Eroare Fullscreen: ' + err.message);
+                        });
+                    } else {
+                        document.exitFullscreen();
+                    }
+                } else {
+                    viewerContainer.classList.toggle('pseudo-fullscreen');
+                    if (viewerContainer.classList.contains('pseudo-fullscreen')) {
                         btnFullscreen.textContent = "[ X ] EXIT_FULL";
                         btnFullscreen.style.color = "var(--magma-orange)";
-                    }).catch(err => {
-                        console.error(`Eroare Fullscreen: ${err.message}`);
-                    });
-                } else {
-                    document.exitFullscreen();
+                    } else {
+                        btnFullscreen.textContent = "[ + ] FULL_SCREEN";
+                        btnFullscreen.style.color = "var(--terminal-gray)";
+                    }
                 }
-            } else {
-                viewerContainer.classList.toggle('pseudo-fullscreen');
-                if (viewerContainer.classList.contains('pseudo-fullscreen')) {
-                    btnFullscreen.textContent = "[ X ] EXIT_FULL";
-                    btnFullscreen.style.color = "var(--magma-orange)";
-                } else {
-                    btnFullscreen.textContent = "[ + ] FULL_SCREEN";
-                    btnFullscreen.style.color = "var(--terminal-gray)";
-                }
-            }
-        });
+            });
+        }
 
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) {
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement && btnFullscreen) {
                 btnFullscreen.textContent = "[ + ] FULL_SCREEN";
                 btnFullscreen.style.color = "var(--terminal-gray)";
             }
@@ -765,50 +741,51 @@
             `;
         }
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keydown', function(event) {
             if (event.key === "ArrowRight") navigatePage(1);
             else if (event.key === "ArrowLeft") navigatePage(-1);
         });
 
-        let touchstartX = 0;
-        let touchendX = 0;
-        const mainViewport = document.querySelector('.viewport-container');
-        
-        mainViewport.addEventListener('touchstart', e => {
-            touchstartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        mainViewport.addEventListener('touchend', e => {
-            touchendX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
-        }, { passive: true });
-
-        function handleSwipeGesture() {
-            const threshold = 50; 
-            if (touchendX < touchstartX - threshold) navigatePage(1);
-            if (touchendX > touchstartX + threshold) navigatePage(-1);
+        // Inițializare garantată
+        function initReader() {
+            buildIssueSelector();
+            const urlParams = new URLSearchParams(window.location.search);
+            const issueParam = urlParams.get('issue');
+            if (issueParam && COMICS_DATABASE[issueParam]) {
+                viewerState.activeIssue = String(issueParam);
+            }
+            loadIssue(viewerState.activeIssue);
         }
 
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initReader);
+        } else {
+            initReader();
+        }
+
+        // Mobile Nav Drawer Toggle
         const nav = document.getElementById('globalNav');
         const toggleBtn = document.querySelector('.mobile-bunker-toggle');
 
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            nav.classList.toggle('mobile-open');
-            if(nav.classList.contains('mobile-open')) {
-                toggleBtn.textContent = "[ X ] CLOSE_MENU";
-                toggleBtn.style.color = "#FF4500";
-            } else {
-                toggleBtn.textContent = "[ = ] SYS_MENU";
-                toggleBtn.style.color = "#ffffff";
-                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                    el.classList.remove('dropdown-open');
-                });
-            }
-        });
+        if (toggleBtn && nav) {
+            toggleBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                nav.classList.toggle('mobile-open');
+                if (nav.classList.contains('mobile-open')) {
+                    toggleBtn.textContent = "[ X ] CLOSE_MENU";
+                    toggleBtn.style.color = "#FF4500";
+                } else {
+                    toggleBtn.textContent = "[ = ] SYS_MENU";
+                    toggleBtn.style.color = "#ffffff";
+                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(function(el) {
+                        el.classList.remove('dropdown-open');
+                    });
+                }
+            });
+        }
 
-        document.querySelectorAll('.mobile-expandable').forEach(link => {
-            link.addEventListener('click', (e) => {
+        document.querySelectorAll('.mobile-expandable').forEach(function(link) {
+            link.addEventListener('click', function(e) {
                 if (window.innerWidth < 1024) {
                     const nextDropdown = link.nextElementSibling;
                     if (nextDropdown) {
@@ -820,13 +797,15 @@
             });
         });
 
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 1024 && nav && nav.classList.contains('mobile-open')) {
                 if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
                     nav.classList.remove('mobile-open');
-                    toggleBtn.textContent = "[ = ] SYS_MENU";
-                    toggleBtn.style.color = "#ffffff";
-                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
+                    if (toggleBtn) {
+                        toggleBtn.textContent = "[ = ] SYS_MENU";
+                        toggleBtn.style.color = "#ffffff";
+                    }
+                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(function(el) {
                         el.classList.remove('dropdown-open');
                     });
                 }
