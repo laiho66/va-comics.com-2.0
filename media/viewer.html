@@ -23,7 +23,7 @@
             background: rgba(0, 0, 0, 0.6);
             position: relative;
             width: 100%;
-            max-width: 100%;
+            max-width: 1050px;
             box-sizing: border-box;
             overflow-x: auto;
             overflow-y: hidden;
@@ -32,6 +32,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* Scrollbar gros de 10px, mereu vizibil pe Desktop */
         .issue-selector-hud::-webkit-scrollbar {
             height: 10px;
         }
@@ -573,6 +574,14 @@
                 });
                 issueSelector.appendChild(btn);
             });
+
+            // Permite scroll orizontal lin cu rotița mouse-ului direct pe selector
+            issueSelector.addEventListener('wheel', function(e) {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    issueSelector.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
         }
 
         function loadIssue(issueId) {
@@ -584,7 +593,7 @@
                 if (btn.id === 'issue-btn-' + viewerState.activeIssue) {
                     btn.classList.add('active-issue');
                     
-                    // Scroll orizontal STRICT în cadrul containerului, fără să afecteze pagina părinte
+                    // Scroll orizontal STRICT în cadrul containerului, fără să afecteze ecranul
                     if (issueSelector) {
                         const targetLeft = btn.offsetLeft - issueSelector.offsetLeft;
                         const centerPos = targetLeft - (issueSelector.clientWidth / 2) + (btn.clientWidth / 2);
