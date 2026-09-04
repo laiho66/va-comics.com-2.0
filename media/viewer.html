@@ -13,33 +13,42 @@
             --dark-fence: #222222;
         }
 
-        /* Selectorul de Numere (Issues) în stil Terminal cu Scroll Orizontal */
+        /* Selectorul de Numere (Issues) în stil Terminal cu Scroll Orizontal Permanent */
         .issue-selector-hud {
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
-            padding: 15px;
+            padding: 15px 15px 22px 15px;
             border: 1px dashed var(--dark-fence, #222);
             background: rgba(0, 0, 0, 0.4);
             position: relative;
-            overflow-x: auto;
+            overflow-x: scroll !important;
             white-space: nowrap;
             scrollbar-width: thin;
             scrollbar-color: var(--magma-orange) #000;
             -webkit-overflow-scrolling: touch;
         }
 
+        /* Forțare Bară Portocalie pe Desktop (Chrome, Edge, Brave, etc.) */
         .issue-selector-hud::-webkit-scrollbar {
-            height: 5px;
+            height: 6px !important;
+            display: block !important;
         }
 
         .issue-selector-hud::-webkit-scrollbar-track {
-            background: #050505;
+            background: #050505 !important;
+            border-top: 1px solid #151515;
+            border-radius: 3px;
         }
 
         .issue-selector-hud::-webkit-scrollbar-thumb {
-            background: var(--magma-orange);
-            border-radius: 2px;
+            background: var(--magma-orange, #ff4500) !important;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+        }
+
+        .issue-selector-hud::-webkit-scrollbar-thumb:hover {
+            background: #ff5e1a !important;
         }
 
         .issue-selector-hud::before {
@@ -315,7 +324,7 @@
             }
 
             .issue-selector-hud {
-                padding: 12px 10px !important;
+                padding: 12px 10px 18px 10px !important;
                 margin-bottom: 15px !important;
             }
 
@@ -746,7 +755,6 @@
             else if (event.key === "ArrowLeft") navigatePage(-1);
         });
 
-        // Inițializare garantată
         function initReader() {
             buildIssueSelector();
             const urlParams = new URLSearchParams(window.location.search);
