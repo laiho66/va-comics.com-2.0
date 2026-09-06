@@ -5,12 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VA Comics</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ============================================================
+           RESPONSIVE VIDEO BACKGROUND // DESKTOP & MOBILE
+        ============================================================ */
+        body.home-page {
+            background-color: #000000 !important;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .bunker-bg-overlay {
+            background-image: none !important;
+            background: #000000 !important;
+            position: fixed;
+            inset: -20px;
+            width: calc(100vw + 40px);
+            height: calc(100vh + 40px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+
+        .bg-video-stream {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: brightness(0.85) contrast(1.15);
+        }
+
+        /* Comutare automată pe baza lățimii ecranului */
+        .video-mobile {
+            display: none;
+        }
+
+        .video-desktop {
+            display: block;
+        }
+
+        @media (max-width: 1023px) {
+            .video-desktop {
+                display: none;
+            }
+            .video-mobile {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body class="home-page">
 
-    <div class="bunker-bg-overlay"></div>
+    <!-- Fundal Video Responsiv -->
+    <div class="bunker-bg-overlay">
+        <!-- Desktop 16:9 -->
+        <video class="bg-video-stream video-desktop" autoplay muted loop playsinline preload="auto">
+            <source src="introd.mp4" type="video/mp4">
+        </video>
 
-    <button class="mobile-bunker-toggle">
+        <!-- Mobile 9:16 / Vertical -->
+        <video class="bg-video-stream video-mobile" autoplay muted loop playsinline preload="auto">
+            <source src="introm.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
         [ = ] SYS_MENU
     </button>
 
@@ -18,51 +82,48 @@
         
         <nav class="sidebar-nav" id="globalNav">
             <ul class="main-menu">
+                
                 <li class="menu-item active">
-                    <a href="/index.html" class="nav-link">
+                    <a href="index.html" class="nav-link">
                         <span class="node-num">[01]</span> HOME
                     </a>
                 </li>
-                
-                <li class="menu-item has-dropdown">
-                    <a href="/projects.html" class="nav-link mobile-expandable">
+
+                <li class="menu-item has-dropdown" onclick="toggleMobileDropdown(this, event)">
+                    <a href="projects.html" class="nav-link">
                         <span class="node-num">[02]</span> PROJECTS
                     </a>
                     <ul class="dropdown-level-1">
-                        <li class="dropdown-item has-sub-dropdown">
-                            <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
+                        <li class="dropdown-item has-sub-dropdown" onclick="toggleMobileSubDropdown(this, event)">
+                            <a href="deaddrop/index.html">> DEAD DROP</a>
                             <ul class="dropdown-level-2">
-                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
+                                <li><a href="deaddrop/vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
+                                <li><a href="deaddrop/vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
 
                 <li class="menu-item">
-                    <a href="/chronicles.html" class="nav-link">
+                    <a href="chronicles.html" class="nav-link">
                         <span class="node-num">[03]</span> CHRONICLES
                     </a>
                 </li>
-                
-                <li class="menu-item has-dropdown">
-                    <a href="/media.html" class="nav-link mobile-expandable">
+
+                <li class="menu-item">
+                    <a href="media.html" class="nav-link">
                         <span class="node-num">[04]</span> MEDIA
                     </a>
-                    <ul class="dropdown-level-1">
-                        <li><a href="/media/music.html" class="sub-nav-link">» MUSIC</a></li>
-                        <li><a href="/media/video.html" class="sub-nav-link">» VIDEO</a></li>
-                        <li><a href="/media/viewer.html" class="sub-nav-link">» VIEWER</a></li>
-                    </ul>
                 </li>
 
                 <li class="menu-item">
-                    <a href="/about.html" class="nav-link">
+                    <a href="about.html" class="nav-link">
                         <span class="node-num">[05]</span> ABOUT US
                     </a>
                 </li>
+
                 <li class="menu-item">
-                    <a href="/contact.html" class="nav-link">
+                    <a href="contact.html" class="nav-link">
                         <span class="node-num">[06]</span> CONTACT
                     </a>
                 </li>
@@ -75,16 +136,16 @@
             </div>
             
             <div class="legal-bindings">
-                <a href="/terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-                <a href="/privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-                <a href="/cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
+                <a href="terms.html" class="legal-link">// LEGAL_BINDINGS</a>
+                <a href="privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
+                <a href="cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
             </div>
         </footer>
 
     </div>
 
     <script>
-        // 1. STRATIFIED PARALLAX DEPTH (Desktop)
+        // 1. STRATIFIED PARALLAX DEPTH (Doar Desktop)
         const bg = document.querySelector('.bunker-bg-overlay');
         const sidebar = document.querySelector('.sidebar-nav');
         
@@ -99,12 +160,10 @@
             });
         }
 
-        // 2. CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
-        const nav = document.getElementById('globalNav');
-        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
-
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
+        // 2. MOBILE HAMBURGER TERMINAL OVERLAY
+        function toggleMobileMenu() {
+            const nav = document.getElementById('globalNav');
+            const toggleBtn = document.querySelector('.mobile-bunker-toggle');
             nav.classList.toggle('mobile-open');
             
             if(nav.classList.contains('mobile-open')) {
@@ -113,43 +172,26 @@
             } else {
                 toggleBtn.textContent = "[ = ] SYS_MENU";
                 toggleBtn.style.color = "#ffffff";
-                // Închidem toate sub-meniurile când se închide meniul principal
-                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                    el.classList.remove('dropdown-open');
-                });
             }
-        });
-
-        // 3. LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
-        if (window.innerWidth < 1024) {
-            document.querySelectorAll('.mobile-expandable').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    // Prevenim navigarea directă doar dacă dropdown-ul e închis, pentru a-l deschide mai întâi
-                    const nextDropdown = link.nextElementSibling;
-                    
-                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
-                        e.preventDefault(); // Oprim trimiterea pe pagină din prima
-                        nextDropdown.classList.add('dropdown-open');
-                    }
-                });
-            });
         }
 
-        // Click Outside: Închidere automată dacă apeși pe lângă meniu
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-                    nav.classList.remove('mobile-open');
-                    toggleBtn.textContent = "[ = ] SYS_MENU";
-                    toggleBtn.style.color = "#ffffff";
-                    
-                    // Resetăm și sub-meniurile deschise
-                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                        el.classList.remove('dropdown-open');
-                    });
+        // 3. LOGICĂ TAP DROPDOWN PENTRU MOBIL
+        function toggleMobileDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                if (event.target.classList.contains('nav-link') || event.target.parentElement.classList.contains('nav-link')) {
+                    event.preventDefault();
                 }
+                element.classList.toggle('open');
             }
-        });
+        }
+
+        function toggleMobileSubDropdown(element, event) {
+            if (window.innerWidth < 1024) {
+                event.stopPropagation();
+                event.preventDefault();
+                element.classList.toggle('open');
+            }
+        }
     </script>
 </body>
 </html>
