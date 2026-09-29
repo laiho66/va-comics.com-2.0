@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,65 +75,18 @@
         }
     </style>
 </head>
-<body class="content-page">
+<body class="content-page" data-parallax>
 
     <div class="bunker-bg-overlay"></div>
 
-    <button class="mobile-bunker-toggle" onclick="toggleMobileMenu()">
+    <button class="mobile-bunker-toggle">
         [ = ] SYS_MENU
     </button>
 
     <div class="os-container">
         
-        <nav class="sidebar-nav" id="globalNav">
-            <ul class="main-menu">
-                
-                <li class="menu-item">
-                    <a href="../index.html" class="nav-link">
-                        <span class="node-num">[01]</span> HOME
-                    </a>
-                </li>
-
-                <li class="menu-item has-dropdown active" onclick="toggleMobileDropdown(this, event)">
-                    <a href="../projects.html" class="nav-link">
-                        <span class="node-num">[02]</span> PROJECTS
-                    </a>
-                    <ul class="dropdown-level-1">
-                        <li class="dropdown-item has-sub-dropdown active" onclick="toggleMobileSubDropdown(this, event)">
-                            <a href="index.html">> DEAD DROP</a>
-                            <ul class="dropdown-level-2">
-                                <li><a href="vol1.html">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="vol2.html">» VOL 2 (ISSUES 9-12+)</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="menu-item">
-                    <a href="../chronicles.html" class="nav-link">
-                        <span class="node-num">[03]</span> CHRONICLES
-                    </a>
-                </li>
-
-                <li class="menu-item">
-                    <a href="../media.html" class="nav-link">
-                        <span class="node-num">[04]</span> MEDIA
-                    </a>
-                </li>
-
-                <li class="menu-item">
-                    <a href="../about.html" class="nav-link">
-                        <span class="node-num">[05]</span> ABOUT US
-                    </a>
-                </li>
-
-                <li class="menu-item">
-                    <a href="../contact.html" class="nav-link">
-                        <span class="node-num">[06]</span> CONTACT
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <nav class="sidebar-nav" id="globalNav"></nav>
+    <script src="/site.js"></script>
 
         <div class="content-wrapper">
             <div class="deaddrop-volumes-grid">
@@ -142,7 +95,7 @@
                     <div class="volume-info">
                         <div class="volume-tag">ARCHIVE_FILE // [VOL_01]</div>
                         <h2>Volume 1 // Issues 1-8</h2>
-                        <p>Inicierea protocolului Dead Drop. Începutul poveștii brute în inima de fier a buncărului. Include primele 8 numere complete în format digital și paperback.</p>
+                        <p>Initiating the Dead Drop protocol. The raw beginning of the story, deep in the iron heart of the bunker. Includes the first 8 issues in digital and paperback.</p>
                     </div>
                     <a href="vol1.html" class="btn-access-vol">[ LOAD_VOLUME_01 ]</a>
                 </div>
@@ -150,8 +103,8 @@
                 <div class="volume-channel-card">
                     <div class="volume-info">
                         <div class="volume-tag">ARCHIVE_FILE // [VOL_02]</div>
-                        <h2>Volume 2 // Issues 9-12+</h2>
-                        <p>Extinderea rețelei de criminalitate tech-noir. Intră în scenă facțiunile Krest și Iron Kings. Război total, fără cenzură sau filtre editoriale.</p>
+                        <h2>Volume 2 // Issues 9-13</h2>
+                        <p>The tech-noir crime network expands. The Krest and Iron Kings factions enter the stage. Total war, no censorship, no editorial filters.</p>
                     </div>
                     <a href="vol2.html" class="btn-access-vol">[ LOAD_VOLUME_02 ]</a>
                 </div>
@@ -159,98 +112,10 @@
             </div>
         </div>
 
-        <footer class="bunker-footer">
-            <div class="hud-status-bar">
-                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
-            </div>
-            <div class="legal-bindings">
-                <a href="../terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-                <a href="../privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-                <a href="../cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
-            </div>
-        </footer>
+        <footer class="bunker-footer" id="siteFooter"></footer>
 
     </div>
 
-    <script>
-        // 1. STRATIFIED PARALLAX DEPTH (Desktop)
-        const bg = document.querySelector('.bunker-bg-overlay');
-        const sidebar = document.querySelector('.sidebar-nav');
-        
-        if (window.matchMedia("(min-width: 1024px)").matches) {
-            window.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX / window.innerWidth - 0.5;
-                const mouseY = e.clientY / window.innerHeight - 0.5;
-                
-                bg.style.transform = `translate(${mouseX * -20}px, ${mouseY * -20}px)`;
-                sidebar.style.transform = `translate(${mouseX * 10}px, ${mouseY * 10}px)`;
-                sidebar.style.transition = "transform 0.1s ease-out";
-            });
-        }
-
-        // CONTROL INTEGRAT PENTRU INTERFAȚA DE MOBIL
-        const nav = document.getElementById('globalNav');
-        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
-
-        // Toggle Meniu Principal
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            nav.classList.toggle('mobile-open');
-            
-            if(nav.classList.contains('mobile-open')) {
-                toggleBtn.textContent = "[ X ] CLOSE_MENU";
-                toggleBtn.style.color = "#FF4500";
-            } else {
-                toggleBtn.textContent = "[ = ] SYS_MENU";
-                toggleBtn.style.color = "#ffffff";
-                document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
-            }
-        });
-
-        // Închidere la click în exterior (Click Outside)
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-                    nav.classList.remove('mobile-open');
-                    toggleBtn.textContent = "[ = ] SYS_MENU";
-                    toggleBtn.style.color = "#ffffff";
-                    document.querySelectorAll('.menu-item, .dropdown-item').forEach(el => el.classList.remove('open'));
-                }
-            }
-        });
-
-        // RECONSTRUCȚIE LOGICĂ DROPDOWN: Separare chirurgicală a țintelor tactile
-        nav.addEventListener('click', (e) => {
-            if (window.innerWidth >= 1024) return;
-
-            const target = e.target;
-
-            // Dacă utilizatorul a apăsat exact pe un link final de volum (VOL 1 sau VOL 2)
-            if (target.classList.contains('vol-link')) {
-                // Forțăm browserul să execute link-ul și oprim orice alt script parazit din spate
-                return; 
-            }
-
-            // Gestiune deschidere pentru [02] PROJECTS
-            if (target.closest('.has-dropdown') && !target.closest('.dropdown-level-1')) {
-                if (target.classList.contains('nav-link') || target.parentElement.classList.contains('nav-link')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    target.closest('.has-dropdown').classList.toggle('open');
-                }
-            }
-
-            // Gestiune deschidere pentru > DEAD DROP (Folosim selectarea exactă a tagului)
-            const subDropdownTrigger = target.closest('.has-sub-dropdown');
-            if (subDropdownTrigger) {
-                // Dacă s-a apăsat pe textul "> DEAD DROP" dar NU pe link-urile din interior (VOL 1 / VOL 2)
-                if (target.classList.contains('sub-nav-link') || target.parentElement.classList.contains('has-sub-dropdown')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    subDropdownTrigger.classList.toggle('open');
-                }
-            }
-        });
-    </script>
+    
 </body>
 </html>
