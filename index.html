@@ -3,7 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics</title>
+    <title>VA Comics // Dead Drop: Independent Tech-Noir Comics</title>
+    <!-- SEO:START -->
+    <meta name="description" content="VA Comics publishes Dead Drop, an independent tech-noir comic series. Read the issues online or get them on Amazon. Mature readers, 18+.">
+    <link rel="canonical" href="https://va-comics.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="VA Comics // Dead Drop">
+    <meta property="og:description" content="VA Comics publishes Dead Drop, an independent tech-noir comic series. Read the issues online or get them on Amazon. Mature readers, 18+.">
+    <meta property="og:url" content="https://va-comics.com/">
+    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <!-- SEO:END -->
     <link rel="stylesheet" href="style.css">
     <style>
         /* ============================================================
@@ -57,7 +73,136 @@
                 display: block;
             }
         }
+
+        /* ============================================================
+           HERO PANEL (what the site is + main call to action)
+        ============================================================ */
+        .hero-panel {
+            position: relative;
+            max-width: 560px;
+            margin-top: 40px;
+            padding: 36px 34px 30px 34px;
+            background: rgba(0, 0, 0, 0.62);
+            border: 1px solid rgba(255, 69, 0, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .hero-panel::before {
+            content: "TRANSMISSION // INCOMING";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #050505;
+            padding: 0 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--magma-orange);
+            letter-spacing: 1px;
+        }
+
+        .hero-kicker {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--magma-orange);
+        }
+
+        .hero-panel h1 {
+            font-size: 44px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--text-colorless);
+            margin: 8px 0 14px 0;
+        }
+
+        .hero-panel p {
+            font-size: 16px;
+            line-height: 1.65;
+            color: #dddddd;
+            margin-bottom: 26px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-hero {
+            display: inline-block;
+            padding: 14px 22px;
+            background: transparent;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero.primary {
+            border-color: var(--magma-orange);
+            color: var(--magma-orange);
+        }
+
+        .btn-hero:hover {
+            background: #000000;
+            border-color: var(--magma-orange);
+            color: var(--magma-orange);
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
+        }
+
+        .hero-note {
+            margin-top: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--terminal-gray);
+        }
+
+        @media (max-width: 1023px) {
+            .hero-panel { margin-top: 0; padding: 28px 22px 24px 22px; }
+            .hero-panel h1 { font-size: 34px; letter-spacing: 4px; }
+            .btn-hero { flex: 1 1 100%; text-align: center; }
+        }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://va-comics.com/#org",
+          "name": "VA Comics",
+          "url": "https://va-comics.com/",
+          "logo": "https://va-comics.com/apple-touch-icon.png",
+          "sameAs": ["https://www.facebook.com/vacomics66"]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://va-comics.com/#website",
+          "url": "https://va-comics.com/",
+          "name": "VA Comics",
+          "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" }
+        },
+        {
+          "@type": "ComicSeries",
+          "name": "Dead Drop",
+          "url": "https://va-comics.com/deaddrop/",
+          "genre": "Tech-noir",
+          "inLanguage": "en",
+          "description": "A violent, uncensored tech-noir comic series from VA Comics.",
+          "publisher": { "@id": "https://va-comics.com/#org" }
+        }
+      ]
+    }
+    </script>
 </head>
 <body class="home-page">
 
@@ -82,6 +227,17 @@
 
         <nav class="sidebar-nav" id="globalNav"></nav>
         <script src="/site.js"></script>
+
+        <div class="hero-panel">
+            <div class="hero-kicker">// VA COMICS PRESENTS</div>
+            <h1>Dead Drop</h1>
+            <p>A violent, uncensored tech-noir comic series from the underground of a collapsing system. Read every available issue online, or grab your copy on Amazon.</p>
+            <div class="hero-actions">
+                <a href="/media/viewer.html?issue=1" class="btn-hero primary">[ READ ISSUE #1 ]</a>
+                <a href="/deaddrop/index.html" class="btn-hero">[ ALL ISSUES ]</a>
+            </div>
+            <div class="hero-note">MATURE CONTENT // 18+ // VIEWER DISCRETION IS ADVISED</div>
+        </div>
 
         <footer class="bunker-footer" id="siteFooter"></footer>
 
