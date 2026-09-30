@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -125,59 +125,8 @@
 
     <div class="os-container">
         
-        <nav class="sidebar-nav" id="globalNav">
-            <ul class="main-menu">
-                <li class="menu-item">
-                    <a href="/index.html" class="nav-link">
-                        <span class="node-num">[01]</span> HOME 
-                    </a>
-                </li>
-
-                <li class="menu-item has-dropdown">
-                    <a href="/projects.html" class="nav-link mobile-expandable">
-                        <span class="node-num">[02]</span> PROJECTS
-                    </a>
-                    <ul class="dropdown-level-1">
-                        <li class="dropdown-item has-sub-dropdown">
-                            <a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">> DEAD DROP</a>
-                            <ul class="dropdown-level-2">
-                                <li><a href="/deaddrop/vol1.html" class="vol-link">» VOL 1 (ISSUES 1-8)</a></li>
-                                <li><a href="/deaddrop/vol2.html" class="vol-link">» VOL 2 (ISSUES 9-12+)</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="menu-item">
-                    <a href="/chronicles.html" class="nav-link">
-                        <span class="node-num">[03]</span> CHRONICLES
-                    </a>
-                </li>
-
-                <li class="menu-item active has-dropdown">
-                    <a href="/media.html" class="nav-link mobile-expandable">
-                        <span class="node-num">[04]</span> MEDIA
-                    </a>
-                    <ul class="dropdown-level-1">
-                        <li><a href="/media/music.html" class="sub-nav-link">» MUSIC</a></li>
-                        <li><a href="/media/video.html" class="sub-nav-link">» VIDEO</a></li>
-                        <li><a href="/media/viewer.html" class="sub-nav-link">» VIEWER</a></li>
-                    </ul>
-                </li>
-
-                <li class="menu-item">
-                    <a href="/about.html" class="nav-link">
-                        <span class="node-num">[05]</span> ABOUT US
-                    </a>
-                </li>
-
-                <li class="menu-item">
-                    <a href="/contact.html" class="nav-link">
-                        <span class="node-num">[06]</span> CONTACT
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <nav class="sidebar-nav" id="globalNav"></nav>
+    <script src="/site.js"></script>
 
         <div class="content-wrapper">
             <div class="media-hub-grid">
@@ -186,7 +135,7 @@
                     <div class="channel-info">
                         <div class="channel-code">SYS_CHANNEL // [AUDIO_FEED]</div>
                         <h2>Audio Uplink</h2>
-                        <p>Accesează playlist-urile oficiale și designul sonor brut care dictează atmosfera din buncăr. Metal greu și frecvențe joase.</p>
+                        <p>Access the official playlists and the raw sound design that sets the mood of the bunker. Heavy metal and low frequencies.</p>
                     </div>
                     <a href="/media/music.html" class="btn-connect">[ OPEN_STREAM ]</a>
                 </div>
@@ -195,7 +144,7 @@
                     <div class="channel-info">
                         <div class="channel-code">SYS_CHANNEL // [VISUAL_LOG]</div>
                         <h2>Video Promos</h2>
-                        <p>Arhiva de clipuri promoționale, teasere oficiale și materiale video rulate pe ecranele tactice securizate.</p>
+                        <p>Archive of promotional clips, official teasers and video material played on the secured tactical screens.</p>
                     </div>
                     <a href="/media/video.html" class="btn-connect">[ EXECUTE_PLAYER ]</a>
                 </div>
@@ -204,7 +153,7 @@
                     <div class="channel-info">
                         <div class="channel-code">SYS_CHANNEL // [IMAGE_DECRYPT]</div>
                         <h2>Graphic Files</h2>
-                        <p>Vizualizator securizat pentru concepte de artă brută, randări Chiaroscuro și cadre nefiltrate din producția Dead Drop.</p>
+                        <p>Secure reader for the Dead Drop issues. Read every available page directly in your browser.</p>
                     </div>
                     <a href="/media/viewer.html" class="btn-connect">[ DECRYPT_FILES ]</a>
                 </div>
@@ -212,73 +161,10 @@
             </div>
         </div>
 
-        <footer class="bunker-footer">
-            <div class="hud-status-bar">
-                <span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]
-            </div>
-            <div class="legal-bindings">
-                <a href="/terms.html" class="legal-link">// LEGAL_BINDINGS</a>
-                <a href="/privacy.html" class="legal-link">// DATA_ENCRYPTION_POLICY</a>
-                <a href="/cookies.html" class="legal-link">// SIGNAL_TRACKING_PROTOCOL</a>
-            </div>
-        </footer>
+        <footer class="bunker-footer" id="siteFooter"></footer>
 
     </div>
 
-    <script>
-        // 1. CONTROL INTERFAȚĂ MOBIL (Compact & Anti-Blocaj)
-        const nav = document.getElementById('globalNav');
-        const toggleBtn = document.querySelector('.mobile-bunker-toggle');
-
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            nav.classList.toggle('mobile-open');
-            
-            if(nav.classList.contains('mobile-open')) {
-                toggleBtn.textContent = "[ X ] CLOSE_MENU";
-                toggleBtn.style.color = "#FF4500";
-                
-                // Forțăm extinderea primului nivel al categoriei MEDIA fiindcă ne aflăm pe această pagină
-                const activeDropdown = nav.querySelector('.menu-item.active .dropdown-level-1');
-                if (activeDropdown && window.innerWidth < 1024) {
-                    activeDropdown.classList.add('dropdown-open');
-                }
-            } else {
-                toggleBtn.textContent = "[ = ] SYS_MENU";
-                toggleBtn.style.color = "#ffffff";
-                document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                    el.classList.remove('dropdown-open');
-                });
-            }
-        });
-
-        // 2. LOGICĂ ACORDEON MECANIC (Pentru mobil/tabletă)
-        if (window.innerWidth < 1024) {
-            document.querySelectorAll('.mobile-expandable').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const nextDropdown = link.nextElementSibling;
-                    
-                    if (nextDropdown && !nextDropdown.classList.contains('dropdown-open')) {
-                        e.preventDefault(); 
-                        nextDropdown.classList.add('dropdown-open');
-                    }
-                });
-            });
-        }
-
-        // Click Outside: Închidere automată
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && nav.classList.contains('mobile-open')) {
-                if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-                    nav.classList.remove('mobile-open');
-                    toggleBtn.textContent = "[ = ] SYS_MENU";
-                    toggleBtn.style.color = "#ffffff";
-                    document.querySelectorAll('.dropdown-level-1, .dropdown-level-2').forEach(el => {
-                        el.classList.remove('dropdown-open');
-                    });
-                }
-            }
-        });
-    </script>
+    
 </body>
 </html>
