@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://va-comics.com/sitemap.xml

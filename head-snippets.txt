@@ -1,0 +1,41 @@
+HEAD SNIPPETS (two pages you edit / Foundry edits, so I did not overwrite them)
+================================================================================
+Paste the block right AFTER the </title> line in the <head> of each file.
+If you paste it twice by mistake, delete one copy (the block starts with
+<!-- SEO:START --> and ends with <!-- SEO:END -->).
+
+------------------------ deaddrop/vol2.html ------------------------
+<!-- SEO:START -->
+    <meta name="description" content="Dead Drop Volume 2 // Revelations. Issues 9-13 available on Amazon. The tech-noir saga continues.">
+    <link rel="canonical" href="https://va-comics.com/deaddrop/vol2">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="Dead Drop Volume 2: Revelations // VA Comics">
+    <meta property="og:description" content="Dead Drop Volume 2 // Revelations. Issues 9-13 available on Amazon. The tech-noir saga continues.">
+    <meta property="og:url" content="https://va-comics.com/deaddrop/vol2">
+    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <!-- SEO:END -->
+
+------------------------ chronicles.html ------------------------
+<!-- SEO:START -->
+    <meta name="description" content="News, updates and behind-the-scenes field reports from VA Comics and the Dead Drop universe.">
+    <link rel="canonical" href="https://va-comics.com/chronicles">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="Chronicles // VA Comics">
+    <meta property="og:description" content="News, updates and behind-the-scenes field reports from VA Comics and the Dead Drop universe.">
+    <meta property="og:url" content="https://va-comics.com/chronicles">
+    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <!-- SEO:END -->
