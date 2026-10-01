@@ -492,3 +492,17 @@ body.content-page .bunker-bg-overlay {
 .nav-link:active {
     transform: scale(0.97);
 }
+
+/* ==========================================================================
+   11. ACCESSIBILITY: respect "reduce motion" system setting
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .menu-item:hover > .nav-link,
+    .status-indicator,
+    .track-log-item.playing-active .status-tag {
+        animation: none !important;
+    }
+    * {
+        scroll-behavior: auto !important;
+    }
+}
