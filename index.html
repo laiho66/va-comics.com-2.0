@@ -56,23 +56,6 @@
             filter: brightness(1.15) contrast(1.15);
         }
 
-        /* Automatic switch based on screen width */
-        .video-mobile {
-            display: none;
-        }
-
-        .video-desktop {
-            display: block;
-        }
-
-        @media (max-width: 1023px) {
-            .video-desktop {
-                display: none;
-            }
-            .video-mobile {
-                display: block;
-            }
-        }
 
         /* ============================================================
            HERO PANEL (what the site is + main call to action)
@@ -206,17 +189,29 @@
 </head>
 <body class="home-page">
 
-    <!-- Responsive video background -->
+    <!-- Responsive video background: only ONE video is downloaded (desktop 16:9 or mobile 9:16) -->
     <div class="bunker-bg-overlay">
-        <!-- Desktop 16:9 -->
-        <video class="bg-video-stream video-desktop" autoplay muted loop playsinline preload="auto">
-            <source src="introd.mp4" type="video/mp4">
-        </video>
-
-        <!-- Mobile 9:16 / Vertical -->
-        <video class="bg-video-stream video-mobile" autoplay muted loop playsinline preload="auto">
-            <source src="introm.mp4" type="video/mp4">
-        </video>
+        <video id="bgVideo" class="bg-video-stream" autoplay muted loop playsinline preload="auto" poster="/bg-home.webp"></video>
+        <script>
+            (function () {
+                var v = document.getElementById('bgVideo');
+                if (!v) { return; }
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+                if (navigator.connection && navigator.connection.saveData) { return; }
+                var mq = window.matchMedia('(max-width: 1023px)');
+                function load() {
+                    var src = mq.matches ? '/introm.mp4' : '/introd.mp4';
+                    if (v.getAttribute('data-src') === src) { return; }
+                    v.setAttribute('data-src', src);
+                    v.src = src;
+                    var p = v.play();
+                    if (p && p.catch) { p.catch(function () {}); }
+                }
+                load();
+                if (mq.addEventListener) { mq.addEventListener('change', load); }
+                else if (mq.addListener) { mq.addListener(load); }
+            })();
+        </script>
     </div>
 
     <button class="mobile-bunker-toggle">

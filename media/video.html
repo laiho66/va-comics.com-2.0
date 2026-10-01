@@ -78,6 +78,66 @@
             border: 1px solid #111;
         }
 
+        .video-frame-hidden {
+            display: none !important;
+        }
+
+        /* Preview image: the YouTube player loads only after a click */
+        .video-facade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            padding: 0;
+            background-color: #000000;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+
+        .video-facade::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            transition: background 0.2s ease;
+        }
+
+        .video-facade:hover::before {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .facade-play {
+            position: relative;
+            padding: 14px 26px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid var(--magma-orange);
+            color: var(--magma-orange);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .facade-title {
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            right: 16px;
+            text-align: left;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            z-index: 1;
+        }
+
         .video-theater-screen iframe {
             position: absolute;
             top: 0;
@@ -188,8 +248,12 @@
                 
                 <div class="main-screen-box">
                     <div class="video-theater-screen">
+                        <button type="button" class="video-facade" id="videoFacade" aria-label="Play video">
+                            <span class="facade-title" id="facadeTitle"></span>
+                            <span class="facade-play">[ &#9654; PLAY ]</span>
+                        </button>
                         <iframe id="videoMonitor" 
-                                src="" 
+                                class="video-frame-hidden"
                                 title="Dead Drop Video Player"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen></iframe>
@@ -252,20 +316,45 @@
         const monitor = document.getElementById('videoMonitor');
         const videoListContainer = document.getElementById('videoNodesList');
 
-        function buildEmbedUrl(clip) {
+        const facade = document.getElementById('videoFacade');
+        const facadeTitle = document.getElementById('facadeTitle');
+        let currentClip = null;
+
+        function buildEmbedUrl(clip, autoplay) {
+            const ap = autoplay ? '&autoplay=1' : '';
             if (clip.type === "playlist") {
-                return `https://www.youtube.com/embed?listType=playlist&list=${clip.id}&rel=0`;
-            } else {
-                return `https://www.youtube.com/embed/${clip.id}?rel=0`;
+                return `https://www.youtube-nocookie.com/embed/videoseries?list=${clip.id}&rel=0${ap}`;
             }
+            return `https://www.youtube-nocookie.com/embed/${clip.id}?rel=0${ap}`;
         }
+
+        // Shows only a preview image. No YouTube player is loaded until the visitor clicks.
+        function showFacade(clip) {
+            currentClip = clip;
+            monitor.removeAttribute('src');
+            monitor.classList.add('video-frame-hidden');
+            facade.style.display = 'flex';
+            facade.style.backgroundImage = (clip.type === 'playlist') ? 'none' : `url(https://i.ytimg.com/vi/${clip.id}/hqdefault.jpg)`;
+            facadeTitle.textContent = clip.title;
+        }
+
+        function playClip(clip) {
+            currentClip = clip;
+            facade.style.display = 'none';
+            monitor.classList.remove('video-frame-hidden');
+            monitor.setAttribute('src', buildEmbedUrl(clip, true));
+        }
+
+        facade.addEventListener('click', () => {
+            if (currentClip) playClip(currentClip);
+        });
 
         function initVideoHub() {
             videoListContainer.innerHTML = '';
             if (VIDEO_DATABASE.length === 0) return;
 
-            // Încărcăm primul nod video nativ la pornire
-            monitor.setAttribute('src', buildEmbedUrl(VIDEO_DATABASE[0]));
+            // First clip: preview only (nothing is loaded from YouTube yet)
+            showFacade(VIDEO_DATABASE[0]);
 
             VIDEO_DATABASE.forEach((clip, index) => {
                 const li = document.createElement('li');
@@ -277,8 +366,8 @@
                 `;
 
                 li.addEventListener('click', () => {
-                    monitor.setAttribute('src', buildEmbedUrl(clip));
-                    
+                    playClip(clip);
+
                     document.querySelectorAll('.feed-node-item').forEach(node => {
                         node.classList.remove('node-active');
                     });
