@@ -254,9 +254,9 @@
 
         function buildEmbedUrl(clip) {
             if (clip.type === "playlist") {
-                return `https://www.youtube.com/embed?listType=playlist&list=${clip.id}&rel=0`;
+                return `https://www.youtube-nocookie.com/embed/videoseries?list=${clip.id}&rel=0`;
             } else {
-                return `https://www.youtube.com/embed/${clip.id}?rel=0`;
+                return `https://www.youtube-nocookie.com/embed/${clip.id}?rel=0`;
             }
         }
 
