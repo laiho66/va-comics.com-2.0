@@ -17,7 +17,7 @@
        Keep SHOW_VANGUARD = false until the Vanguard pages exist AND have content.
        When they are ready: set it to true and list the books that are live
        (one line per book, comma between lines). */
-    var SHOW_VANGUARD = false;
+    var SHOW_VANGUARD = true;
     var VANGUARD_BOOKS = [
         { label: 'BOOK 1', href: '/vanguard/book1.html' }
         /* , { label: 'BOOK 2', href: '/vanguard/book2.html' } */
