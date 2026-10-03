@@ -492,3 +492,39 @@ body.content-page .bunker-bg-overlay {
 .nav-link:active {
     transform: scale(0.97);
 }
+
+/* ==========================================================================
+   11. ACCESSIBILITY: respect "reduce motion" system setting
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .menu-item:hover > .nav-link,
+    .status-indicator,
+    .track-log-item.playing-active .status-tag {
+        animation: none !important;
+    }
+    * {
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================================================
+   12. DESKTOP FLYOUT: the third-level menu (VOL 1 / BOOK 1 ...) opens to the
+   RIGHT of its project. Nothing below it jumps when it opens, so the menu
+   no longer disappears while the mouse moves down to the next project.
+   ========================================================================== */
+@media (min-width: 1024px) {
+    .dropdown-item.has-sub-dropdown {
+        position: relative;
+    }
+
+    .dropdown-level-2 {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 270px;
+        padding: 5px 10px 10px 10px;
+        background: rgba(0, 0, 0, 0.94);
+        border: 1px solid var(--dark-fence);
+        z-index: 200;
+    }
+}

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // VANGUARD CHRONICLES // BOOK_01</title>
+    <title>VA Comics // VANGUARD CHRONICLES // THE SUNKEN PHARAOH</title>
     <!-- SEO:START -->
-    <meta name="description" content="Vanguard Chronicles, Book 1: an illustrated historical tech-adventure novel by VA Comics. Available as eBook and paperback on Amazon.">
+    <meta name="description" content="The Sunken Pharaoh, Book 1 of the Vanguard Chronicles: an illustrated novel by Aris Menethil &amp; Alexi Void. Available as eBook, paperback and hardcover on Amazon.">
     <link rel="canonical" href="https://va-comics.com/vanguard/book1">
     <meta property="og:type" content="book">
     <meta property="og:site_name" content="VA Comics">
-    <meta property="og:title" content="Vanguard Chronicles, Book 1 // VA Comics">
-    <meta property="og:description" content="Vanguard Chronicles, Book 1: an illustrated historical tech-adventure novel by VA Comics. Available as eBook and paperback on Amazon.">
+    <meta property="og:title" content="The Sunken Pharaoh // Vanguard Chronicles, Book 1">
+    <meta property="og:description" content="The Sunken Pharaoh, Book 1 of the Vanguard Chronicles: an illustrated novel by Aris Menethil &amp; Alexi Void. Available as eBook, paperback and hardcover on Amazon.">
     <meta property="og:url" content="https://va-comics.com/vanguard/book1">
     <meta property="og:image" content="https://va-comics.com/vanguard/assets/og-vanguard.png">
     <meta property="og:image:width" content="1200">
@@ -27,13 +27,16 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/vanguard/vanguard.css">
 
-    <!-- OPTIONAL SEO (at go-live): remove the comment markers, fill in the 3 CAPITAL words.
+    <!-- OPTIONAL SEO (at go-live): remove the comment markers (it is already filled in).
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Book",
-      "name": "BOOK TITLE",
-      "author": { "@type": "Person", "name": "AUTHOR NAME" },
+      "name": "The Sunken Pharaoh",
+      "author": [
+        { "@type": "Person", "name": "Aris Menethil" },
+        { "@type": "Person", "name": "Alexi Void" }
+      ],
       "publisher": { "@type": "Organization", "name": "VA Comics" },
       "inLanguage": "en",
       "genre": "Historical fiction",
@@ -53,11 +56,10 @@
             (Search this file for  vg-todo  to find them all.)
          2. COVER: upload  vanguard/assets/covers/book1.webp
             (5:7 ratio, about 800 x 1120 px, WebP, under 150 KB).
-         3. AMAZON LINKS: find the three buttons in the section  GET THE BOOK.
-            For each format you have:
-              - replace  href="#"  with the Amazon link
-              - delete the word  disabled  from  class="vg-buy disabled"
-            A format you do not have stays as it is (it shows greyed out, as N/A).
+         3. AMAZON LINKS (already set for Book 1): the three buttons in the section
+            GET THE BOOK. To change one, replace the link inside  href="..."
+            If a format does not exist (yet), write  href="#"  and add the word
+            disabled  like this:  class="vg-buy disabled"  (it shows greyed out).
          4. CHAPTERS: in the section  CHAPTER INDEX  copy one <li> block per chapter.
             Change only the title and the one-line teaser (no spoilers).
          5. Book 2: copy this file to book2.html, change BOOK_01 -> BOOK_02, the title,
@@ -79,7 +81,7 @@
 
         <div class="content-wrapper">
 
-            <h1 class="vg-header-title">BOOK 01 // <span class="vg-todo">[BOOK TITLE]</span></h1>
+            <h1 class="vg-header-title">BOOK 01 // THE SUNKEN PHARAOH</h1>
 
             <div class="vg-stack">
 
@@ -87,7 +89,7 @@
 
                     <!-- ===== COVER ===== -->
                     <div class="vg-cover">
-                        <img src="/vanguard/assets/covers/book1.webp" alt="Vanguard Chronicles Book 1 cover"
+                        <img src="/vanguard/assets/covers/book1.webp" alt="The Sunken Pharaoh, Vanguard Chronicles Book 1 cover"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="vg-cover-ph">COVER<br>PENDING</div>
                     </div>
@@ -104,9 +106,9 @@
                         <!-- ===== GET THE BOOK ===== -->
                         <div class="vg-buy-title">// GET THE BOOK</div>
                         <div class="vg-buy-row">
-                            <a href="#" target="_blank" rel="noopener noreferrer" class="vg-buy disabled">eBook</a>
-                            <a href="#" target="_blank" rel="noopener noreferrer" class="vg-buy disabled">Paperback</a>
-                            <a href="#" target="_blank" rel="noopener noreferrer" class="vg-buy disabled">Hardcover</a>
+                            <a href="https://www.amazon.com/dp/B0HHS8ZWC8" target="_blank" rel="noopener noreferrer" class="vg-buy">eBook</a>
+                            <a href="https://www.amazon.com/dp/B0HL486JKT" target="_blank" rel="noopener noreferrer" class="vg-buy">Paperback</a>
+                            <a href="https://www.amazon.com/dp/B0HLPT82J4" target="_blank" rel="noopener noreferrer" class="vg-buy">Hardcover</a>
                         </div>
                         <div class="vg-hint">&gt; FREE SAMPLE: use "Read sample" / "Look inside" on the Amazon page.</div>
                     </div>
@@ -117,6 +119,7 @@
                 <div class="vg-panel" data-label="BOOK_DETAILS // SPECIFICATIONS">
                     <dl class="vg-facts">
                         <dt>Series</dt><dd>Vanguard Chronicles // Book 1</dd>
+                        <dt>Authors</dt><dd>Aris Menethil &amp; Alexi Void</dd>
                         <dt>Format</dt><dd>Illustrated novel</dd>
                         <dt>Structure</dt><dd>Historical prologue + 5 chapters</dd>
                         <dt>Length</dt><dd><span class="vg-todo">[EDIT] e.g. 22,000 words</span></dd>

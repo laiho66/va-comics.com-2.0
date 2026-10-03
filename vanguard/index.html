@@ -38,7 +38,7 @@
          2. Book 1 cover: upload  vanguard/assets/covers/book1.webp
             (5:7 ratio, about 800 x 1120 px, WebP, under 150 KB). Until it exists,
             the page shows a "COVER PENDING" box instead.
-         3. The book title / short blurb in the card below: edit where marked.
+         3. The book title and the short blurb in the card below: edit them there.
          4. When Book 2 exists: copy the whole <div class="vg-card"> ... </div>
             block of Book 1, paste it right after it, and change BOOK_01 -> BOOK_02,
             the title, the blurb, the link (/vanguard/book2.html) and the cover
@@ -84,15 +84,15 @@
                     <!-- BOOK 1 CARD (copy this whole block for the next book) -->
                     <div class="vg-card">
                         <div class="vg-cover">
-                            <img src="/vanguard/assets/covers/book1.webp" alt="Vanguard Chronicles Book 1 cover" loading="lazy"
+                            <img src="/vanguard/assets/covers/book1.webp" alt="The Sunken Pharaoh, Vanguard Chronicles Book 1 cover" loading="lazy"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="vg-cover-ph">COVER<br>PENDING</div>
                         </div>
                         <div class="vg-card-body">
                             <div>
                                 <div class="vg-card-tag">ARCHIVE_FILE // [BOOK_01]</div>
-                                <h2>Book 1 // <span class="vg-todo">[BOOK TITLE]</span></h2>
-                                <p><span class="vg-todo">[EDIT] One or two sentences about this book (about 150 characters).</span></p>
+                                <h2>Book 1 // The Sunken Pharaoh</h2>
+                                <p>Book 1 of the Vanguard Chronicles. Available as eBook, paperback and hardcover on Amazon.</p>
                             </div>
                             <a href="/vanguard/book1.html" class="vg-btn-access">[ LOAD_BOOK_01 ]</a>
                         </div>
