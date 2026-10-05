@@ -3,179 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // ABOUT US // OPERATIVE_PROFILE</title>
-    <!-- SEO:START -->
-    <meta name="description" content="VA Comics is an independent comic studio exploring stories that mainstream publishers avoid. Human vision, digital tools, handcrafted details.">
+    <title>About Us // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="VA Comics is an independent studio telling stories that mainstream publishers skip: dark, fast and built page by page.">
     <link rel="canonical" href="https://va-comics.com/about">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
     <meta property="og:title" content="About Us // VA Comics">
-    <meta property="og:description" content="VA Comics is an independent comic studio exploring stories that mainstream publishers avoid. Human vision, digital tools, handcrafted details.">
+    <meta property="og:description" content="VA Comics is an independent studio telling stories that mainstream publishers skip: dark, fast and built page by page.">
     <meta property="og:url" content="https://va-comics.com/about">
-    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- SEO:END -->
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* CONFIGURAȚIE CORECTATĂ PENTRU PAGINA ABOUT */
-        .about-container {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .profile-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--dark-fence);
-            padding: 35px;
-            position: relative;
-        }
-
-        .profile-card::before {
-            content: "DOSSIER_FILE // ACCESS_GRANTED";
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            background: #050505;
-            padding: 0 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            color: var(--magma-orange);
-            letter-spacing: 1px;
-        }
-
-        .profile-header {
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        .profile-meta {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            color: var(--terminal-gray);
-            line-height: 1.5;
-        }
-
-        .profile-meta span {
-            color: var(--text-colorless);
-        }
-
-        .about-text {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #dddddd;
-        }
-
-        .about-text p {
-            margin-bottom: 15px;
-        }
-
-        .manifesto-quote {
-            border-left: 3px solid var(--magma-orange);
-            padding-left: 20px;
-            margin: 25px 0;
-            font-style: italic;
-            color: var(--text-colorless);
-            background: rgba(255, 69, 0, 0.02);
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        /* FIX-UL GEOMETRIC MASTER (Alinierea sus, la linie cu meniul) */
-        @media (min-width: 1024px) {
-            /* Suprascriem așezarea globală: aliniem totul la unghi sus și eliminăm împrăștierea pe verticală */
-            .os-container {
-                flex-direction: row;
-                flex-wrap: nowrap;
-                justify-content: flex-start !important; /* Forțăm pornirea de la stânga la dreapta */
-                align-items: flex-start !important;    /* Forțăm ancorarea strânsă în partea de sus */
-            }
-            
-            /* Meniul lateral își păstrează lățimea, dar îi resetăm marjele ca să nu fie afectat */
-            .sidebar-nav {
-                width: 350px;
-                flex-shrink: 0; /* Împiedică flexbox-ul să comprime lățimea meniului */
-            }
-            
-            /* Blocul de conținut se aliniază acum perfect la linie cu [01] HOME */
-            .content-wrapper {
-                margin-left: 30px; /* Spațiu curat între meniul din stânga și cutii */
-                margin-top: 40px;  /* Coborâre calibrată exact pe linia primului element din HUD */
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
-<body class="content-page">
 
-    <div class="bunker-bg-overlay"></div>
+<!-- ======================================================================
+     ABOUT (Etapa 6). Textele sunt cele de pe site-ul actual, neschimbate. EDIT: poți schimba orice paragraf.
+     ====================================================================== -->
+<body data-bg="wall">
 
-    <button class="mobile-bunker-toggle">
-        [ = ] SYS_MENU
-    </button>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="os-container">
-        
-        <nav class="sidebar-nav" id="globalNav"></nav>
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
     <script src="/site.js"></script>
 
-        <div class="content-wrapper">
-            <div class="about-container">
-                
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="profile-meta">
-                            DESIGNATION: <span>VA COMICS // UNDERGROUND_PUBLISHING</span><br>
-                            OPERATIVE: <span>VA COMICS</span><br>
-                            SECTOR: <span>Sector 1 // TERMINUS CITY</span><br>
-                            PROTOCOL: <span>Viewer discretion is advised</span>
-                        </div>
-                    </div>
-                    
-                    <div class="about-text">
-                        <p>VA Comics was born out of a simple desire: to tell stories. We aren’t a big studio, nor do we aim to be; 
-        we are a space where creative freedom carries more weight than any market convention. We are drawn to 
-        subjects that usually reside in the shadows—those deemed too unconventional or experimental by mainstream 
-        publishers. We believe the audience deserves more than safe, predictable formulas. Whether we are crafting 
-        a comic book or an adventure chronicle, our goal remains the same: to explore new horizons exactly 
-        where others choose to stop.</p>
-                        
-                        <p>Everything you see on our pages is the result of a partnership between human vision and digital potential. 
-        It always begins with an idea—a mental blueprint and a clear direction—while technology steps in as the 
-        forge that helps us build those worlds from the ground up. We use these tools to construct intricate 
-        environments, to refine the atmosphere of every scene, and to add the subtle details that give our 
-        projects their unique pulse. We are here to ensure the original vision takes shape and reaches you 
-        without compromise. To us, technology is the bridge that lets us translate imagination directly 
-        onto the screen without losing its essence along the way.</p>
-                        
-                        <div class="manifesto-quote">
-                            The Future is Loading...
-                        </div>
-                        
-                        <p>Even though we work with the latest digital tools, we call this process a <span class="highlight">“handcrafted future.”</span> 
-        We don’t believe in shortcuts that sacrifice emotion. We dedicate time to every aspect of our work, 
-        manually adjusting every shadow, every angle, and every expression until the result captures the exact 
-        mood we intended. It is a meticulous process where every final decision is entirely our own. At the end 
-        of the day, the tools we use matter far less than whether our universe resonates with you. 
-        We are here to build worlds where you can truly lose yourself, page by page.</p>
-                    </div>
-                </div>
+    <main class="main" id="main">
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">About Us</h1></div>
+        </div>
 
+        <div class="panel" data-label="DOSSIER_FILE // STUDIO">
+            <dl class="facts">
+                <dt>Designation</dt><dd>VA COMICS // UNDERGROUND_PUBLISHING</dd>
+                <dt>Operative</dt><dd>VA COMICS</dd>
+                <dt>Sector</dt><dd>Sector 1 // TERMINUS CITY</dd>
+                <dt>Protocol</dt><dd>Viewer discretion is advised</dd>
+            </dl>
+        </div>
+
+        <div class="panel" data-label="MANIFESTO // WHY WE BUILD">
+            <div class="copy">
+                <p>VA Comics was born out of a simple desire: to tell stories. We aren’t a big studio, nor do we aim to be; we are a space where creative freedom carries more weight than any market convention. We are drawn to subjects that usually reside in the shadows—those deemed too unconventional or experimental by mainstream publishers. We believe the audience deserves more than safe, predictable formulas. Whether we are crafting a comic book or an adventure chronicle, our goal remains the same: to explore new horizons exactly where others choose to stop.</p>
             </div>
         </div>
 
-        <footer class="bunker-footer" id="siteFooter"></footer>
+        <div class="panel" data-label="PROCESS // HUMAN_VISION + DIGITAL_POTENTIAL">
+            <div class="copy">
+                <p>Everything you see on our pages is the result of a partnership between human vision and digital potential. It always begins with an idea—a mental blueprint and a clear direction—while technology steps in as the forge that helps us build those worlds from the ground up. We use these tools to construct intricate environments, to refine the atmosphere of every scene, and to add the subtle details that give our projects their unique pulse. We are here to ensure the original vision takes shape and reaches you without compromise. To us, technology is the bridge that lets us translate imagination directly onto the screen without losing its essence along the way.</p>
+            </div>
+        </div>
 
-    </div>
+        <div class="panel" data-label="THE_FUTURE_IS_LOADING...">
+            <div class="copy">
+                <p>Even though we work with the latest digital tools, we call this process a “handcrafted future.”</p>
+                <p>We don’t believe in shortcuts that sacrifice emotion. We dedicate time to every aspect of our work, manually adjusting every shadow, every angle, and every expression until the result captures the exact mood we intended. It is a meticulous process where every final decision is entirely our own. At the end of the day, the tools we use matter far less than whether our universe resonates with you.</p>
+                <p>We are here to build worlds where you can truly lose yourself, page by page.</p>
+            </div>
+        </div>
 
-    
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
 </body>
 </html>

@@ -3,184 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // MEDIA // CENTRAL_HUB</title>
-    <!-- SEO:START -->
-    <meta name="description" content="Music, video promos and the online comic reader for Dead Drop by VA Comics.">
+    <title>Media // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="Video promos and the online comic reader for Dead Drop by VA Comics.">
     <link rel="canonical" href="https://va-comics.com/media">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
     <meta property="og:title" content="Media // VA Comics">
-    <meta property="og:description" content="Music, video promos and the online comic reader for Dead Drop by VA Comics.">
+    <meta property="og:description" content="Video promos and the online comic reader for Dead Drop by VA Comics.">
     <meta property="og:url" content="https://va-comics.com/media">
-    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- SEO:END -->
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* CONFIGURAȚIE GRID PENTRU SUB-MODULELE MEDIA */
-        .media-hub-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .media-channel-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--dark-fence);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .media-channel-card:hover {
-            border-color: var(--magma-orange);
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
-            transform: translateY(-3px);
-        }
-
-        .channel-code {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            color: var(--terminal-gray);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .media-channel-card:hover .channel-code {
-            color: var(--magma-orange);
-        }
-
-        .channel-info h2 {
-            font-size: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-colorless);
-            margin-bottom: 10px;
-        }
-
-        .channel-info p {
-            font-size: 14px;
-            color: var(--terminal-gray);
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        .btn-connect {
-            display: block;
-            text-align: center;
-            background: transparent;
-            border: 1px solid var(--dark-fence);
-            color: var(--text-colorless);
-            text-decoration: none;
-            padding: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-        }
-
-        .media-channel-card:hover .btn-connect {
-            border-color: var(--text-colorless);
-            background: var(--pure-black);
-        }
-
-        /* Layout Fix pentru Desktop */
-        .content-wrapper {
-            margin-left: 0;
-            width: 100%;
-            margin-top: 40px;
-        }
-
-        @media (min-width: 1024px) {
-            .os-container {
-                display: grid !important;
-                grid-template-columns: 350px 1fr;
-                gap: 50px;
-                width: 100%;
-                padding-top: 40px;
-                padding-bottom: 100px;
-                align-items: flex-start;
-            }
-            
-            .sidebar-nav {
-                position: relative;
-                top: 0;
-                left: 0;
-                width: 100%;
-                z-index: 80;
-            }
-            
-            .content-wrapper {
-                margin-left: 0 !important;
-                margin-top: 0 !important;
-                width: 100%;
-                z-index: 70;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
-<body class="content-page">
 
-    <div class="bunker-bg-overlay"></div>
+<!-- ======================================================================
+     MEDIA (Etapa 6): două casete, Video și Viewer (Music a dispărut).
+     ====================================================================== -->
+<body data-bg="wall">
 
-    <button class="mobile-bunker-toggle">
-        [ = ] SYS_MENU
-    </button>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="os-container">
-        
-        <nav class="sidebar-nav" id="globalNav"></nav>
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
     <script src="/site.js"></script>
 
-        <div class="content-wrapper">
-            <div class="media-hub-grid">
-                
-                <div class="media-channel-card">
-                    <div class="channel-info">
-                        <div class="channel-code">SYS_CHANNEL // [AUDIO_FEED]</div>
-                        <h2>Audio Uplink</h2>
-                        <p>Access the official playlists and the raw sound design that sets the mood of the bunker. Heavy metal and low frequencies.</p>
-                    </div>
-                    <a href="/media/music.html" class="btn-connect">[ OPEN_STREAM ]</a>
-                </div>
-
-                <div class="media-channel-card">
-                    <div class="channel-info">
-                        <div class="channel-code">SYS_CHANNEL // [VISUAL_LOG]</div>
-                        <h2>Video Promos</h2>
-                        <p>Archive of promotional clips, official teasers and video material played on the secured tactical screens.</p>
-                    </div>
-                    <a href="/media/video.html" class="btn-connect">[ EXECUTE_PLAYER ]</a>
-                </div>
-
-                <div class="media-channel-card">
-                    <div class="channel-info">
-                        <div class="channel-code">SYS_CHANNEL // [IMAGE_DECRYPT]</div>
-                        <h2>Graphic Files</h2>
-                        <p>Secure reader for the Dead Drop issues. Read every available page directly in your browser.</p>
-                    </div>
-                    <a href="/media/viewer.html" class="btn-connect">[ DECRYPT_FILES ]</a>
-                </div>
-
-            </div>
+    <main class="main" id="main">
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">Media</h1></div>
+            <p class="lead">Teasers, trailers and the online reader.</p>
         </div>
 
-        <footer class="bunker-footer" id="siteFooter"></footer>
+        <div class="grid grid-2">
+            <a class="card" href="/media/video.html">
+                <div class="media ratio-16x9"><svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <defs>
+        <radialGradient id="vg" cx="50%" cy="47%" r="55%"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.30"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></radialGradient>
+        <pattern id="vl" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" opacity=".45"/></pattern>
+    </defs>
+    <rect width="640" height="360" fill="#080808"/>
+    <rect width="640" height="360" fill="url(#vg)"/>
+    <rect x="60" y="165.0" width="4" height="10" fill="var(--accent)" opacity="0.33"/><rect x="69" y="161.0" width="4" height="18" fill="var(--accent)" opacity="0.40"/><rect x="78" y="155.0" width="4" height="30" fill="var(--accent)" opacity="0.50"/><rect x="87" y="159.0" width="4" height="22" fill="var(--accent)" opacity="0.43"/><rect x="96" y="148.0" width="4" height="44" fill="var(--accent)" opacity="0.62"/><rect x="105" y="156.0" width="4" height="28" fill="var(--accent)" opacity="0.48"/><rect x="114" y="144.0" width="4" height="52" fill="var(--accent)" opacity="0.68"/><rect x="123" y="153.0" width="4" height="34" fill="var(--accent)" opacity="0.53"/><rect x="132" y="140.0" width="4" height="60" fill="var(--accent)" opacity="0.75"/><rect x="141" y="150.0" width="4" height="40" fill="var(--accent)" opacity="0.58"/><rect x="150" y="157.0" width="4" height="26" fill="var(--accent)" opacity="0.47"/><rect x="159" y="146.0" width="4" height="48" fill="var(--accent)" opacity="0.65"/><rect x="168" y="160.0" width="4" height="20" fill="var(--accent)" opacity="0.42"/><rect x="177" y="152.0" width="4" height="36" fill="var(--accent)" opacity="0.55"/><rect x="186" y="162.0" width="4" height="16" fill="var(--accent)" opacity="0.38"/><rect x="195" y="156.0" width="4" height="28" fill="var(--accent)" opacity="0.48"/><rect x="204" y="164.0" width="4" height="12" fill="var(--accent)" opacity="0.35"/><rect x="213" y="166.0" width="4" height="8" fill="var(--accent)" opacity="0.32"/><rect x="427" y="166.0" width="4" height="8" fill="var(--accent)" opacity="0.32"/><rect x="436" y="164.0" width="4" height="12" fill="var(--accent)" opacity="0.35"/><rect x="445" y="156.0" width="4" height="28" fill="var(--accent)" opacity="0.48"/><rect x="454" y="162.0" width="4" height="16" fill="var(--accent)" opacity="0.38"/><rect x="463" y="152.0" width="4" height="36" fill="var(--accent)" opacity="0.55"/><rect x="472" y="160.0" width="4" height="20" fill="var(--accent)" opacity="0.42"/><rect x="481" y="146.0" width="4" height="48" fill="var(--accent)" opacity="0.65"/><rect x="490" y="157.0" width="4" height="26" fill="var(--accent)" opacity="0.47"/><rect x="499" y="150.0" width="4" height="40" fill="var(--accent)" opacity="0.58"/><rect x="508" y="140.0" width="4" height="60" fill="var(--accent)" opacity="0.75"/><rect x="517" y="153.0" width="4" height="34" fill="var(--accent)" opacity="0.53"/><rect x="526" y="144.0" width="4" height="52" fill="var(--accent)" opacity="0.68"/><rect x="535" y="156.0" width="4" height="28" fill="var(--accent)" opacity="0.48"/><rect x="544" y="148.0" width="4" height="44" fill="var(--accent)" opacity="0.62"/><rect x="553" y="159.0" width="4" height="22" fill="var(--accent)" opacity="0.43"/><rect x="562" y="155.0" width="4" height="30" fill="var(--accent)" opacity="0.50"/><rect x="571" y="161.0" width="4" height="18" fill="var(--accent)" opacity="0.40"/><rect x="580" y="165.0" width="4" height="10" fill="var(--accent)" opacity="0.33"/>
+    <circle cx="320" cy="170" r="62" fill="none" stroke="var(--accent)" stroke-width="2" opacity=".35"/>
+    <circle cx="320" cy="170" r="48" fill="#000" fill-opacity=".7" stroke="var(--accent)" stroke-width="2.5"/>
+    <path d="M308 148 L308 192 L346 170 Z" fill="var(--accent)"/>
+    <g fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="square" opacity=".9">
+        <path d="M24 56 V24 H56"/><path d="M584 24 H616 V56"/><path d="M24 304 V336 H56"/><path d="M616 304 V336 H584"/>
+    </g>
+    <circle cx="48" cy="48" r="4.5" fill="var(--accent)"/>
+    <text x="62" y="53" font-family="Courier New, monospace" font-size="13" letter-spacing="2" fill="#b0b0b0">REC // SECURE_STREAM</text>
+    <text x="616" y="53" font-family="Courier New, monospace" font-size="13" letter-spacing="2" fill="#808080" text-anchor="end">HD</text>
+    <line x1="48" y1="304" x2="592" y2="304" stroke="#2a2a2a" stroke-width="3"/>
+    <line x1="48" y1="304" x2="268" y2="304" stroke="var(--accent)" stroke-width="3"/>
+    <rect x="262" y="298" width="12" height="12" fill="#000" stroke="var(--accent)" stroke-width="2"/>
+    <text x="48" y="332" font-family="Courier New, monospace" font-size="12" letter-spacing="2" fill="#808080">00:42 / 02:10</text>
+    <rect width="640" height="360" fill="url(#vl)"/>
+</svg></div>
+                <div class="card-body">
+                    <div class="stack"><span class="tag">MEDIA_CHANNEL // 01</span><h2 class="h2">Video</h2>
+                    <p class="small">Teasers, official clips and the soundtrack playlist.</p></div>
+                    <span class="btn btn--primary btn--block">OPEN_VIDEO</span>
+                </div>
+            </a>
+            <a class="card" href="/media/viewer.html">
+                <div class="media ratio-16x9"><svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <defs>
+        <radialGradient id="rg" cx="50%" cy="45%" r="55%"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.22"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></radialGradient>
+        <pattern id="rl" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" opacity=".45"/></pattern>
+    </defs>
+    <rect width="640" height="360" fill="#080808"/>
+    <rect width="640" height="360" fill="url(#rg)"/>
+    <rect x="112" y="40" width="208" height="260" fill="#0b0b0b" stroke="#444" stroke-width="2"/>
+    <rect x="320" y="40" width="208" height="260" fill="#0b0b0b" stroke="#444" stroke-width="2"/>
+    <rect x="318" y="40" width="4" height="260" fill="#000"/>
+    <rect x="122" y="50" width="188" height="92" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/><rect x="122" y="152" width="90" height="70" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/><rect x="220" y="152" width="90" height="70" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/><rect x="122" y="232" width="188" height="58" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/><rect x="330" y="50" width="90" height="130" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/><rect x="428" y="50" width="90" height="56" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/><rect x="428" y="114" width="90" height="66" fill="var(--accent)" fill-opacity=".14" stroke="var(--accent)" stroke-width="2"/><rect x="330" y="190" width="188" height="100" fill="#101010" stroke="#3a3a3a" stroke-width="1.5"/>
+    <line x1="134" y1="58" x2="154" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="148" y1="58" x2="168" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="162" y1="58" x2="182" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="176" y1="58" x2="196" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="190" y1="58" x2="210" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="204" y1="58" x2="224" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="218" y1="58" x2="238" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="232" y1="58" x2="252" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="246" y1="58" x2="266" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="260" y1="58" x2="280" y2="134" stroke="#2a2a2a" stroke-width="1"/><line x1="274" y1="58" x2="294" y2="134" stroke="#2a2a2a" stroke-width="1"/>
+    <path d="M60 170 L82 148 V192 Z" fill="var(--accent)" opacity=".85"/>
+    <path d="M580 170 L558 148 V192 Z" fill="var(--accent)" opacity=".85"/>
+    <text x="48" y="28" font-family="Courier New, monospace" font-size="13" letter-spacing="2" fill="#b0b0b0">READER // ISSUE #01</text>
+    <line x1="112" y1="322" x2="528" y2="322" stroke="#2a2a2a" stroke-width="3"/>
+    <line x1="112" y1="322" x2="219" y2="322" stroke="var(--accent)" stroke-width="3"/>
+    <text x="528" y="346" font-family="Courier New, monospace" font-size="12" letter-spacing="2" fill="#808080" text-anchor="end">PAGE 06 / 23</text>
+    <rect width="640" height="360" fill="url(#rl)"/>
+</svg></div>
+                <div class="card-body">
+                    <div class="stack"><span class="tag">MEDIA_CHANNEL // 02</span><h2 class="h2">Viewer</h2>
+                    <p class="small">Read every available Dead Drop issue online, page by page.</p></div>
+                    <span class="btn btn--primary btn--block">OPEN_VIEWER</span>
+                </div>
+            </a>
+        </div>
 
-    </div>
+    </main>
+</div>
 
-    
+<footer class="site-footer" id="siteFooter"></footer>
 </body>
 </html>

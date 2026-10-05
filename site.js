@@ -1,220 +1,234 @@
 /* ==========================================================================
-   VA COMICS // site.js
-   Shared navigation + footer + mobile menu behaviour for ALL pages.
-   Edit the menu / footer HERE and every page updates automatically.
+   VA COMICS v3.2 // site.js
+   Builds the menu, the top bar (phone), the background, the breadcrumb and the
+   footer on EVERY page, and shows the 18+ notice on the pages that need it.
+   You edit the menu / links HERE and every page changes.
    ========================================================================== */
 (function () {
     'use strict';
 
-    /* ---------- EDIT ZONE: menu labels (change here, not in the pages) ---------- */
-    var LABELS = {
-        vol1: 'VOL 1 (ISSUES 1-8)',
-        vol2: 'VOL 2 (ISSUES 9-13)',
-        news: 'NEWS'            /* menu name for the /chronicles page (news and field reports) */
+    /* ============================ EDIT ZONE ============================ */
+
+    var SITE = {
+        name: 'VA COMICS',
+        year: 2026,
+        facebook: 'https://www.facebook.com/vacomics66',
+        x: 'https://x.com/VAComics'
     };
 
-    /* VANGUARD CHRONICLES in the menu.
-       Keep SHOW_VANGUARD = false until the Vanguard pages exist AND have content.
-       When they are ready: set it to true and list the books that are live
-       (one line per book, comma between lines). */
+    /* Dead Drop: add a line here when a new volume appears (comma between lines). */
+    var DEADDROP_VOLUMES = [
+        { label: 'VOL 1', href: '/deaddrop/vol1.html' },
+        { label: 'VOL 2', href: '/deaddrop/vol2.html' }
+        /* , { label: 'VOL 3', href: '/deaddrop/vol3.html' } */
+    ];
+
+    /* Vanguard Chronicles: add a line here when a new book appears. */
     var SHOW_VANGUARD = true;
     var VANGUARD_BOOKS = [
         { label: 'BOOK 1', href: '/vanguard/book1.html' }
         /* , { label: 'BOOK 2', href: '/vanguard/book2.html' } */
-        /* , { label: 'BOOK 3', href: '/vanguard/book3.html' } */
     ];
 
-    /* 18+ NOTICE: shown ONLY on pages whose address starts with one of these.
-       (New adult-rated page? add its address here.) */
+    /* The 18+ notice is shown ONLY on pages whose address starts with one of these. */
     var ADULT_PATHS = ['/deaddrop', '/media/viewer', '/media/video'];
-    /* --------------------------------------------------------------------------- */
 
-    var MOBILE_BP = 1024;
-    function isMobile() { return window.innerWidth < MOBILE_BP; }
+    /* ================================================================== */
 
-    /* Normalise the URL so it works with and without ".html" (Cloudflare Pages
-       serves /about.html as /about). Result examples: "/", "/about",
-       "/deaddrop", "/deaddrop/vol1", "/media/viewer" */
-    var path = location.pathname
-        .replace(/\.html$/, '')
-        .replace(/\/index$/, '/')
-        .replace(/(.)\/$/, '$1');
+    var MENU = [
+        { n: '01', label: 'HOME', href: '/index.html' },
+        {
+            n: '02', label: 'PROJECTS', href: '/projects.html', base: ['/deaddrop', '/vanguard'],
+            groups: [
+                { label: 'DEAD DROP', href: '/deaddrop/index.html',
+                  items: DEADDROP_VOLUMES.concat([{ label: 'CHARACTERS', href: '/deaddrop/characters.html' }]) }
+            ].concat(SHOW_VANGUARD ? [
+                { label: 'VANGUARD CHRONICLES', href: '/vanguard/index.html',
+                  items: VANGUARD_BOOKS.concat([{ label: 'CHARACTERS', href: '/vanguard/characters.html' }]) }
+            ] : [])
+        },
+        { n: '03', label: 'NEWS', href: '/chronicles.html' },
+        {
+            n: '04', label: 'MEDIA', href: '/media.html', base: ['/media'],
+            groups: [{ label: null, items: [
+                { label: 'VIDEO', href: '/media/video.html' },
+                { label: 'VIEWER', href: '/media/viewer.html' }
+            ] }]
+        },
+        { n: '05', label: 'ABOUT US', href: '/about.html' },
+        { n: '06', label: 'CONTACT', href: '/contact.html' }
+    ];
 
-    var inDead = path.indexOf('/deaddrop') === 0;
-    var inMedia = path === '/media' || path.indexOf('/media/') === 0;
-    var inVanguard = path.indexOf('/vanguard') === 0;
-    var inProjects = path === '/projects' || inDead || inVanguard;
+    /* ---------- helpers ---------- */
 
-    function act(cond) { return cond ? ' active' : ''; }
+    /* "/about.html" and "/about" and "/deaddrop/index.html" and "/deaddrop/" are normalised
+       so they compare equal: "/about", "/deaddrop", "/" */
+    function norm(p) {
+        return String(p).split('?')[0].split('#')[0]
+            .replace(/\.html$/, '').replace(/\/index$/, '/').replace(/(.)\/$/, '$1') || '/';
+    }
+    var path = norm(location.pathname);
 
-    /* ---------- VANGUARD CHRONICLES branch (hidden while SHOW_VANGUARD is false) ---------- */
-    var vanguardHtml = '';
-    if (SHOW_VANGUARD) {
-        var books = '';
-        for (var b = 0; b < VANGUARD_BOOKS.length; b++) {
-            var bookPath = VANGUARD_BOOKS[b].href.replace(/\.html$/, '');
-            books += '<li class="' + (path === bookPath ? 'active' : '') + '">' +
-                '<a href="' + VANGUARD_BOOKS[b].href + '" class="vol-link">&raquo; ' + VANGUARD_BOOKS[b].label + '</a></li>';
-        }
-        vanguardHtml =
-            '<li class="dropdown-item has-sub-dropdown' + act(inVanguard) + '">' +
-            '<a href="/vanguard/index.html" class="sub-nav-link mobile-expandable">&gt; VANGUARD CHRONICLES</a>' +
-            '<ul class="dropdown-level-2">' + books + '</ul></li>';
+    function same(href) { return norm(href) === path; }
+    function under(base) { var b = norm(base); return path === b || path.indexOf(b + '/') === 0; }
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function isCurrentTop(it) {
+        if (same(it.href)) { return true; }
+        if (it.base) { for (var i = 0; i < it.base.length; i++) { if (under(it.base[i])) { return true; } } }
+        return false;
     }
 
-    /* ---------- NAVIGATION (injected immediately, no flash) ---------- */
-    var navHtml =
-        '<ul class="main-menu">' +
+    /* ---------- menu ---------- */
+    function buildNav() {
+        var html = '<div class="nav-brand">VA_COMICS // SYS</div><ul class="nav-list">';
+        MENU.forEach(function (it) {
+            var cur = isCurrentTop(it);
+            var hasSub = !!it.groups;
+            html += '<li class="nav-item' + (hasSub ? ' has-sub' : '') + (cur ? ' is-current is-open' : '') + '">';
+            html += '<a class="nav-link" href="' + it.href + '"' + (same(it.href) ? ' aria-current="page"' : '') +
+                '><span class="nav-num">[' + it.n + ']</span><span class="nav-text">' + esc(it.label) + '</span></a>';
+            if (hasSub) {
+                html += '<button type="button" class="nav-toggle" aria-expanded="' + (cur ? 'true' : 'false') +
+                    '" aria-label="Open the ' + esc(it.label) + ' submenu"></button><div class="nav-panel">';
+                it.groups.forEach(function (g) {
+                    html += '<div class="nav-group">';
+                    if (g.label) {
+                        html += '<a class="nav-grouplink' + (same(g.href) ? ' is-current' : '') + '" href="' + g.href + '">&gt; ' + esc(g.label) + '</a>';
+                    }
+                    if (g.items) {
+                        html += '<div class="nav-subitems">';
+                        g.items.forEach(function (s) {
+                            html += '<a' + (same(s.href) ? ' class="is-current" aria-current="page"' : '') + ' href="' + s.href + '">&raquo; ' + esc(s.label) + '</a>';
+                        });
+                        html += '</div>';
+                    }
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            html += '</li>';
+        });
+        html += '</ul><div class="nav-social"><a href="' + SITE.facebook + '" target="_blank" rel="noopener noreferrer">// FACEBOOK</a>' +
+            '<a href="' + SITE.x + '" target="_blank" rel="noopener noreferrer">// X</a></div>';
+        return html;
+    }
 
-        '<li class="menu-item' + act(path === '/') + '">' +
-        '<a href="/index.html" class="nav-link"><span class="node-num">[01]</span> HOME</a></li>' +
+    var nav = document.getElementById('siteNav');
+    if (nav) { nav.innerHTML = buildNav(); }
 
-        '<li class="menu-item has-dropdown' + act(inProjects) + '">' +
-        '<a href="/projects.html" class="nav-link mobile-expandable"><span class="node-num">[02]</span> PROJECTS</a>' +
-        '<ul class="dropdown-level-1">' +
-        '<li class="dropdown-item has-sub-dropdown' + act(inDead) + '">' +
-        '<a href="/deaddrop/index.html" class="sub-nav-link mobile-expandable">&gt; DEAD DROP</a>' +
-        '<ul class="dropdown-level-2">' +
-        '<li class="' + (path === '/deaddrop/vol1' ? 'active' : '') + '"><a href="/deaddrop/vol1.html" class="vol-link">&raquo; ' + LABELS.vol1 + '</a></li>' +
-        '<li class="' + (path === '/deaddrop/vol2' ? 'active' : '') + '"><a href="/deaddrop/vol2.html" class="vol-link">&raquo; ' + LABELS.vol2 + '</a></li>' +
-        '</ul></li>' + vanguardHtml + '</ul></li>' +
+    /* ---------- background layer + top bar (phone) ---------- */
+    var layer = document.createElement('div');
+    layer.className = 'bg-layer';
+    layer.setAttribute('aria-hidden', 'true');
+    document.body.insertBefore(layer, document.body.firstChild);
+    if (!document.body.getAttribute('data-bg')) { document.body.setAttribute('data-bg', 'wall'); }
 
-        '<li class="menu-item' + act(path === '/chronicles') + '">' +
-        '<a href="/chronicles.html" class="nav-link"><span class="node-num">[03]</span> ' + LABELS.news + '</a></li>' +
+    var bar = document.createElement('header');
+    bar.className = 'topbar';
+    bar.innerHTML = '<a class="topbar-brand" href="/index.html">' + SITE.name + '</a>' +
+        '<button type="button" class="topbar-btn" aria-expanded="false" aria-controls="siteNav">[ &equiv; MENU ]</button>';
+    document.body.insertBefore(bar, layer.nextSibling);
 
-        '<li class="menu-item has-dropdown' + act(inMedia) + '">' +
-        '<a href="/media.html" class="nav-link mobile-expandable"><span class="node-num">[04]</span> MEDIA</a>' +
-        '<ul class="dropdown-level-1">' +
-        '<li><a href="/media/music.html" class="sub-nav-link">&raquo; MUSIC</a></li>' +
-        '<li><a href="/media/video.html" class="sub-nav-link">&raquo; VIDEO</a></li>' +
-        '<li><a href="/media/viewer.html" class="sub-nav-link">&raquo; VIEWER</a></li>' +
-        '</ul></li>' +
+    /* ---------- breadcrumb: trail built from the menu ---------- */
+    function trail() {
+        var t = null;
+        MENU.forEach(function (it) {
+            if (t) { return; }
+            if (same(it.href) && it.href !== '/index.html') { t = [{ l: it.label, h: null }]; return; }
+            (it.groups || []).forEach(function (g) {
+                if (t) { return; }
+                if (g.label && same(g.href)) { t = [{ l: it.label, h: it.href }, { l: g.label, h: null }]; return; }
+                (g.items || []).forEach(function (s) {
+                    if (t) { return; }
+                    if (same(s.href)) {
+                        t = [{ l: it.label, h: it.href }];
+                        if (g.label) { t.push({ l: g.label, h: g.href }); }
+                        t.push({ l: s.label, h: null });
+                    }
+                });
+            });
+        });
+        return t;
+    }
 
-        '<li class="menu-item' + act(path === '/about') + '">' +
-        '<a href="/about.html" class="nav-link"><span class="node-num">[05]</span> ABOUT US</a></li>' +
+    function buildCrumbs() {
+        var el = document.getElementById('crumbs');
+        if (!el) { return; }
+        var t = trail();
+        if (!t) { el.hidden = true; return; }
+        var html = '<ol><li><a href="/index.html">' + SITE.name + '</a></li>';
+        t.forEach(function (c, i) {
+            html += '<li' + (i === t.length - 1 ? ' aria-current="page"' : '') + '>' +
+                (c.h && i < t.length - 1 ? '<a href="' + c.h + '">' + esc(c.l) + '</a>' : esc(c.l)) + '</li>';
+        });
+        el.setAttribute('aria-label', 'Breadcrumb');
+        el.innerHTML = html + '</ol>';
+    }
 
-        '<li class="menu-item' + act(path === '/contact') + '">' +
-        '<a href="/contact.html" class="nav-link"><span class="node-num">[06]</span> CONTACT</a></li>' +
-
-        '</ul>';
-
-    var navEl = document.getElementById('globalNav');
-    if (navEl) { navEl.innerHTML = navHtml; }
-
-    /* ---------- FOOTER ---------- */
+    /* ---------- footer ---------- */
     function buildFooter() {
         var f = document.getElementById('siteFooter');
         if (!f) { return; }
-        function legal(href, label, isCurrent) {
-            return '<a href="' + href + '" class="legal-link"' +
-                (isCurrent ? ' style="color: var(--text-colorless);"' : '') + '>' + label + '</a>';
-        }
-        f.innerHTML =
-            '<div class="hud-status-bar"><span class="status-indicator"></span> // SYS_STATUS: OPERATIONAL [MAGMA_ACTIVE]</div>' +
-            '<div class="legal-bindings">' +
-            legal('/terms.html', '// LEGAL_BINDINGS', path === '/terms') +
-            legal('/privacy.html', '// DATA_ENCRYPTION_POLICY', path === '/privacy') +
-            legal('/cookies.html', '// SIGNAL_TRACKING_PROTOCOL', path === '/cookies') +
-            '</div>';
+        f.innerHTML = '<span><span class="status-dot"></span>SYS_STATUS: OPERATIONAL // &copy; ' + SITE.year + ' ' + SITE.name + '</span>' +
+            '<nav aria-label="Footer"><a href="/legal.html">// LEGAL</a>' +
+            '<a href="' + SITE.facebook + '" target="_blank" rel="noopener noreferrer">// FACEBOOK</a>' +
+            '<a href="' + SITE.x + '" target="_blank" rel="noopener noreferrer">// X</a></nav>';
     }
 
-    /* ---------- MOBILE MENU ---------- */
-    function initMobile() {
-        var nav = document.getElementById('globalNav');
-        var btn = document.querySelector('.mobile-bunker-toggle');
+    /* ---------- menu behaviour ---------- */
+    function initMenu() {
+        var btn = document.querySelector('.topbar-btn');
         if (!nav || !btn) { return; }
 
-        btn.setAttribute('aria-controls', 'globalNav');
-        btn.setAttribute('aria-expanded', 'false');
-
-        function closeDropdowns() {
-            var open = nav.querySelectorAll('.dropdown-open');
-            for (var i = 0; i < open.length; i++) { open[i].classList.remove('dropdown-open'); }
-        }
-
         function setOpen(open) {
-            nav.classList.toggle('mobile-open', open);
-            btn.textContent = open ? '[ X ] CLOSE_MENU' : '[ = ] SYS_MENU';
-            btn.style.color = open ? '#FF4500' : '#ffffff';
+            nav.classList.toggle('is-open', open);
+            document.body.classList.toggle('menu-open', open && window.innerWidth < 1024);
             btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-            if (open) {
-                /* auto-expand the branch of the page we are on */
-                var branches = nav.querySelectorAll('.menu-item.active > .dropdown-level-1, .dropdown-item.active > .dropdown-level-2');
-                for (var i = 0; i < branches.length; i++) { branches[i].classList.add('dropdown-open'); }
-            } else {
-                closeDropdowns();
-            }
+            btn.innerHTML = open ? '[ X ] CLOSE' : '[ &equiv; MENU ]';
         }
+        btn.addEventListener('click', function () { setOpen(!nav.classList.contains('is-open')); });
 
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            setOpen(!nav.classList.contains('mobile-open'));
-        });
-
-        /* First tap on PROJECTS / DEAD DROP / MEDIA opens its submenu,
-           second tap follows the link. */
+        /* arrows open/close one submenu (phone, tablet, touch) */
         nav.addEventListener('click', function (e) {
-            if (!isMobile()) { return; }
-            var link = e.target.closest ? e.target.closest('a.mobile-expandable') : null;
-            if (!link) { return; }
-            var sub = link.nextElementSibling;
-            if (sub && !sub.classList.contains('dropdown-open')) {
-                e.preventDefault();
-                sub.classList.add('dropdown-open');
-            }
+            var t = e.target.closest ? e.target.closest('.nav-toggle') : null;
+            if (!t) { return; }
+            var item = t.parentNode;
+            var open = !item.classList.contains('is-open');
+            item.classList.toggle('is-open', open);
+            t.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
 
-        /* tap outside = close */
-        document.addEventListener('click', function (e) {
-            if (isMobile() && nav.classList.contains('mobile-open') &&
-                !nav.contains(e.target) && !btn.contains(e.target)) {
-                setOpen(false);
-            }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && nav.classList.contains('is-open')) { setOpen(false); btn.focus(); }
+        });
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 1024 && nav.classList.contains('is-open')) { setOpen(false); }
         });
     }
 
-    /* ---------- DESKTOP PARALLAX (only on pages that had it before) ---------- */
-    function initParallax() {
-        var b = document.body;
-        if (!(b.classList.contains('home-page') || b.hasAttribute('data-parallax'))) { return; }
-        if (!window.matchMedia('(min-width: 1024px)').matches) { return; }
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
-        var bg = document.querySelector('.bunker-bg-overlay');
-        var side = document.querySelector('.sidebar-nav');
-        if (!bg || !side) { return; }
-        side.style.transition = 'transform 0.1s ease-out';
-        window.addEventListener('mousemove', function (e) {
-            var x = e.clientX / window.innerWidth - 0.5;
-            var y = e.clientY / window.innerHeight - 0.5;
-            bg.style.transform = 'translate(' + (x * -20) + 'px, ' + (y * -20) + 'px)';
-            side.style.transform = 'translate(' + (x * 10) + 'px, ' + (y * 10) + 'px)';
-        });
-    }
-
-
-    /* ---------- 18+ NOTICE (shown once per browser) ---------- */
-    function initAgeGate() {
-        var gated = false;
-        for (var g = 0; g < ADULT_PATHS.length; g++) {
-            if (path.indexOf(ADULT_PATHS[g]) === 0) { gated = true; break; }
+    /* ---------- images fade in ---------- */
+    function initFade() {
+        var imgs = document.querySelectorAll('img.fade');
+        for (var i = 0; i < imgs.length; i++) {
+            (function (im) {
+                if (im.complete && im.naturalWidth) { im.classList.add('is-loaded'); return; }
+                im.addEventListener('load', function () { im.classList.add('is-loaded'); });
+                im.addEventListener('error', function () { im.classList.add('is-loaded'); });
+            })(imgs[i]);
         }
-        if (!gated) { return; }
+    }
 
+    /* ---------- 18+ notice ----------
+       Shown once per browser, only on ADULT_PATHS.
+       Testing: open any page with ?gate=1 to force it, even if you already confirmed. */
+    function initAgeGate() {
         var KEY = 'vacomics_18plus';
-        try { if (window.localStorage.getItem(KEY) === '1') { return; } } catch (e) { /* storage blocked: show it */ }
-
-        var css = document.createElement('style');
-        css.textContent =
-            '.age-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,0.96);}' +
-            '.age-gate-box{position:relative;width:100%;max-width:520px;padding:38px 32px 30px;background:#050505;border:1px solid rgba(255,69,0,0.4);box-shadow:0 0 30px rgba(255,69,0,0.15);text-align:center;font-family:Arial,sans-serif;}' +
-            '.age-gate-tag{position:absolute;top:-10px;left:20px;background:#050505;padding:0 10px;font-family:"Courier New",Courier,monospace;font-size:11px;letter-spacing:1px;color:#FF4500;}' +
-            '.age-gate-box h2{margin:0 0 14px;font-size:22px;letter-spacing:3px;text-transform:uppercase;color:#ffffff;}' +
-            '.age-gate-box p{margin:0 0 26px;font-size:15px;line-height:1.6;color:#dddddd;}' +
-            '.age-gate-actions{display:flex;flex-wrap:wrap;gap:12px;}' +
-            '.age-btn{flex:1 1 200px;display:block;padding:14px 16px;background:transparent;border:1px solid #ffffff;color:#ffffff;font-family:"Courier New",Courier,monospace;font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all 0.3s ease;}' +
-            '.age-btn-enter{border-color:#FF4500;color:#FF4500;}' +
-            '.age-btn:hover,.age-btn:focus{background:#000000;border-color:#FF4500;color:#FF4500;box-shadow:0 0 15px rgba(255,69,0,0.3);outline:none;}';
-        document.head.appendChild(css);
+        var forced = /[?&]gate=1\b/.test(location.search);
+        var gated = false;
+        for (var i = 0; i < ADULT_PATHS.length; i++) { if (path.indexOf(norm(ADULT_PATHS[i])) === 0) { gated = true; break; } }
+        if (!gated && !forced) { return; }
+        if (!forced) { try { if (window.localStorage.getItem(KEY) === '1') { return; } } catch (e) { /* storage blocked: show it */ } }
 
         var gate = document.createElement('div');
         gate.className = 'age-gate';
@@ -222,38 +236,31 @@
         gate.setAttribute('aria-modal', 'true');
         gate.setAttribute('aria-labelledby', 'ageGateTitle');
         gate.innerHTML =
-            '<div class="age-gate-box">' +
-            '<div class="age-gate-tag">// RESTRICTED_ACCESS</div>' +
+            '<div class="age-gate-box"><div class="tag">// RESTRICTED_ACCESS</div>' +
             '<h2 id="ageGateTitle">Mature content // 18+</h2>' +
-            '<p>This website and the Dead Drop comics contain graphic violence, explicit language and mature themes. By entering you confirm that you are at least 18 years old.</p>' +
-            '<div class="age-gate-actions">' +
-            '<button type="button" class="age-btn age-btn-enter">[ I AM 18+ // ENTER ]</button>' +
-            '<a class="age-btn" href="https://www.google.com/" rel="noopener">[ LEAVE ]</a>' +
-            '</div></div>';
+            '<p>This part of the website and the Dead Drop comics contain graphic violence, explicit language and mature themes. By entering you confirm that you are at least 18 years old.</p>' +
+            '<div class="age-gate-actions"><button type="button" class="btn btn--primary" id="ageEnter">I AM 18+ // ENTER</button>' +
+            '<a class="btn" href="https://www.google.com/" rel="noopener">LEAVE</a></div></div>';
         document.body.appendChild(gate);
+        document.body.classList.add('gate-open');
 
-        var prevOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-
-        var enter = gate.querySelector('.age-btn-enter');
+        var enter = document.getElementById('ageEnter');
         enter.addEventListener('click', function () {
             try { window.localStorage.setItem(KEY, '1'); } catch (e) { /* ignore */ }
             document.body.removeChild(gate);
-            document.body.style.overflow = prevOverflow;
+            document.body.classList.remove('gate-open');
         });
         enter.focus();
     }
 
     function init() {
+        buildCrumbs();
         buildFooter();
-        initMobile();
-        initParallax();
+        initMenu();
+        initFade();
         initAgeGate();
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
+    else { init(); }
 })();
