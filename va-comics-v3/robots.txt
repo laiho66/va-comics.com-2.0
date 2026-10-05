@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /components.html
-Disallow: /_template.html
-
-Sitemap: https://va-comics.com/sitemap.xml
