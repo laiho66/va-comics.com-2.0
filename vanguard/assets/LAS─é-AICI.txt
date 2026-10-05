@@ -1,0 +1,7 @@
+VANGUARD CHRONICLES: imagini
+============================
+  covers/book1.webp   coperta Book 1 (864x1216), pusă deja
+  key-art.webp        imaginea seriei (1200x1500), pusă deja
+  characters/         marcus-reed.webp, kira-mercer.webp, malakh.webp (600x900), puse deja
+  og-vanguard.png     1200x630, previzualizarea Facebook (generică)
+  bg-vanguard.webp    opțional, fundal estompat 1920x1080, maxim 60 KB
