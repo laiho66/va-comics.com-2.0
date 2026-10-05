@@ -1,0 +1,68 @@
+VA COMICS v3.2 // CUM O PUBLICI (PE SCURT, ÎN SIGURANȚĂ)
+=========================================================
+Regula de aur: NIMIC nu se schimbă pe site-ul live până nu apeși Merge. Totul se testează întâi pe un
+branch, cu link de preview. Dacă ceva nu-ți place, ștergi branch-ul și site-ul live n-a fost atins.
+
+A. ÎNAINTE (local, în folderul va-comics-v3)
+--------------------------------------------
+1. Imagini de pus la locul lor:
+   - assets/bg-pages.webp                      (zidul cu logo)
+   - assets/hero-desktop.webp, hero-mobile.webp (cele finale; acum sunt temporare)
+   - deaddrop/assets/cover1.webp ... cover13.webp, cover11p1.webp, cover11p2.webp   (FĂCUT: puse de tine)
+   - deaddrop/assets/key-art.webp, bg-deaddrop.webp, og-deaddrop.jpg   (FĂCUT: din hero-ul final Dead Drop)
+2. deaddrop/vol2.html: linkul Amazon eBook al lui #13   (FĂCUT: B0HBG9HZW6)
+3. Citești textele marcate "EDIT" (Home, hub-uri, Book 1) și le schimbi pe cele care nu-ți plac.
+4. Testezi cu Live Server: toate paginile, meniul, bannerul 18+ (adaugă ?gate=1), viewerul, F12 pe telefon.
+
+B. CE URCI ȘI CE NU
+-------------------
+Urci TOT conținutul folderului (inclusiv fișierul _redirects, fără extensie, din rădăcină), MAI PUȚIN:
+   components.html, _template.html, README.txt, PUBLISH.txt, orice fișier .txt "LASĂ-AICI"
+Ștergi din repo (pe branch, după ce preview-ul merge):
+   buncar-admin.html, functions/ (goale), media/assets/*.mp3 și test.webp, test2.png,
+   introd.mp4, introm.mp4, bg-home.webp  (doar după ce vezi că zidul apare din assets/bg-pages.webp)
+Păstrezi neatins: folderele issue din deaddrop/assets (dacă există), cover*.webp, tot ce ține de R2.
+Atenție la Foundry: viewerul (media/viewer.html) are blocul COMICS_DATABASE copiat exact, iar
+chronicles.html are cele două comentarii-marker. Nu le modifica.
+
+C. PUBLICAREA, PAS CU PAS
+-------------------------
+1. GitHub > repo > butonul cu branch-uri > scrii  v3.2  > Create branch from main.
+2. Pe branch-ul v3.2: Add file > Upload files. Tragi conținutul folderului (fișierele și folderele, NU zip-ul).
+   GitHub îți arată ce se înlocuiește. Commit direct pe branch-ul v3.2, nu pe main.
+   (Variantă mai comodă pentru foldere mari: GitHub Desktop. O parcurgem împreună dacă vrei.)
+3. Aștepți bifa verde, deschizi linkul de preview (Cloudflare) și parcurgi lista de la D.
+4. Dacă totul e bine: Compare & pull request > Create > Merge. Site-ul live se actualizează în 1-2 minute.
+5. Dacă ceva nu merge: nu faci Merge. Corectezi pe branch, sau ștergi branch-ul.
+6. După Merge, dacă ai o problemă gravă: Revert pe PR, sau rollback în Cloudflare (Deployments).
+
+D. LISTA DE TEST PE PREVIEW
+---------------------------
+[ ] Home: hero, benzile, News automat, About, Follow
+[ ] Projects: ambele rânduri; click pe fiecare duce în hub
+[ ] Dead Drop: hub, Vol 1, Vol 2 (butoanele), Characters (filtre + dosar)  | apare bannerul 18+ o singură dată
+[ ] Vanguard: hub, Book 1 (cele 3 linkuri Amazon duc pe cartea corectă), Characters  | NU apare 18+
+[ ] Viewer: bibliotecă, deschizi un issue, pagina următoare, bara de jos, sfârșit de issue, Back din browser
+[ ] Video: un clip și playlistul
+[ ] News, About, Contact, Legal (#terms, #privacy, #cookies)
+[ ] Adrese vechi: /terms.html, /privacy.html, /cookies.html, /media/music.html trimit la locul nou
+[ ] Telefon real (nu doar F12): meniu, dosar personaj, viewer cu swipe
+[ ] Lighthouse (Chrome > F12 > Lighthouse > Mobile, în fereastră privată): Home și Viewer
+
+E. DUPĂ PUBLICARE
+-----------------
+1. Google Search Console (proprietatea va-comics.com, deja verificată):
+   a. Sitemaps: adaugi (sau reîncarci) sitemap.xml. Adresa e aceeași ca înainte. După câteva minute trebuie să vezi "Success" și 16 pagini descoperite.
+   b. Inspectarea adreselor: lipești în bara de sus, pe rând, https://va-comics.com/ , /projects , /deaddrop/ , /vanguard/ , /vanguard/book1 , /media/viewer ,
+      apeși "Request indexing" (limita e de câteva zeci pe zi; nu le face pe toate odată dacă dă eroare).
+   c. După 3-7 zile: Pagini (Indexing) > ce e indexat și ce nu. "Page with redirect" și "Alternate page with proper canonical" pentru adresele vechi sunt NORMALE.
+   d. Nu folosi "Removals" pentru adresele vechi: redirectul 301 le mută singur.
+2. Facebook Sharing Debugger: Scrape Again pe https://va-comics.com/ , pe pagina Book 1 și pe /deaddrop/
+3. Foundry: publici o postare de TEST în News, verifici că apare și pe Home, apoi o ștergi
+4. Cloudflare > Caching > Purge Everything, dacă vezi încă pagini vechi
+5. 404.html: devine pagina "Signal lost" doar după o setare în Cloudflare (o facem separat, nu e urgent)
+
+ADRESE VECHI > NOI
+------------------
+/terms -> /legal#terms     /privacy -> /legal#privacy     /cookies -> /legal#cookies     /media/music -> /media     (redirect 301, din fișierul _redirects)
+Celelalte adrese rămân identice, deci Google nu pierde nimic.

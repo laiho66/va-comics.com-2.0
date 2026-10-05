@@ -1,0 +1,9 @@
+FIȘIERE GENERALE ALE SITE-ULUI (folderul assets/)
+==================================================
+Pune aici, cu aceste nume exacte:
+
+  bg-pages.webp      zidul cu logo, 1920x1080, maxim 100 KB (e bg-home.webp de pe site-ul actual, redenumit)
+                     Fără el, paginile au fundal negru simplu (nu se strică nimic).
+  hero-desktop.webp  imaginea mare de pe Home, 1920x1048  (Etapa 2)
+  hero-mobile.webp   varianta verticală pentru telefon, 1080x1350 (Etapa 2)
+  og-home.png        previzualizarea pentru Facebook, 1200x630

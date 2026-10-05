@@ -1,0 +1,7 @@
+DEAD DROP: imagini
+==================
+  cover1.webp ... cover13.webp   coperțile (2:3). Le copiezi din repo-ul tău, deaddrop/assets/
+                                 Pentru #11: cover11p1.webp și cover11p2.webp.   cover13.webp încă trebuie urcat.
+  key-art.webp       1200x1500 (4:5), maxim 200 KB  (Projects, Home, hub)
+  characters/        portretele (puse deja, 11 fișiere)
+  bg-deaddrop.webp   opțional, fundal estompat 1920x1080, maxim 60 KB
