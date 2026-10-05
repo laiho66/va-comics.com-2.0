@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VA Comics // Dead Drop and Vanguard Chronicles</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="VA Comics is an independent studio: Dead Drop, a dark tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
+    <link rel="canonical" href="https://va-comics.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="VA Comics // Dead Drop and Vanguard Chronicles">
+    <meta property="og:description" content="VA Comics is an independent studio: Dead Drop, a dark tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
+    <meta property="og:url" content="https://va-comics.com/">
+    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        { "@type": "Organization", "@id": "https://va-comics.com/#org", "name": "VA Comics", "url": "https://va-comics.com/",
+          "logo": "https://va-comics.com/apple-touch-icon.png",
+          "sameAs": ["https://www.facebook.com/vacomics66", "https://x.com/VAComics"] },
+        { "@type": "WebSite", "@id": "https://va-comics.com/#website", "url": "https://va-comics.com/", "name": "VA Comics", "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" } },
+        { "@type": "ComicSeries", "name": "Dead Drop", "url": "https://va-comics.com/deaddrop/", "genre": "Tech-noir", "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" } },
+        { "@type": "BookSeries", "name": "Vanguard Chronicles", "url": "https://va-comics.com/vanguard/", "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" } }
+      ]
+    }
+    </script>
+    <link rel="preload" as="image" href="/assets/hero-mobile.webp" media="(max-width: 640px)" fetchpriority="high">
+    <link rel="preload" as="image" href="/assets/hero-desktop.webp" media="(min-width: 641px)" fetchpriority="high">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<!-- ======================================================================
+     HOME (Etapa 2)
+     Ce schimbi tu: textele marcate "EDIT". Imaginile: assets/hero-desktop.webp
+     (1920x1048) și assets/hero-mobile.webp (1080x1350). Acum sunt versiuni
+     temporare făcute din poza cu logo; le înlocuiești cu cele finale (aceleași nume).
+     ====================================================================== -->
+<body data-bg="css">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
+    <script src="/site.js"></script>
+
+    <main class="main" id="main">
+
+        <!-- ===== HERO ===== -->
+        <section class="hero" aria-labelledby="homeTitle">
+            <div class="hero-media">
+                <div class="ph">[ HERO IMAGE ]</div>
+                <picture>
+                    <source media="(max-width: 640px)" srcset="/assets/hero-mobile.webp">
+                    <img src="/assets/hero-desktop.webp" alt="The VA Comics logo sprayed on a brick wall in a rainy neon alley" fetchpriority="high" onerror="this.remove()">
+                </picture>
+            </div>
+            <div class="hero-body">
+                <span class="tag">// VA COMICS PRESENTS</span>
+                <!-- EDIT: titlul (maxim 60 de caractere) -->
+                <h1 class="h1" id="homeTitle">Independent comics and illustrated novels</h1>
+                <!-- EDIT: fraza de sub titlu (maxim 160 de caractere) -->
+                <p class="lead">Two worlds, one studio: the dark tech-noir of Dead Drop and the real-world adventures of Vanguard Chronicles.</p>
+                <div class="row">
+                    <a class="btn btn--primary" href="/media/viewer.html">READ DEAD DROP ONLINE</a>
+                    <a class="btn" href="/projects.html">EXPLORE PROJECTS</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PROJECTS (benzile cu ultima apariție) ===== -->
+        <section class="stack">
+            <h2 class="section-label"><span>Projects</span><a href="/projects.html">[ ALL PROJECTS ]</a></h2>
+
+            <!-- EDIT: o linie despre serie (150 de caractere) și "ultima apariție" -->
+            <article class="card card--row card--band">
+                <div class="media ratio-4x5 "><div class="ph">[ DEAD DROP KEY ART<br>deaddrop/assets/key-art.webp ]</div><img class="fade" src="/deaddrop/assets/key-art.webp" alt="Dead Drop key art" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body">
+                    <div class="stack">
+                        <span class="tag">PROJECT_FILE // 01 // FLAGSHIP</span>
+                        <h3 class="h2">Dead Drop</h3>
+                        <div class="chips"><span class="chip">COMIC SERIES</span><span class="chip">18+</span></div>
+                        <p class="small">A violent, uncensored tech-noir. Follow the operatives through the underground of a system in total collapse.</p>
+                        <p class="latest"><b>LATEST_RELEASE //</b> Issue #13 // Open Season</p>
+                    </div>
+                    <div class="row"><a class="btn btn--primary" href="/deaddrop/index.html">ENTER_PROJECT</a></div>
+                </div>
+            </article>
+
+            <article class="card card--row card--band">
+                <div class="media ratio-4x5 "><div class="ph">[ VANGUARD KEY ART ]</div><img class="fade" src="/vanguard/assets/key-art.webp" alt="Vanguard Chronicles: a stone gateway opening on a misty cliff, with a field Jeep in the distance" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body">
+                    <div class="stack">
+                        <span class="tag">PROJECT_FILE // 02</span>
+                        <h3 class="h2">Vanguard Chronicles</h3>
+                        <div class="chips"><span class="chip">ILLUSTRATED NOVELS</span><span class="chip">PG-13</span></div>
+                        <p class="small">Illustrated tech-adventure novels with a historical twist, set in the real world.</p>
+                        <p class="latest"><b>LATEST_RELEASE //</b> Book 1 // The Sunken Pharaoh</p>
+                    </div>
+                    <div class="row"><a class="btn btn--primary" href="/vanguard/index.html">ENTER_PROJECT</a></div>
+                </div>
+            </article>
+        </section>
+
+        <!-- ===== NEWS (apare singură din chronicles.html; dacă nu poate, rămâne cardul de rezervă) ===== -->
+        <section class="stack">
+            <h2 class="section-label"><span>News</span><a href="/chronicles.html">[ ALL NEWS ]</a></h2>
+            <div class="grid grid-2" id="newsList">
+                <a class="card" href="/chronicles.html">
+                    <div class="card-body">
+                        <div class="stack"><span class="tag">REPORT_LOG</span><h3 class="h3">Latest field reports</h3><p class="small">News, updates and behind-the-scenes from VA Comics.</p></div>
+                        <span class="meta">[ READ ]</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== ABOUT + FOLLOW ===== -->
+        <section class="grid grid-2">
+            <div class="panel" data-label="STUDIO_FILE // ABOUT">
+                <div class="stack">
+                    <!-- EDIT: 2 rânduri despre VA Comics (250 de caractere) -->
+                    <p class="copy">VA Comics is an independent studio telling stories that mainstream publishers skip: dark, fast and drawn to the edge of the map.</p>
+                    <div class="row"><a class="btn" href="/about.html">ABOUT US</a></div>
+                </div>
+            </div>
+            <div class="panel" data-label="UPLINK_CHANNELS // FOLLOW">
+                <div class="stack">
+                    <p class="small">News, updates and behind-the-scenes.</p>
+                    <div class="row">
+                        <a class="btn btn--primary" href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">FACEBOOK</a>
+                        <a class="btn" href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">X</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="/assets/news.js" defer></script>
+</body>
+</html>
