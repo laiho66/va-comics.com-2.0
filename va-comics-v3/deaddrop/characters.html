@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dead Drop Characters // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="Meet the characters of Dead Drop: Jaxen Vance, Mia, Leo Cruz, Mace, Volkov and the rest of the operatives, gangs and villains of Terminus City.">
+    <link rel="canonical" href="https://va-comics.com/deaddrop/characters">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="Dead Drop Characters // VA Comics">
+    <meta property="og:description" content="Meet the characters of Dead Drop: the operatives, gangs and villains of Terminus City.">
+    <meta property="og:url" content="https://va-comics.com/deaddrop/characters">
+    <meta property="og:image" content="https://va-comics.com/deaddrop/assets/og-deaddrop.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<!-- ======================================================================
+     DEAD DROP: CHARACTERS (Etapa 3)
+     Personaj nou: copiezi un <article class="card char"> întreg și schimbi:
+        id (numele fișierului, fără .webp), data-name, data-label (facțiunea afișată),
+        data-faction (cheia filtrului; mai multe separate prin spațiu), data-code (numele de cod, opțional),
+        poza (deaddrop/assets/characters/NUME.webp), numele și textul din <div class="char-bio">.
+     Facțiune nouă: adaugi un buton în #charFilters și un rând în #factionInfo.
+     Portretele: 600x900, WebP, sub 80 KB.
+     ====================================================================== -->
+<body data-bg="deaddrop">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
+    <script src="/site.js"></script>
+
+    <main class="main" id="main">
+
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">Characters</h1><span class="chip">18+</span></div>
+            <!-- EDIT: o linie de introducere (120 de caractere) -->
+            <p class="lead">The operatives, the gangs and the people caught in between.</p>
+        </div>
+
+        <!-- ===== filtre pe facțiune (numerele se calculează singure) ===== -->
+        <div class="chips" id="charFilters" role="group" aria-label="Filter by faction">
+            <button type="button" class="chip chip--active" data-filter="all">ALL</button>
+            <button type="button" class="chip" data-filter="iron-kings">IRON KINGS</button>
+            <button type="button" class="chip" data-filter="krest">KREST</button>
+            <button type="button" class="chip" data-filter="the-firm">THE FIRM</button>
+            <button type="button" class="chip" data-filter="other">OTHER</button>
+        </div>
+
+        <!-- descrierile facțiunilor: apar când alegi o facțiune. Rând gol = nu apare bandă. -->
+        <div id="factionInfo" hidden>
+            <div data-faction="iron-kings" data-name="IRON KINGS">The gang that keeps order in the Slums, answering to Leo Cruz. Every member carries a gothic IK tattoo on the back of the right hand.</div>
+            <div data-faction="krest" data-name="KREST">An insurgent crew from the industrial district. They wear gas masks and long slickers, and they win by choking a fight in toxic smoke.</div>
+            <div data-faction="the-firm" data-name="THE FIRM"></div>
+        </div>
+        <div class="faction-strip" id="factionStrip" hidden><span class="tag"></span><p class="small"></p></div>
+
+        <!-- ===== grila ===== -->
+        <div class="grid grid-4" id="charGrid">
+            <article class="card char" id="jaxen-vance" data-name="Jaxen Vance" data-label="PROTAGONIST" data-faction="other" data-code="Dead Drop" tabindex="0" role="button" aria-label="Open the file of Jaxen Vance">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/jaxen-vance.webp" alt="Portrait of Jaxen Vance" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">PROTAGONIST</span>
+                    <h3 class="h3">Jaxen Vance</h3>
+                    <span class="meta">[ Dead Drop ]</span>
+                </div>
+                <div class="char-bio" hidden>Born in the Slums, Jaxen was a courier hunting cash for his father’s medicine. When an experimental payload detonated, his body became a walking kinetic reactor. Bound to the Revenant suit—a semi-symbiotic containment unit—he must burn that energy off before a 200% overload levels the block.</div>
+            </article>
+            <article class="card char" id="mia-vance" data-name="Mia Vance" data-label="TACTICAL OVERWATCH" data-faction="other" data-code="Cipher" tabindex="0" role="button" aria-label="Open the file of Mia Vance">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/mia-vance.webp" alt="Portrait of Mia Vance" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">TACTICAL OVERWATCH</span>
+                    <h3 class="h3">Mia Vance</h3>
+                    <span class="meta">[ Cipher ]</span>
+                </div>
+                <div class="char-bio" hidden>Jaxen’s sharp-tongued sister and tactical lifeline. Armed with high-tier tech skills from her college days, Mia stepped away from a normal future to care for their sick father. From the Foundry, she slices city networks to keep Jaxen breathing in the dark.</div>
+            </article>
+            <article class="card char" id="elias-vance" data-name="Elias Vance" data-label="FAMILY" data-faction="other" tabindex="0" role="button" aria-label="Open the file of Elias Vance">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/elias-vance.webp" alt="Portrait of Elias Vance" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">FAMILY</span>
+                    <h3 class="h3">Elias Vance</h3>
+                    
+                </div>
+                <div class="char-bio" hidden>The quiet center of the Vance family. Tied to an oxygen concentrator in a decaying flat, Elias carries the weight of a broken city in silence. Even with fading breath, his concern never wavers from his children.</div>
+            </article>
+            <article class="card char" id="silas-redfern" data-name="Silas Redfern" data-label="TERMINUS POLICE DEPARTMENT" data-faction="other" tabindex="0" role="button" aria-label="Open the file of Silas Redfern">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/silas-redfern.webp" alt="Portrait of Silas Redfern" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">TERMINUS POLICE DEPARTMENT</span>
+                    <h3 class="h3">Silas Redfern</h3>
+                    
+                </div>
+                <div class="char-bio" hidden>A cynical veteran detective who reads crime scenes like bloody confessions. Redfern believes the badge is the only thing stalling total collapse—and that masked vigilantes are just criminals waiting for a body count.</div>
+            </article>
+            <article class="card char" id="leo-cruz" data-name="Leo Cruz" data-label="THE FIRM / IRON KINGS" data-faction="the-firm iron-kings" data-code="The Man" tabindex="0" role="button" aria-label="Open the file of Leo Cruz">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/leo-cruz.webp" alt="Portrait of Leo Cruz" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">THE FIRM / IRON KINGS</span>
+                    <h3 class="h3">Leo Cruz</h3>
+                    <span class="meta">[ The Man ]</span>
+                </div>
+                <div class="char-bio" hidden>Polished philanthropist by day, ruthless apex predator by night. Behind a pristine white suit and a platinum coin, Cruz orchestrates the city’s underworld with corporate precision. In Terminus, loyalty has an invoice.</div>
+            </article>
+            <article class="card char" id="mace" data-name="Mace" data-label="IRON KINGS" data-faction="iron-kings" tabindex="0" role="button" aria-label="Open the file of Mace">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/mace.webp" alt="Portrait of Mace" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">IRON KINGS</span>
+                    <h3 class="h3">Mace</h3>
+                    
+                </div>
+                <div class="char-bio" hidden>Leo Cruz’s blunt instrument and warlord of the Slums. Built like a reinforced bunker and twice as unforgiving, Mace commands the Iron Kings with iron-clad military brutality. When he moves, bones shatter.</div>
+            </article>
+            <article class="card char" id="volkov" data-name="Volkov" data-label="KREST" data-faction="krest" tabindex="0" role="button" aria-label="Open the file of Volkov">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/volkov.webp" alt="Portrait of Volkov" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">KREST</span>
+                    <h3 class="h3">Volkov</h3>
+                    
+                </div>
+                <div class="char-bio" hidden>Patriarch of Krest, forged in the toxic fumes of the industrial ruins. Cold, calculating, and relentlessly patient, Volkov wages asymmetrical guerrilla warfare designed to cut rival syndicates off at the neck.</div>
+            </article>
+            <article class="card char" id="niko-chen" data-name="Nikolai Chen" data-label="KREST" data-faction="krest" data-code="Niko" tabindex="0" role="button" aria-label="Open the file of Nikolai Chen">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/niko-chen.webp" alt="Portrait of Nikolai Chen" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">KREST</span>
+                    <h3 class="h3">Nikolai Chen</h3>
+                    <span class="meta">[ Niko ]</span>
+                </div>
+                <div class="char-bio" hidden>Volkov’s attack dog. Fast, reckless, and operating on sheer adrenaline, Niko orchestrates bloody diversions and close-quarters chaos, clearing the kill zone before the smoke even begins to settle.</div>
+            </article>
+            <article class="card char" id="arlo-marstersen" data-name="Arlo Marstersen" data-label="THE FIRM" data-faction="the-firm" data-code="The Chemist" tabindex="0" role="button" aria-label="Open the file of Arlo Marstersen">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/arlo-marstersen.webp" alt="Portrait of Arlo Marstersen" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">THE FIRM</span>
+                    <h3 class="h3">Arlo Marstersen</h3>
+                    <span class="meta">[ The Chemist ]</span>
+                </div>
+                <div class="char-bio" hidden>A disgraced corporate biochemist trapped by his own lethal creations. Marstersen’s hands shake with nervous ruin until he touches a beaker—delivering volatile street formulas with surgical, unhinged perfection.</div>
+            </article>
+            <article class="card char" id="the-surgeon" data-name="The Surgeon" data-label="INDEPENDENT" data-faction="other" data-code="The Surgeon" tabindex="0" role="button" aria-label="Open the file of The Surgeon">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/the-surgeon.webp" alt="Portrait of The Surgeon" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">INDEPENDENT</span>
+                    <h3 class="h3">The Surgeon</h3>
+                    <span class="meta">[ The Surgeon ]</span>
+                </div>
+                <div class="char-bio" hidden>A cold sociopath draped in a midnight coat and an antique plague mask trailing pale blue vapor. He doesn’t ask questions, pick sides, or care who bleeds. As long as the price is right, he executes every contract with clinical, emotionless precision.</div>
+            </article>
+            <article class="card char" id="the-architect" data-name="The Architect" data-label="OMNI CORP / OMEGA GROUP" data-faction="other" tabindex="0" role="button" aria-label="Open the file of The Architect">
+                <div class="media ratio-2x3"><div class="ph">[ PORTRAIT<br>600 × 900 ]</div><img class="fade" src="/deaddrop/assets/characters/the-architect.webp" alt="Portrait of The Architect" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body char-meta">
+                    <span class="tag">OMNI CORP / OMEGA GROUP</span>
+                    <h3 class="h3">The Architect</h3>
+                    
+                </div>
+                <div class="char-bio" hidden>Dead Drop’s arch-nemesis. A shadowy mastermind behind the nightmare science of Omni Corp and the Omega Group, including Project Chimera.</div>
+            </article>
+        </div>
+
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="/assets/characters.js" defer></script>
+</body>
+</html>
