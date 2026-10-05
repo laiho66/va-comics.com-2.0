@@ -3,148 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // PROJECTS // ARCHIVE_FILES</title>
-    <!-- SEO:START -->
-    <meta name="description" content="Explore the VA Comics projects. Dead Drop: a violent, uncensored tech-noir comic series, Volumes 1 and 2 available now.">
+    <title>Projects // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="Explore the VA Comics projects: Dead Drop, a violent tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
     <link rel="canonical" href="https://va-comics.com/projects">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
     <meta property="og:title" content="Projects // VA Comics">
-    <meta property="og:description" content="Explore the VA Comics projects. Dead Drop: a violent, uncensored tech-noir comic series, Volumes 1 and 2 available now.">
+    <meta property="og:description" content="Explore the VA Comics projects: Dead Drop, a violent tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
     <meta property="og:url" content="https://va-comics.com/projects">
-    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- SEO:END -->
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            width: 100%;
-            max-width: 1200px;
-        }
 
-        .project-card {
-            padding: 20px;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .project-card:hover {
-            border-color: var(--magma-orange) !important;
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .project-cover-preview {
-            width: 100%;
-            height: 400px;
-            background-color: #000000;
-            border: 1px solid #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .project-cover-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .project-info h2 {
-            font-size: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            color: var(--text-colorless);
-        }
-
-        .project-info p {
-            font-size: 14px;
-            color: var(--terminal-gray);
-            line-height: 1.6;
-            margin-bottom: 20px;
-            height: 70px;
-            overflow: hidden;
-        }
-
-        .btn-enter {
-            display: block;
-            text-align: center;
-            background: transparent;
-            border: 1px solid var(--terminal-gray);
-            color: var(--text-colorless);
-            text-decoration: none;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-        }
-
-        .project-card:hover .btn-enter {
-            border-color: var(--magma-orange);
-            color: var(--magma-orange);
-            background: #000;
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
-<body class="content-page">
 
-    <div class="bunker-bg-overlay"></div>
+<!-- ======================================================================
+     PROJECTS (Etapa 2). Un singur buton pe proiect; "Read" și "Get" stau în hub-uri.
+     EDIT: textele (descrierea: 200 de caractere) și etichetele (3-4 pe proiect).
+     Proiect nou = copiezi un <article class="card card--row"> întreg.
+     ====================================================================== -->
+<body data-bg="wall">
 
-    <button class="mobile-bunker-toggle">
-        [ = ] SYS_MENU
-    </button>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="os-container">
-        
-        <nav class="sidebar-nav" id="globalNav"></nav>
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
     <script src="/site.js"></script>
 
-        <div class="content-wrapper">
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-cover-preview">
-                        <img src="deaddrop/assets/deaddroppj.webp" alt="Dead Drop Vol 1 Cover" onerror="this.src='https://via.placeholder.com/300x400/050505/ff4500?text=DEAD+DROP'">
-                    </div>
-                    <div class="project-info">
-                        <h2>DEAD DROP Comic books</h2>
-                        <p>A violent, uncensored tech-noir. Follow the operatives through the underground of a system in total collapse. Volumes 1 and 2 available now.</p>
-                        <a href="/deaddrop/index.html" class="btn-enter">[ ACCESS_DATABASE ]</a>
-                    </div>
-                </div>
+    <main class="main" id="main">
 
-                <!-- VANGUARD CHRONICLES CARD -->
-                <div class="project-card">
-                    <div class="project-cover-preview">
-                        <img src="vanguard/assets/covers/book1.webp" alt="The Sunken Pharaoh, Vanguard Chronicles Book 1 cover" style="object-fit: contain;">
-                    </div>
-                    <div class="project-info">
-                        <h2>VANGUARD CHRONICLES Illustrated novels</h2>
-                        <p>Illustrated tech-adventure novels with a historical twist, set in the real world. Book 1: The Sunken Pharaoh, out now.</p>
-                        <a href="/vanguard/index.html" class="btn-enter">[ ACCESS_ARCHIVE ]</a>
-                    </div>
-                </div>
-            </div>
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <h1 class="h1">Projects</h1>
+            <p class="lead">Two series, one studio.</p>
         </div>
 
-        <footer class="bunker-footer" id="siteFooter"></footer>
+        <article class="card card--row">
+            <div class="media ratio-4x5 "><div class="ph">[ DEAD DROP KEY ART<br>deaddrop/assets/key-art.webp ]</div><img class="fade" src="/deaddrop/assets/key-art.webp" alt="Dead Drop key art" loading="lazy" onerror="this.remove()"></div>
+            <div class="card-body">
+                <div class="stack">
+                    <span class="tag">PROJECT_FILE // 01 // FLAGSHIP</span>
+                    <h2 class="h2">Dead Drop</h2>
+                    <div class="chips"><span class="chip">COMIC SERIES</span><span class="chip">13 ISSUES</span><span class="chip">2 VOLUMES</span><span class="chip">18+</span></div>
+                    <p class="small">A violent, uncensored tech-noir. Follow the operatives through the underground of a system in total collapse.</p>
+                </div>
+                <div class="row"><a class="btn btn--primary" href="/deaddrop/index.html">ENTER_PROJECT</a></div>
+            </div>
+        </article>
 
-    </div>
+        <article class="card card--row">
+            <div class="media ratio-4x5 "><div class="ph">[ VANGUARD KEY ART ]</div><img class="fade" src="/vanguard/assets/key-art.webp" alt="Vanguard Chronicles: a stone gateway opening on a misty cliff, with a field Jeep in the distance" loading="lazy" onerror="this.remove()"></div>
+            <div class="card-body">
+                <div class="stack">
+                    <span class="tag">PROJECT_FILE // 02</span>
+                    <h2 class="h2">Vanguard Chronicles</h2>
+                    <div class="chips"><span class="chip">ILLUSTRATED NOVELS</span><span class="chip">BOOK 1 OUT NOW</span><span class="chip">PG-13</span></div>
+                    <p class="small">Illustrated tech-adventure novels with a historical twist, set in the real world. Book 1: The Sunken Pharaoh.</p>
+                </div>
+                <div class="row"><a class="btn btn--primary" href="/vanguard/index.html">ENTER_PROJECT</a></div>
+            </div>
+        </article>
 
-    
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
 </body>
 </html>

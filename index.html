@@ -3,245 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // Dead Drop: Independent Tech-Noir Comics</title>
-    <!-- SEO:START -->
-    <meta name="description" content="VA Comics publishes Dead Drop, an independent tech-noir comic series. Read the issues online or get them on Amazon. Mature readers, 18+.">
+    <title>VA Comics // Dead Drop and Vanguard Chronicles</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="VA Comics is an independent studio: Dead Drop, a dark tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
     <link rel="canonical" href="https://va-comics.com/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
-    <meta property="og:title" content="VA Comics // Dead Drop">
-    <meta property="og:description" content="VA Comics publishes Dead Drop, an independent tech-noir comic series. Read the issues online or get them on Amazon. Mature readers, 18+.">
+    <meta property="og:title" content="VA Comics // Dead Drop and Vanguard Chronicles">
+    <meta property="og:description" content="VA Comics is an independent studio: Dead Drop, a dark tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
     <meta property="og:url" content="https://va-comics.com/">
-    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- SEO:END -->
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* ============================================================
-           RESPONSIVE VIDEO BACKGROUND // DESKTOP & MOBILE
-        ============================================================ */
-        body.home-page {
-            background-color: #000000 !important;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
 
-        .bunker-bg-overlay {
-            background-image: none !important;
-            background: #000000 !important;
-            position: fixed;
-            inset: -20px;
-            width: calc(100vw + 40px);
-            height: calc(100vh + 40px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-            transition: transform 0.1s ease-out;
-        }
-
-        .bg-video-stream {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            filter: brightness(1.15) contrast(1.15);
-        }
-
-        /* Automatic switch based on screen width */
-        .video-mobile {
-            display: none;
-        }
-
-        .video-desktop {
-            display: block;
-        }
-
-        @media (max-width: 1023px) {
-            .video-desktop {
-                display: none;
-            }
-            .video-mobile {
-                display: block;
-            }
-        }
-
-        /* ============================================================
-           HERO PANEL (what the site is + main call to action)
-        ============================================================ */
-        .hero-panel {
-            position: relative;
-            max-width: 560px;
-            margin-top: 40px;
-            padding: 36px 34px 30px 34px;
-            background: rgba(0, 0, 0, 0.62);
-            border: 1px solid rgba(255, 69, 0, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .hero-panel::before {
-            content: "TRANSMISSION // INCOMING";
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            background: #050505;
-            padding: 0 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            color: var(--magma-orange);
-            letter-spacing: 1px;
-        }
-
-        .hero-kicker {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--magma-orange);
-        }
-
-        .hero-panel h1 {
-            font-size: 44px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: var(--text-colorless);
-            margin: 8px 0 14px 0;
-        }
-
-        .hero-panel p {
-            font-size: 16px;
-            line-height: 1.65;
-            color: #dddddd;
-            margin-bottom: 26px;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .btn-hero {
-            display: inline-block;
-            padding: 14px 22px;
-            background: transparent;
-            border: 1px solid #ffffff;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-hero.primary {
-            border-color: var(--magma-orange);
-            color: var(--magma-orange);
-        }
-
-        .btn-hero:hover {
-            background: #000000;
-            border-color: var(--magma-orange);
-            color: var(--magma-orange);
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
-        }
-
-        .hero-note {
-            margin-top: 20px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            letter-spacing: 1px;
-            color: var(--terminal-gray);
-        }
-
-        @media (max-width: 1023px) {
-            .hero-panel { margin-top: 0; padding: 28px 22px 24px 22px; }
-            .hero-panel h1 { font-size: 34px; letter-spacing: 4px; }
-            .btn-hero { flex: 1 1 100%; text-align: center; }
-        }
-    </style>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
-        {
-          "@type": "Organization",
-          "@id": "https://va-comics.com/#org",
-          "name": "VA Comics",
-          "url": "https://va-comics.com/",
+        { "@type": "Organization", "@id": "https://va-comics.com/#org", "name": "VA Comics", "url": "https://va-comics.com/",
           "logo": "https://va-comics.com/apple-touch-icon.png",
-          "sameAs": ["https://www.facebook.com/vacomics66"]
-        },
-        {
-          "@type": "WebSite",
-          "@id": "https://va-comics.com/#website",
-          "url": "https://va-comics.com/",
-          "name": "VA Comics",
-          "inLanguage": "en",
-          "publisher": { "@id": "https://va-comics.com/#org" }
-        },
-        {
-          "@type": "ComicSeries",
-          "name": "Dead Drop",
-          "url": "https://va-comics.com/deaddrop/",
-          "genre": "Tech-noir",
-          "inLanguage": "en",
-          "description": "A violent, uncensored tech-noir comic series from VA Comics.",
-          "publisher": { "@id": "https://va-comics.com/#org" }
-        }
+          "sameAs": ["https://www.facebook.com/vacomics66", "https://x.com/VAComics"] },
+        { "@type": "WebSite", "@id": "https://va-comics.com/#website", "url": "https://va-comics.com/", "name": "VA Comics", "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" } },
+        { "@type": "ComicSeries", "name": "Dead Drop", "url": "https://va-comics.com/deaddrop/", "genre": "Tech-noir", "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" } },
+        { "@type": "BookSeries", "name": "Vanguard Chronicles", "url": "https://va-comics.com/vanguard/", "inLanguage": "en",
+          "publisher": { "@id": "https://va-comics.com/#org" } }
       ]
     }
     </script>
+    <link rel="preload" as="image" href="/assets/hero-mobile.webp" media="(max-width: 640px)" fetchpriority="high">
+    <link rel="preload" as="image" href="/assets/hero-desktop.webp" media="(min-width: 641px)" fetchpriority="high">
+    <link rel="stylesheet" href="/style.css">
 </head>
-<body class="home-page">
 
-    <!-- Responsive video background -->
-    <div class="bunker-bg-overlay">
-        <!-- Desktop 16:9 -->
-        <video class="bg-video-stream video-desktop" autoplay muted loop playsinline preload="auto">
-            <source src="introd.mp4" type="video/mp4">
-        </video>
+<!-- ======================================================================
+     HOME (Etapa 2)
+     Ce schimbi tu: textele marcate "EDIT". Imaginile: assets/hero-desktop.webp
+     (1920x1048) și assets/hero-mobile.webp (1080x1350). Acum sunt versiuni
+     temporare făcute din poza cu logo; le înlocuiești cu cele finale (aceleași nume).
+     ====================================================================== -->
+<body data-bg="css">
 
-        <!-- Mobile 9:16 / Vertical -->
-        <video class="bg-video-stream video-mobile" autoplay muted loop playsinline preload="auto">
-            <source src="introm.mp4" type="video/mp4">
-        </video>
-    </div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <button class="mobile-bunker-toggle">
-        [ = ] SYS_MENU
-    </button>
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
+    <script src="/site.js"></script>
 
-    <div class="os-container">
+    <main class="main" id="main">
 
-        <nav class="sidebar-nav" id="globalNav"></nav>
-        <script src="/site.js"></script>
-
-        <div class="hero-panel">
-            <div class="hero-kicker">// VA COMICS PRESENTS</div>
-            <h1>Dead Drop</h1>
-            <p>A violent, uncensored tech-noir comic series from the underground of a collapsing system. Read every available issue online, or grab your copy on Amazon.</p>
-            <div class="hero-actions">
-                <a href="/media/viewer.html?issue=1" class="btn-hero primary">[ READ ISSUE #1 ]</a>
-                <a href="/deaddrop/index.html" class="btn-hero">[ ALL ISSUES ]</a>
+        <!-- ===== HERO ===== -->
+        <section class="hero" aria-labelledby="homeTitle">
+            <div class="hero-media">
+                <div class="ph">[ HERO IMAGE ]</div>
+                <picture>
+                    <source media="(max-width: 640px)" srcset="/assets/hero-mobile.webp">
+                    <img src="/assets/hero-desktop.webp" alt="The VA Comics logo sprayed on a brick wall in a rainy neon alley" fetchpriority="high" onerror="this.remove()">
+                </picture>
             </div>
-            <div class="hero-note">MATURE CONTENT // 18+ // VIEWER DISCRETION IS ADVISED</div>
-        </div>
+            <div class="hero-body">
+                <span class="tag">// VA COMICS PRESENTS</span>
+                <!-- EDIT: titlul (maxim 60 de caractere) -->
+                <h1 class="h1" id="homeTitle">Independent comics and illustrated novels</h1>
+                <!-- EDIT: fraza de sub titlu (maxim 160 de caractere) -->
+                <p class="lead">Two worlds, one studio: the dark tech-noir of Dead Drop and the real-world adventures of Vanguard Chronicles.</p>
+                <div class="row">
+                    <a class="btn btn--primary" href="/media/viewer.html">READ DEAD DROP ONLINE</a>
+                    <a class="btn" href="/projects.html">EXPLORE PROJECTS</a>
+                </div>
+            </div>
+        </section>
 
-        <footer class="bunker-footer" id="siteFooter"></footer>
+        <!-- ===== PROJECTS (benzile cu ultima apariție) ===== -->
+        <section class="stack">
+            <h2 class="section-label"><span>Projects</span><a href="/projects.html">[ ALL PROJECTS ]</a></h2>
 
-    </div>
+            <!-- EDIT: o linie despre serie (150 de caractere) și "ultima apariție" -->
+            <article class="card card--row card--band">
+                <div class="media ratio-4x5 "><div class="ph">[ DEAD DROP KEY ART<br>deaddrop/assets/key-art.webp ]</div><img class="fade" src="/deaddrop/assets/key-art.webp" alt="Dead Drop key art" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body">
+                    <div class="stack">
+                        <span class="tag">PROJECT_FILE // 01 // FLAGSHIP</span>
+                        <h3 class="h2">Dead Drop</h3>
+                        <div class="chips"><span class="chip">COMIC SERIES</span><span class="chip">18+</span></div>
+                        <p class="small">A violent, uncensored tech-noir. Follow the operatives through the underground of a system in total collapse.</p>
+                        <p class="latest"><b>LATEST_RELEASE //</b> Issue #13 // Open Season</p>
+                    </div>
+                    <div class="row"><a class="btn btn--primary" href="/deaddrop/index.html">ENTER_PROJECT</a></div>
+                </div>
+            </article>
 
+            <article class="card card--row card--band">
+                <div class="media ratio-4x5 "><div class="ph">[ VANGUARD KEY ART ]</div><img class="fade" src="/vanguard/assets/key-art.webp" alt="Vanguard Chronicles: a stone gateway opening on a misty cliff, with a field Jeep in the distance" loading="lazy" onerror="this.remove()"></div>
+                <div class="card-body">
+                    <div class="stack">
+                        <span class="tag">PROJECT_FILE // 02</span>
+                        <h3 class="h2">Vanguard Chronicles</h3>
+                        <div class="chips"><span class="chip">ILLUSTRATED NOVELS</span><span class="chip">PG-13</span></div>
+                        <p class="small">Illustrated tech-adventure novels with a historical twist, set in the real world.</p>
+                        <p class="latest"><b>LATEST_RELEASE //</b> Book 1 // The Sunken Pharaoh</p>
+                    </div>
+                    <div class="row"><a class="btn btn--primary" href="/vanguard/index.html">ENTER_PROJECT</a></div>
+                </div>
+            </article>
+        </section>
+
+        <!-- ===== NEWS (apare singură din chronicles.html; dacă nu poate, rămâne cardul de rezervă) ===== -->
+        <section class="stack">
+            <h2 class="section-label"><span>News</span><a href="/chronicles.html">[ ALL NEWS ]</a></h2>
+            <div class="grid grid-2" id="newsList">
+                <a class="card" href="/chronicles.html">
+                    <div class="card-body">
+                        <div class="stack"><span class="tag">REPORT_LOG</span><h3 class="h3">Latest field reports</h3><p class="small">News, updates and behind-the-scenes from VA Comics.</p></div>
+                        <span class="meta">[ READ ]</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== ABOUT + FOLLOW ===== -->
+        <section class="grid grid-2">
+            <div class="panel" data-label="STUDIO_FILE // ABOUT">
+                <div class="stack">
+                    <!-- EDIT: 2 rânduri despre VA Comics (250 de caractere) -->
+                    <p class="copy">VA Comics is an independent studio telling stories that mainstream publishers skip: dark, fast and drawn to the edge of the map.</p>
+                    <div class="row"><a class="btn" href="/about.html">ABOUT US</a></div>
+                </div>
+            </div>
+            <div class="panel" data-label="UPLINK_CHANNELS // FOLLOW">
+                <div class="stack">
+                    <p class="small">News, updates and behind-the-scenes.</p>
+                    <div class="row">
+                        <a class="btn btn--primary" href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">FACEBOOK</a>
+                        <a class="btn" href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">X</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="/assets/news.js" defer></script>
 </body>
 </html>

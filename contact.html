@@ -3,120 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // CONTACT // UPLINK_TERMINAL</title>
-    <!-- SEO:START -->
-    <meta name="description" content="Contact VA Comics through our official Facebook page for business inquiries, project updates and feedback.">
+    <title>Contact // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="Contact VA Comics through our official Facebook page or X account for business inquiries, project updates and feedback.">
     <link rel="canonical" href="https://va-comics.com/contact">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
     <meta property="og:title" content="Contact // VA Comics">
-    <meta property="og:description" content="Contact VA Comics through our official Facebook page for business inquiries, project updates and feedback.">
+    <meta property="og:description" content="Contact VA Comics through our official Facebook page or X account for business inquiries, project updates and feedback.">
     <meta property="og:url" content="https://va-comics.com/contact">
-    <meta property="og:image" content="https://va-comics.com/og-image.png">
+    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- SEO:END -->
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* CONFIGURAȚIE FORMULAR ȘI CONDUITE DE CONTACT */
-        .contact-container {
-            width: 100%;
-            max-width: 900px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        @media (min-width: 768px) {
-            .contact-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Hover calibrat pentru butonul de terminal Facebook */
-        .btn-facebook-uplink:hover {
-            border-color: var(--magma-orange) !important;
-            color: var(--magma-orange) !important;
-            background: var(--pure-black) !important;
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
-        }
-
-        /* FIX-UL GEOMETRIC MASTER (Alinierea sus, la linie cu meniul) */
-        @media (min-width: 1024px) {
-            .os-container {
-                flex-direction: row;
-                flex-wrap: nowrap;
-                justify-content: flex-start !important;
-                align-items: flex-start !important;
-            }
-            
-            .sidebar-nav {
-                width: 350px;
-                flex-shrink: 0;
-            }
-            
-            .content-wrapper {
-                margin-left: 30px;
-                margin-top: 40px; /* Ancorat la linie cu [01] HOME */
-                width: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
-<body class="content-page">
 
-    <div class="bunker-bg-overlay"></div>
+<!-- ======================================================================
+     CONTACT (Etapa 6). Doar Facebook și X, fără email și fără formular (decizia ta).
+     ====================================================================== -->
+<body data-bg="wall">
 
-    <button class="mobile-bunker-toggle">
-        [ = ] SYS_MENU
-    </button>
+<a class="skip-link" href="#main">Skip to content</a>
 
-    <div class="os-container">
-        
-        <nav class="sidebar-nav" id="globalNav"></nav>
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
     <script src="/site.js"></script>
 
-        <div class="content-wrapper">
-            <div style="width: 100%; max-width: 600px;">
-                
-                <div style="padding: 40px; position: relative; background: rgba(0, 0, 0, 0.85); border: 1px solid var(--dark-fence); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
-                    
-                    <div style="position: absolute; top: -10px; left: 20px; background: #050505; padding: 0 10px; font-family: 'Courier New', Courier, monospace; font-size: 11px; color: var(--magma-orange); letter-spacing: 1px;">
-                        UPLINK_PROTOCOL // DIRECT_CONTACT
-                    </div>
+    <main class="main" id="main">
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">Contact</h1></div>
+        </div>
 
-                    <div style="font-family: Arial, sans-serif; color: #dddddd; line-height: 1.6; text-align: center;">
-                        <h2 style="color: #ffffff; font-size: 20px; margin-top: 10px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
-                            Connect via Social Network
-                        </h2>
-                        
-                        <p style="margin-bottom: 30px; font-size: 14px; color: #aaaaaa;">
-                            For business inquiries, project updates, feedback, or direct communication with VA Comics Studio, please access our official transmission channel on Facebook.
-                        </p>
-
-                        <a href="https://www.facebook.com/vacomics66" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           class="btn-facebook-uplink"
-                           style="display: block; width: 100%; padding: 18px 0; background: transparent; border: 1px solid #ffffff; color: #ffffff; font-family: 'Courier New', Courier, monospace; font-size: 14px; font-weight: bold; text-transform: uppercase; text-decoration: none; letter-spacing: 2px; transition: all 0.3s ease; box-sizing: border-box;">
-                            [ CONNECT_VIA_FACEBOOK ]
-                        </a>
-                    </div>
-
+        <div class="panel" data-label="UPLINK_PROTOCOL // DIRECT_CONTACT">
+            <div class="stack-lg">
+                <div class="stack">
+                    <h2 class="h2">Connect via social networks</h2>
+                    <p class="copy">For business inquiries, project updates, feedback, or direct communication with VA Comics Studio, please use our official channels on Facebook or X.</p>
                 </div>
-
+                <div class="row">
+                    <a class="btn btn--primary" href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">CONNECT_VIA_FACEBOOK</a>
+                    <a class="btn" href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">CONNECT_VIA_X</a>
+                </div>
             </div>
         </div>
 
-        <footer class="bunker-footer" id="siteFooter"></footer>
+    </main>
+</div>
 
-    </div>
-
-    
+<footer class="site-footer" id="siteFooter"></footer>
 </body>
 </html>
