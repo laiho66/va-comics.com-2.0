@@ -68,10 +68,11 @@
                     });
             },
             /* read the freshest copy, change it with fn(text), write it back */
-            update: function (path, fn, message) {
+            update: function (path, fn, message, guard) {
                 var self = this;
                 return self.getFile(path).then(function (cur) {
                     var next = fn(cur.text);
+                    if (guard) { guard(cur.text, next); }   /* throws = nothing is saved */
                     return self.putFile(path, next, cur.sha, message);
                 });
             }

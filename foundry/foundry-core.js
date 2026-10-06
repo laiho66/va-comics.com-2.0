@@ -141,7 +141,40 @@
         return before + row + html.slice(close);
     }
 
+
+    /* ---------------------------- SAFETY CHECKS ----------------------------
+       Before anything is saved, the parts of the page that Foundry must NOT touch are compared with the old copy.
+       If they differ, nothing is saved. */
+    var END_MARK = '<!-- // SFÂRȘIT ZONĂ RESTAURATĂ -->';
+    function newsFrame(html) {
+        var a = MARKER.exec(html), b = html.indexOf(END_MARK);
+        if (!a || b < 0 || b < a.index) { return null; }
+        return [html.slice(0, a.index + a[0].length), html.slice(b)];
+    }
+    function guardNews(oldHtml, newHtml) {
+        var o = newsFrame(oldHtml), n = newsFrame(newHtml);
+        if (!o) { throw new Error('Safety check: chronicles.html on GitHub is missing the Foundry markers. Nothing was saved. Restore the page first.'); }
+        if (!n || o[0] !== n[0] || o[1] !== n[1]) { throw new Error('Safety check: this change would alter the page frame (head, menu or footer). Nothing was saved.'); }
+        if (!/rel="stylesheet"/.test(newHtml) || !/id="siteNav"/.test(newHtml) || !/<body/.test(newHtml)) { throw new Error('Safety check: the page would lose its stylesheet, menu or body. Nothing was saved.'); }
+    }
+    function viewerFrame(html) {
+        var a = html.indexOf('const COMICS_DATABASE'); if (a < 0) { return null; }
+        var b = html.indexOf('\n        };', a); if (b < 0) { return null; }
+        return [html.slice(0, a), html.slice(b)];
+    }
+    function guardViewer(oldHtml, newHtml) {
+        var o = viewerFrame(oldHtml), n = viewerFrame(newHtml);
+        if (!o || !n) { throw new Error('Safety check: COMICS_DATABASE could not be found. Nothing was saved.'); }
+        if (o[0] !== n[0] || o[1] !== n[1]) { throw new Error('Safety check: this change would alter the viewer outside the issue list. Nothing was saved.'); }
+        var before = parseIssues(oldHtml), after = parseIssues(newHtml);
+        if (after.length < before.length) { throw new Error('Safety check: the new list has fewer issues than the old one. Nothing was saved.'); }
+        for (var i = 0; i < before.length; i++) {
+            if (JSON.stringify(before[i]) !== JSON.stringify(after[i])) { throw new Error('Safety check: an existing issue would change. Nothing was saved.'); }
+        }
+    }
+
     return {
+        guardNews: guardNews, guardViewer: guardViewer,
         today: today, newId: newId,
         buildPost: buildPost, listPosts: listPosts, insertPost: insertPost, replacePost: replacePost, deletePost: deletePost,
         parseIssues: parseIssues, addIssue: addIssue, suggestBadge: suggestBadge, suggestFolder: suggestFolder, coverFile: coverFile

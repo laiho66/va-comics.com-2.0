@@ -120,7 +120,7 @@
         if (!confirm((editing ? 'Save the changes to' : 'Publish') + ' "' + p.title + '" on the live site?')) { return; }
         var b = $('btnPublish'); busy(b, true); say('Working...', 'info');
         gh.update(NEWS_FILE, function (text) { return editing ? C.replacePost(text, editing, p) : C.insertPost(text, p); },
-            'Foundry: ' + (editing ? 'edit post - ' : 'new post - ') + p.title)
+            'Foundry: ' + (editing ? 'edit post - ' : 'new post - ') + p.title, C.guardNews)
             .then(function () {
                 say((editing ? 'Saved.' : 'Published.') + ' It is live in about 1-2 minutes at https://va-comics.com/chronicles', 'ok');
                 resetForm(); loadNews();
@@ -130,7 +130,7 @@
         if (!needGh()) { return; }
         if (!confirm('Delete "' + p.title + '" from the live site? (It stays in the GitHub history.)')) { return; }
         busy(btn, true); say('Working...', 'info');
-        gh.update(NEWS_FILE, function (text) { return C.deletePost(text, p.id); }, 'Foundry: delete post - ' + p.title)
+        gh.update(NEWS_FILE, function (text) { return C.deletePost(text, p.id); }, 'Foundry: delete post - ' + p.title, C.guardNews)
             .then(function () { say('Deleted. The site updates in about 1-2 minutes.', 'ok'); if (editingId === p.id) { resetForm(); } loadNews(); })
             .catch(fail).then(function () { busy(btn, false); });
     }
@@ -180,7 +180,7 @@
         var step = cover
             ? readB64(cover).then(function (b64) { return gh.putBinary('deaddrop/assets/' + C.coverFile(it.key) + '.webp', b64, 'Foundry: cover for issue ' + it.key); })
             : Promise.resolve();
-        step.then(function () { return gh.update(VIEWER_FILE, function (t) { return C.addIssue(t, it); }, 'Foundry: add issue ' + it.key + ' - ' + it.title); })
+        step.then(function () { return gh.update(VIEWER_FILE, function (t) { return C.addIssue(t, it); }, 'Foundry: add issue ' + it.key + ' - ' + it.title, C.guardViewer); })
             .then(function () {
                 say('Issue ' + it.key + ' added. The reader shows it in about 1-2 minutes.' + (cover ? '' : ' (No cover yet: add deaddrop/assets/' + C.coverFile(it.key) + '.webp.)'), 'ok');
                 $('iTitle').value = ''; $('iPages').value = ''; $('iCover').value = ''; $('iKey').value = ''; loadIssues();
