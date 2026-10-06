@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundry // VA Comics (internal)</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/foundry/foundry.css">
+</head>
+
+<!-- ======================================================================
+     FOUNDRY v2 (Faza A): postări News (adaugă, editează, șterge) + issue nou în viewer.
+     Se folosește local (Live Server) sau pe site la /foundry, protejată cu Cloudflare Access.
+     Nu conține nicio cheie: tokenul GitHub stă doar în browserul tău (Settings).
+     ====================================================================== -->
+<body data-bg="css">
+<div class="bg-layer" aria-hidden="true"></div>
+
+<main class="fwrap">
+    <header class="fhead">
+        <div class="stack-sm"><span class="tag">// VA_COMICS // INTERNAL</span><h1 class="h1">Foundry</h1></div>
+        <span class="chip" id="connState">NOT CONNECTED</span>
+    </header>
+
+    <div class="chips" id="tabs" role="tablist" aria-label="Sections">
+        <button type="button" class="chip chip--active" data-tab="news" role="tab">NEWS</button>
+        <button type="button" class="chip" data-tab="issues" role="tab">ISSUES</button>
+        <button type="button" class="chip" data-tab="settings" role="tab">SETTINGS</button>
+    </div>
+
+    <div class="fstatus" id="status" role="status" aria-live="polite" hidden></div>
+
+    <!-- ================= NEWS ================= -->
+    <section class="ftab" id="tab-news">
+        <div class="panel" data-label="NEW_TRANSMISSION // NEWS_POST" id="formPanel">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="fTitle">Title</label><input id="fTitle" type="text" maxlength="120" autocomplete="off"></div>
+                    <div class="field"><label for="fDate">Date</label><input id="fDate" type="date"></div>
+                    <div class="field"><label for="fAuthor">Author</label><input id="fAuthor" type="text" maxlength="60" value="Aris"></div>
+                    <div class="field"><label for="fBadge">Badge (small text above the title)</label><input id="fBadge" type="text" maxlength="80" value="TRANSMISSION // DEADDROP BUNKER"></div>
+                </div>
+                <div class="field">
+                    <label for="fBody">Text</label>
+                    <textarea id="fBody"></textarea>
+                    <span class="hint">A blank line starts a new paragraph. Plain text only (links and bold are not supported yet).</span>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn" id="btnPreview">PREVIEW</button>
+                    <button type="button" class="btn btn--primary" id="btnPublish">PUBLISH</button>
+                    <button type="button" class="btn" id="btnCancel" hidden>CANCEL_EDIT</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-box" id="previewBox" hidden>
+            <h2 class="section-label"><span>Preview</span></h2>
+            <div class="chronicles-list" id="preview"></div>
+        </div>
+
+        <div class="stack">
+            <h2 class="section-label"><span>Published posts</span><a href="#" id="reloadNews">[ RELOAD ]</a></h2>
+            <div class="flist" id="postList"><p class="hint">Connect in Settings first.</p></div>
+        </div>
+    </section>
+
+    <!-- ================= ISSUES ================= -->
+    <section class="ftab" id="tab-issues" hidden>
+        <div class="panel" data-label="NEW_ISSUE // READER_DATABASE">
+            <div class="stack">
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="iKey">Key (14, or 14_1 for a part)</label><input id="iKey" type="text" maxlength="12" autocomplete="off"></div>
+                    <div class="field"><label for="iBadge">Badge</label><input id="iBadge" type="text" maxlength="40"></div>
+                    <div class="field"><label for="iPages">Number of pages</label><input id="iPages" type="number" min="1" max="500"></div>
+                </div>
+                <div class="fgrid">
+                    <div class="field"><label for="iTitle">Title</label><input id="iTitle" type="text" maxlength="120" autocomplete="off"></div>
+                    <div class="field"><label for="iFolder">Folder in R2</label><input id="iFolder" type="text" maxlength="60" autocomplete="off"></div>
+                </div>
+                <div class="field">
+                    <label for="iCover">Cover (optional, a .webp file, 2:3)</label>
+                    <input id="iCover" type="file" accept=".webp,image/webp">
+                    <span class="hint">It is saved as deaddrop/assets/coverNN.webp. Without it, the library shows a striped box until you add the cover.</span>
+                </div>
+                <div class="row"><button type="button" class="btn btn--primary" id="btnAddIssue">ADD_ISSUE</button></div>
+                <ol class="steps">
+                    <li>First upload the pages to R2 (drag and drop the folder in the Cloudflare dashboard): <code>page1.webp … pageN.webp</code> in the folder above.</li>
+                    <li>Then add the issue here. The reader shows it in 1-2 minutes.</li>
+                    <li>The card on the volume page (vol2.html, vol3.html) is still edited by hand for now.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="stack">
+            <h2 class="section-label"><span>Issues in the reader</span><a href="#" id="reloadIssues">[ RELOAD ]</a></h2>
+            <div class="flist" id="issueList"><p class="hint">Connect in Settings first.</p></div>
+        </div>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section class="ftab" id="tab-settings" hidden>
+        <div class="panel" data-label="UPLINK_CONFIG // GITHUB">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="sOwner">Owner</label><input id="sOwner" type="text" value="laiho66" autocomplete="off"></div>
+                    <div class="field"><label for="sRepo">Repository</label><input id="sRepo" type="text" value="va-comics.com-2.0" autocomplete="off"></div>
+                    <div class="field"><label for="sBranch">Branch</label><input id="sBranch" type="text" value="main" autocomplete="off"></div>
+                    <div class="field"><label for="sToken">GitHub token</label><input id="sToken" type="password" placeholder="github_pat_..." autocomplete="off"></div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="btnSave">SAVE_AND_TEST</button>
+                    <button type="button" class="btn btn--danger" id="btnForget">FORGET_TOKEN</button>
+                </div>
+                <span class="hint">The token stays only in this browser (local storage). It is never in the site's files and never sent anywhere except to GitHub.</span>
+            </div>
+        </div>
+        <div class="panel" data-label="HOW_TO // MAKE_A_TOKEN">
+            <ol class="steps">
+                <li>GitHub → your picture (top right) → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
+                <li>Name: <code>foundry</code>. Expiration: 90 days (you will make a new one then).</li>
+                <li><b>Repository access</b> → <i>Only select repositories</i> → <code>va-comics.com-2.0</code> (the one with <b>-2.0</b>).</li>
+                <li><b>Permissions</b> → <i>Repository permissions</i> → <b>Contents</b> → <i>Read and write</i>. Nothing else.</li>
+                <li>Generate, copy the token once and paste it above.</li>
+            </ol>
+        </div>
+    </section>
+</main>
+
+<script src="/foundry/foundry-core.js"></script>
+<script src="/foundry/foundry-gh.js"></script>
+<script src="/foundry/foundry.js"></script>
+</body>
+</html>

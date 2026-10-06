@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /components.html
 Disallow: /_template.html
+Disallow: /foundry/
 
 Sitemap: https://va-comics.com/sitemap.xml
