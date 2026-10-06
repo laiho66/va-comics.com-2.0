@@ -187,6 +187,66 @@
             }).catch(fail).then(function () { busy(b, false); });
     });
 
+
+    /* ======================== AI DRAFT (Claude) ======================== */
+    var AIS = 'foundry_v2_ai';
+    var aiCfg = loadAi(), lastBody = null;
+    function loadAi() {
+        var d = { key: '', model: FoundryAI.DEFAULT_MODEL, facts: FoundryAI.STUDIO_FACTS };
+        try { var s = JSON.parse(localStorage.getItem(AIS)); if (s) { for (var k in d) { if (s[k]) { d[k] = s[k]; } } } } catch (e) { /* ignore */ }
+        return d;
+    }
+    function saveAi() { try { localStorage.setItem(AIS, JSON.stringify(aiCfg)); } catch (e) { /* ignore */ } }
+    function claude() { return FoundryAI.make({ key: aiCfg.key, model: aiCfg.model }); }
+    function refreshAiUi() {
+        $('sClaudeKey').value = aiCfg.key; $('sClaudeModel').value = aiCfg.model; $('aiFacts').value = aiCfg.facts;
+        $('aiModelInfo').textContent = aiCfg.key ? 'model: ' + aiCfg.model : 'no key yet: Settings';
+        var improve = $('aiMode').value === 'improve';
+        $('aiKindBox').hidden = improve; $('aiLengthBox').hidden = improve; $('aiIdeaBox').hidden = improve;
+    }
+    $('aiMode').addEventListener('change', refreshAiUi);
+    $('btnSaveAi').addEventListener('click', function () {
+        aiCfg.key = $('sClaudeKey').value.trim(); aiCfg.model = $('sClaudeModel').value.trim() || FoundryAI.DEFAULT_MODEL; saveAi(); refreshAiUi();
+        say('AI settings saved in this browser.', 'ok');
+    });
+    $('btnForgetAi').addEventListener('click', function () { aiCfg.key = ''; saveAi(); refreshAiUi(); say('The Claude key was removed from this browser.', 'info'); });
+    $('btnListModels').addEventListener('click', function () {
+        var key = $('sClaudeKey').value.trim() || aiCfg.key;
+        if (!key) { say('Paste the Claude API key first.', 'err'); return; }
+        var b = $('btnListModels'); busy(b, true);
+        FoundryAI.make({ key: key, model: aiCfg.model }).listModels().then(function (ids) {
+            var dl = $('modelList'); dl.innerHTML = '';
+            ids.forEach(function (id) { var o = document.createElement('option'); o.value = id; dl.appendChild(o); });
+            say(ids.length + ' Claude models available. Click the Model box and pick one (the default is fine).', 'ok');
+        }).catch(fail).then(function () { busy(b, false); });
+    });
+    $('aiGo').addEventListener('click', function () {
+        if (!aiCfg.key) { say('Add the Claude API key first: Settings → AI key.', 'err'); show('settings'); return; }
+        var mode = $('aiMode').value, o = { mode: mode, facts: $('aiFacts').value };
+        if (mode === 'improve') {
+            o.text = $('fBody').value.trim(); o.title = $('fTitle').value.trim();
+            if (!o.text) { say('Write some text in the form first, then Claude can improve it.', 'err'); return; }
+        } else {
+            o.kind = $('aiKind').value; o.length = $('aiLength').value; o.idea = $('aiIdea').value.trim();
+            if (!o.idea) { say('Write a few notes for Claude first.', 'err'); return; }
+            if ($('fBody').value.trim() && !confirm('The text box already has text. Replace it with the AI draft? (You can undo.)')) { return; }
+        }
+        aiCfg.facts = o.facts; saveAi();
+        var b = $('aiGo'); busy(b, true); say('Claude is writing...', 'info');
+        claude().draft(o).then(function (d) {
+            lastBody = { title: $('fTitle').value, body: $('fBody').value };
+            if (mode === 'write' || !$('fTitle').value.trim()) { if (d.title) { $('fTitle').value = d.title; } }
+            $('fBody').value = d.body; $('aiUndo').hidden = false;
+            say('AI draft inserted in the form below. Read it, correct anything that is not true, then Preview and Publish.', 'ok');
+            $('formPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }).catch(fail).then(function () { busy(b, false); });
+    });
+    $('aiUndo').addEventListener('click', function () {
+        if (!lastBody) { return; }
+        $('fTitle').value = lastBody.title; $('fBody').value = lastBody.body; lastBody = null; $('aiUndo').hidden = true; say('Back to the previous text.', 'info');
+    });
+    refreshAiUi();
+
     /* ---------- start ---------- */
     $('fDate').value = C.today();
     fillSettings();
