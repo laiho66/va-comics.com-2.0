@@ -110,6 +110,13 @@ ETAPA 7: VERIFICARE FINALĂ
 - Home: imaginea hero se încarcă mai devreme (preload).
 - PUBLISH.txt: pașii siguri de publicare, ce se urcă, ce se șterge, lista de test și ce faci după.
 
+FOUNDRY v2 (FAZA A)
+-------------------
+foundry/index.html     aplicația (postări News: adaugă, editează, șterge; issue nou în viewer)
+foundry/foundry-core.js, foundry-gh.js, foundry.js, foundry.css   logica și aspectul
+Local: Live Server > foundry/index.html > Settings > token GitHub (pașii sunt în pagină). Pe site: va-comics.com/foundry (ascunsă din Google; Cloudflare Access se adaugă după teste).
+Atenție: fiecare acțiune face un commit direct pe main, deci site-ul live se schimbă în 1-2 minute.
+
 CE URMEAZĂ
 ----------
 Tu: completezi imaginile și textele rămase (vezi PUBLISH.txt, punctul A), apoi testezi. Eu: te ghidez la publicare. Etapa 4: Vanguard. Etapa 5: Viewer.

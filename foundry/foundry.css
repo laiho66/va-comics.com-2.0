@@ -1,0 +1,39 @@
+/* VA COMICS // Foundry v2 // foundry.css (uses the site's style.css for colours and buttons) */
+.fwrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 36px 20px 90px; display: flex; flex-direction: column; gap: 24px; }
+.fhead { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+.ftab { display: flex; flex-direction: column; gap: 28px; }
+
+.fstatus { padding: 12px 16px; border: 1px solid var(--line-3); background: rgba(0, 0, 0, 0.75); font-family: var(--mono); font-size: 13px; line-height: 1.6; }
+.fstatus.is-ok { border-color: #35a867; color: #bff0d3; }
+.fstatus.is-err { border-color: #ff5a5a; color: #ffc9c9; }
+.fstatus.is-info { border-color: var(--accent); color: #ffd3c2; }
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > label { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-4); }
+.field input, .field textarea, .field select {
+    width: 100%; min-height: 44px; padding: 10px 12px; background: #000; color: var(--text); border: 1px solid var(--line-3);
+    font: inherit; font-size: 15px; transition: border-color var(--t-fast);
+}
+.field textarea { min-height: 260px; line-height: 1.6; resize: vertical; }
+.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); }
+.field input[type="file"] { padding: 8px; font-size: 13px; }
+.hint { font-size: 13px; line-height: 1.5; color: var(--text-4); }
+.fgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.fgrid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.flist { display: flex; flex-direction: column; gap: 8px; }
+.fitem { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 12px 14px; background: var(--bg-2); border: 1px solid #1f1f1f; }
+.fitem-main { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.fitem-main b { font-size: 14px; letter-spacing: 0.5px; overflow-wrap: anywhere; }
+.fitem-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn--sm { min-height: 36px; padding: 6px 14px; font-size: 12px; }
+.btn--danger:hover { color: #ff6b6b; border-color: #ff6b6b; box-shadow: 0 0 14px rgba(255, 107, 107, 0.22); }
+.steps { display: flex; flex-direction: column; gap: 6px; padding-left: 18px; list-style: decimal; font-size: 14px; line-height: 1.6; color: var(--text-3); }
+.preview-box { padding: 6px 0; }
+.is-busy { opacity: 0.55; pointer-events: none; }
+
+@media (max-width: 700px) {
+    .fgrid, .fgrid--3 { grid-template-columns: minmax(0, 1fr); }
+    .fitem { flex-direction: column; align-items: stretch; }
+    .fitem-actions .btn { flex: 1 1 0; }
+}
