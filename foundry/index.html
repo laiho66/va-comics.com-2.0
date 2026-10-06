@@ -35,6 +35,34 @@
 
     <!-- ================= NEWS ================= -->
     <section class="ftab" id="tab-news">
+        <div class="panel" data-label="AI_DRAFT // CLAUDE">
+            <div class="stack">
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="aiMode">What should Claude do?</label>
+                        <select id="aiMode"><option value="write">Write from my notes</option><option value="improve">Improve the text I already wrote</option></select></div>
+                    <div class="field" id="aiKindBox"><label for="aiKind">Kind of post</label>
+                        <select id="aiKind"><option value="update">News update</option><option value="release">Release announcement</option><option value="behind">Behind the scenes</option><option value="thanks">Thank you to readers</option></select></div>
+                    <div class="field" id="aiLengthBox"><label for="aiLength">Length</label>
+                        <select id="aiLength"><option value="short">Short (about 90 words)</option><option value="medium" selected>Medium (about 170)</option><option value="long">Long (about 280)</option></select></div>
+                </div>
+                <div class="field" id="aiIdeaBox">
+                    <label for="aiIdea">Your notes (rough, in any language)</label>
+                    <textarea id="aiIdea" style="min-height: 120px;" placeholder="e.g. Volume 2 is finished, issue 13 is out on Amazon, thanks for the reviews, what comes next is Book 2."></textarea>
+                    <span class="hint">Claude only knows what you write here plus the studio facts below. It does not invent dates or numbers.</span>
+                </div>
+                <details>
+                    <summary class="hint" style="cursor: pointer;">Studio facts Claude may use (edit if something changed)</summary>
+                    <div class="field" style="margin-top: 10px;"><textarea id="aiFacts" style="min-height: 150px;"></textarea></div>
+                </details>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="aiGo">GENERATE_DRAFT</button>
+                    <button type="button" class="btn" id="aiUndo" hidden>UNDO_AI</button>
+                    <span class="meta" id="aiModelInfo"></span>
+                </div>
+                <span class="hint">The draft appears in the form below. Read it, fix it, then Preview and Publish. Nothing is published from here.</span>
+            </div>
+        </div>
+
         <div class="panel" data-label="NEW_TRANSMISSION // NEWS_POST" id="formPanel">
             <div class="stack">
                 <div class="fgrid">
@@ -117,6 +145,24 @@
                 <span class="hint">The token stays only in this browser (local storage). It is never in the site's files and never sent anywhere except to GitHub.</span>
             </div>
         </div>
+        <div class="panel" data-label="AI_KEY // CLAUDE">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="sClaudeKey">Claude API key</label><input id="sClaudeKey" type="password" placeholder="sk-ant-..." autocomplete="off"></div>
+                    <div class="field"><label for="sClaudeModel">Model</label><input id="sClaudeModel" type="text" list="modelList" autocomplete="off"><datalist id="modelList"></datalist></div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="btnSaveAi">SAVE_AI_SETTINGS</button>
+                    <button type="button" class="btn" id="btnListModels">LIST_MODELS</button>
+                    <button type="button" class="btn btn--danger" id="btnForgetAi">FORGET_KEY</button>
+                </div>
+                <ol class="steps">
+                    <li>Go to <b>console.anthropic.com</b> → sign in → <b>API keys</b> → <b>Create key</b>. Copy it once.</li>
+                    <li>This is separate from the Claude chat subscription: add a few dollars of credit under <b>Billing</b>. A draft costs a fraction of a cent to about a cent.</li>
+                    <li>The key stays only in this browser. What you write in the notes is sent to Anthropic to produce the draft, so do not paste anything private.</li>
+                </ol>
+            </div>
+        </div>
         <div class="panel" data-label="HOW_TO // MAKE_A_TOKEN">
             <ol class="steps">
                 <li>GitHub → your picture (top right) → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
@@ -131,6 +177,7 @@
 
 <script src="/foundry/foundry-core.js"></script>
 <script src="/foundry/foundry-gh.js"></script>
+<script src="/foundry/foundry-ai.js"></script>
 <script src="/foundry/foundry.js"></script>
 </body>
 </html>
