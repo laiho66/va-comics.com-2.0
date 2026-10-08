@@ -63,3 +63,8 @@
 
 /* active tab stays readable on hover (orange text on orange was invisible) */
 button.chip.chip--active:hover { color: #000; }
+
+/* ---------- Print Lab: paperback interior ---------- */
+.prwrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; }
+.prcanvas { width: 220px; height: auto; aspect-ratio: 1838 / 2775; background: #000; border: 1px solid var(--line-3); }
+@media (max-width: 700px) { .prwrap { grid-template-columns: minmax(0, 1fr); } .prcanvas { width: 60%; justify-self: center; } }

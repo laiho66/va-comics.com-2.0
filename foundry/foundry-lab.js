@@ -103,6 +103,7 @@
         var ol = $('labOrder'); ol.innerHTML = '';
         plan.order.forEach(function (o) { ol.appendChild(el('li', '', o.file.name + '  →  ' + o.out)); });
         $('labGo').disabled = !plan.order.length;
+        $('prPanel').hidden = true;
         if (plan.order.length) { checkSizesAsync(); }
     }
     function checkSizesAsync() {
@@ -114,6 +115,7 @@
             }).catch(function () { return { label: o.file.name, role: o.role }; });
         })).then(function (sizes) {
             if (my !== plan) { return; }
+            my.sizes = sizes; renderPrint();
             var box = $('labProblems');
             L.checkSizes(sizes).forEach(function (p) { box.appendChild(el('li', 'is-' + p.level, p.text)); });
         });
@@ -189,6 +191,88 @@
     $('labQuality').addEventListener('input', function () { $('labQualityOut').textContent = this.value; });
     $('labGo').addEventListener('click', convertIssue);
     $('labToIssue').addEventListener('click', sendToIssues);
+
+    /* ======================== PAPERBACK INTERIOR (Faza 2) ======================== */
+    function storyPages() {
+        if (!plan || !plan.sizes) { return []; }
+        return plan.order.map(function (o, i) { var z = plan.sizes[i] || {}; return { file: o.file, label: o.label, role: o.role, w: z.w, h: z.h }; })
+            .filter(function (o) { return o.role === 'page'; });
+    }
+    function safeVal() { return parseInt($('prSafe').value, 10) / 100; }
+    function renderPrint() {
+        var pages = storyPages();
+        $('prPanel').hidden = !pages.length;
+        if (!pages.length) { return; }
+        var sel = $('prPage'), keep = sel.value; sel.innerHTML = '';
+        pages.forEach(function (p, i) { var o = document.createElement('option'); o.value = String(i); o.textContent = p.label + ' (' + p.file.name + ')'; sel.appendChild(o); });
+        if (keep && +keep < pages.length) { sel.value = keep; }
+        var chk = L.printCheck(pages, safeVal());
+        list($('prProblems'), chk.problems);
+        drawPreview();
+    }
+    var previewToken = 0;
+    function drawPreview() {
+        var pages = storyPages(), p = pages[parseInt($('prPage').value, 10) || 0], cv = $('prCanvas');
+        if (!p) { return; }
+        var my = ++previewToken, P = L.PRINT, k = cv.width / P.pageW, ctx = cv.getContext('2d');
+        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
+        createImageBitmap(p.file).then(function (bmp) {
+            if (my !== previewToken) { bmp.close(); return; }
+            var pl = L.printPlacement(bmp.width, bmp.height, safeVal());
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(bmp, pl.x * k, pl.y * k, pl.w * k, pl.h * k); bmp.close();
+            /* trim line: 0.125 in of bleed top, bottom and outer edge (shown for a right-hand page) */
+            var b = P.bleed * P.dpi * k;
+            ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255, 69, 0, 0.9)'; ctx.lineWidth = 1;
+            ctx.strokeRect(0.5, b, cv.width - b - 0.5, cv.height - 2 * b);
+        }).catch(function () { ctx.fillStyle = '#ff5a5a'; ctx.font = '14px monospace'; ctx.fillText('cannot open', 10, 24); });
+    }
+
+    function makeInterior() {
+        var pages = storyPages();
+        if (running || !pages.length) { return; }
+        var chk = L.printCheck(pages, safeVal());
+        if (chk.problems.some(function (p) { return p.level === 'err'; }) &&
+            !confirm('The preflight found problems (red). Make the PDF anyway?')) { return; }
+        running = true; $('prGo').disabled = true;
+        var P = L.PRINT, q = parseInt($('prQuality').value, 10) / 100, safe = safeVal(), t0 = Date.now();
+        var pdf = L.pdfWriter(Math.round((P.trimW + P.bleed) * 72 * 1000) / 1000, Math.round((P.trimH + 2 * P.bleed) * 72 * 1000) / 1000);
+        var steps = chk.total, blankJpeg = null;
+        var cv = document.createElement('canvas'); cv.width = P.pageW; cv.height = P.pageH;
+        var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+        function jpeg() {
+            return new Promise(function (res, rej) { cv.toBlob(function (b) { if (b) { res(b); } else { rej(new Error('The browser could not make the JPEG.')); } }, 'image/jpeg', q); });
+        }
+        function one(i) {
+            if (i >= pages.length) { return Promise.resolve(); }
+            var p = pages[i];
+            progress('pr', i, steps, 'Page ' + (i + 1) + ' / ' + steps + ': ' + p.file.name);
+            return decode(p.file).then(function (bmp) {
+                var pl = L.printPlacement(bmp.width, bmp.height, safe);
+                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, P.pageW, P.pageH);
+                ctx.drawImage(bmp, pl.x, pl.y, pl.w, pl.h); bmp.close();
+                return jpeg();
+            }).then(function (b) { pdf.addJpegPage(b, P.pageW, P.pageH); return one(i + 1); });
+        }
+        function blanks(n) {
+            if (!n) { return Promise.resolve(); }
+            var go = blankJpeg ? Promise.resolve(blankJpeg) : (ctx.fillStyle = '#000', ctx.fillRect(0, 0, P.pageW, P.pageH), jpeg().then(function (b) { blankJpeg = b; return b; }));
+            return go.then(function (b) { pdf.addJpegPage(b, P.pageW, P.pageH); progress('pr', steps - n + 1, steps, 'Black page ' + (chk.blanks - n + 1) + ' / ' + chk.blanks); return blanks(n - 1); });
+        }
+        var key = ($('labKey').value.trim() || plan.issue).replace(/[^\w]/g, '_');
+        var name = 'DeadDrop_Issue_' + key + '_INTERIOR_6x9_bleed.pdf';
+        one(0).then(function () { return blanks(chk.blanks); }).then(function () {
+            var blob = new Blob(pdf.finish('Dead Drop Issue ' + key + ' - interior'), { type: 'application/pdf' });
+            download(blob, name);
+            progress('pr', steps, steps, 'Done in ' + Math.round((Date.now() - t0) / 1000) + ' s: ' + pdf.pages() + ' pages, ' + kb(blob.size) + '. File: ' + name);
+        }).catch(function (e) {
+            progress('pr', 0, 1, 'Stopped: ' + (e && e.message ? e.message : e));
+        }).then(function () { running = false; $('prGo').disabled = false; freeCanvas(cv); });
+    }
+    $('prSafe').addEventListener('input', function () { $('prSafeOut').textContent = this.value; renderPrint(); });
+    $('prQuality').addEventListener('input', function () { $('prQualityOut').textContent = this.value; });
+    $('prPage').addEventListener('change', drawPreview);
+    $('prGo').addEventListener('click', makeInterior);
 
     /* ======================== QUICK CONVERT ======================== */
     function targetSize(preset, w, h) {

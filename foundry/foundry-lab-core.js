@@ -190,8 +190,81 @@
         return parts.concat(central, [new Uint8Array(end.buffer)]);
     }
 
+
+    /* ---------------- PRINT (Faza 2): KDP paperback interior ---------------- */
+    /* Confirmed KDP setup: Premium color, trim 6 x 9 in, Bleed ON, Glossy. Page with bleed = 6.125 x 9.25 in. */
+    var PRINT = { dpi: 300, trimW: 6, trimH: 9, bleed: 0.125, minPages: 24, perPageIn: 0.002347 };
+    PRINT.pageW = Math.round((PRINT.trimW + PRINT.bleed) * PRINT.dpi);       /* 1838 */
+    PRINT.pageH = Math.round((PRINT.trimH + PRINT.bleed * 2) * PRINT.dpi);   /* 2775 */
+
+    /* Fit a w x h image INSIDE a box (no crop). Returns size and position. */
+    function fitContain(w, h, boxW, boxH) {
+        var s = Math.min(boxW / w, boxH / h), dw = Math.round(w * s), dh = Math.round(h * s);
+        return { w: dw, h: dh, scale: s };
+    }
+    /* Where one story page goes on the print page (safe = share of the page used by the art, e.g. 0.88). */
+    function printPlacement(w, h, safe) {
+        var boxW = Math.round(PRINT.pageW * safe), boxH = Math.round(PRINT.pageH * safe), f = fitContain(w, h, boxW, boxH);
+        return { x: Math.round((PRINT.pageW - f.w) / 2), y: Math.round((PRINT.pageH - f.h) / 2), w: f.w, h: f.h,
+                 dpi: Math.round(w / (f.w / PRINT.dpi)) };
+    }
+    function spineInches(pages) { return pages * PRINT.perPageIn; }
+
+    /* Print preflight. pages: [{ label, w, h }] (story pages only, in order). */
+    function printCheck(pages, safe) {
+        var out = [], n = pages.length, low = [], soft = [];
+        if (!n) { return { problems: [{ level: 'err', text: 'No story pages to print.' }], blanks: 0, total: 0 }; }
+        pages.forEach(function (p) {
+            if (!p.w) { return; }
+            var pl = printPlacement(p.w, p.h, safe);
+            if (pl.dpi < 200) { low.push(p.label + ' (' + pl.dpi + ' DPI)'); } else if (pl.dpi < 290) { soft.push(p.label + ' (' + pl.dpi + ' DPI)'); }
+        });
+        var blanks = Math.max(0, PRINT.minPages - n), total = n + blanks;
+        out.push({ level: 'ok', text: n + ' story pages' + (blanks ? ' + ' + blanks + ' black pages added at the end (KDP minimum is ' + PRINT.minPages + ')' : '') + ' = ' + total + ' pages in the PDF. Covers are not included (they go in the cover PDF).' });
+        if (low.length) { out.push({ level: 'err', text: 'Too small for print (will look blurry): ' + low.join(', ') + '. 300 DPI is the target.' }); }
+        if (soft.length) { out.push({ level: 'warn', text: 'A bit under 300 DPI (usually still fine): ' + soft.join(', ') + '.' }); }
+        if (!low.length && !soft.length) { out.push({ level: 'ok', text: 'Resolution: every page is about 300 DPI or better at this size.' }); }
+        var sp = spineInches(total);
+        out.push({ level: 'info', text: 'For the cover PDF later: about ' + total + ' pages → spine ≈ ' + sp.toFixed(3) + '" (' + Math.round(sp * PRINT.dpi) + ' px). Check it once in the KDP cover calculator.' });
+        return { problems: out, blanks: blanks, total: total };
+    }
+
+    /* Tiny PDF writer: one full-page JPEG per page. Parts can be Uint8Array or Blob (with .size). */
+    function pdfWriter(pageWpt, pageHpt) {
+        var enc = function (s) { return new TextEncoder().encode(s); };
+        var parts = [], pos = 0, offsets = [], pageIds = [], nextId = 3;
+        function push(p) { parts.push(p); pos += (p.size !== undefined ? p.size : p.length); }
+        function startObj(id) { offsets[id] = pos; push(enc(id + ' 0 obj\n')); }
+        push(enc('%PDF-1.4\n')); push(new Uint8Array([37, 226, 227, 207, 211, 10]));
+        return {
+            addJpegPage: function (jpeg, imgW, imgH) {
+                var imgId = nextId++, contId = nextId++, pageId = nextId++, len = jpeg.size !== undefined ? jpeg.size : jpeg.length;
+                startObj(imgId);
+                push(enc('<< /Type /XObject /Subtype /Image /Width ' + imgW + ' /Height ' + imgH + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + len + ' >>\nstream\n'));
+                push(jpeg); push(enc('\nendstream\nendobj\n'));
+                var c = 'q ' + pageWpt + ' 0 0 ' + pageHpt + ' 0 0 cm /Im0 Do Q';
+                startObj(contId); push(enc('<< /Length ' + c.length + ' >>\nstream\n' + c + '\nendstream\nendobj\n'));
+                startObj(pageId);
+                push(enc('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pageWpt + ' ' + pageHpt + '] /Resources << /XObject << /Im0 ' + imgId + ' 0 R >> >> /Contents ' + contId + ' 0 R >>\nendobj\n'));
+                pageIds.push(pageId);
+            },
+            finish: function (title) {
+                startObj(2); push(enc('<< /Type /Pages /Count ' + pageIds.length + ' /Kids [' + pageIds.map(function (i) { return i + ' 0 R'; }).join(' ') + '] >>\nendobj\n'));
+                startObj(1); push(enc('<< /Type /Catalog /Pages 2 0 R >>\nendobj\n'));
+                var infoId = nextId++; startObj(infoId);
+                push(enc('<< /Title (' + String(title || '').replace(/[()\\]/g, '') + ') /Producer (VA Comics Foundry Print Lab) >>\nendobj\n'));
+                var xref = pos, lines = ['xref', '0 ' + nextId, '0000000000 65535 f '];
+                for (var i = 1; i < nextId; i++) { lines.push(('0000000000' + offsets[i]).slice(-10) + ' 00000 n '); }
+                push(enc(lines.join('\n') + '\ntrailer\n<< /Size ' + nextId + ' /Root 1 0 R /Info ' + infoId + ' 0 R >>\nstartxref\n' + xref + '\n%%EOF\n'));
+                return parts;
+            },
+            pages: function () { return pageIds.length; }
+        };
+    }
+
     function baseName(name) { return String(name).replace(/\.[^.]+$/, '').replace(/^#/, '').replace(/[^\w\-]+/g, '_'); }
 
     return { parseName: parseName, naturalCompare: naturalCompare, planIssue: planIssue, readSize: readSize, checkSizes: checkSizes,
-             coverCrop: coverCrop, crc32: crc32, buildZip: buildZip, baseName: baseName };
+             coverCrop: coverCrop, crc32: crc32, buildZip: buildZip, baseName: baseName,
+             PRINT: PRINT, fitContain: fitContain, printPlacement: printPlacement, spineInches: spineInches, printCheck: printCheck, pdfWriter: pdfWriter };
 });
