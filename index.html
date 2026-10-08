@@ -3,154 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VA Comics // Dead Drop and Vanguard Chronicles</title>
-
-    <!-- SEO (descrierea: maxim 155 de caractere) -->
-    <meta name="description" content="VA Comics is an independent studio: Dead Drop, a dark tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
-    <link rel="canonical" href="https://va-comics.com/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="VA Comics">
-    <meta property="og:title" content="VA Comics // Dead Drop and Vanguard Chronicles">
-    <meta property="og:description" content="VA Comics is an independent studio: Dead Drop, a dark tech-noir comic series, and Vanguard Chronicles, illustrated adventure novels.">
-    <meta property="og:url" content="https://va-comics.com/">
-    <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="en_US">
+    <title>Foundry // VA Comics (internal)</title>
+    <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        { "@type": "Organization", "@id": "https://va-comics.com/#org", "name": "VA Comics", "url": "https://va-comics.com/",
-          "logo": "https://va-comics.com/apple-touch-icon.png",
-          "sameAs": ["https://www.facebook.com/vacomics66", "https://x.com/VAComics"] },
-        { "@type": "WebSite", "@id": "https://va-comics.com/#website", "url": "https://va-comics.com/", "name": "VA Comics", "inLanguage": "en",
-          "publisher": { "@id": "https://va-comics.com/#org" } },
-        { "@type": "ComicSeries", "name": "Dead Drop", "url": "https://va-comics.com/deaddrop/", "genre": "Tech-noir", "inLanguage": "en",
-          "publisher": { "@id": "https://va-comics.com/#org" } },
-        { "@type": "BookSeries", "name": "Vanguard Chronicles", "url": "https://va-comics.com/vanguard/", "inLanguage": "en",
-          "publisher": { "@id": "https://va-comics.com/#org" } }
-      ]
-    }
-    </script>
-    <link rel="preload" as="image" href="/assets/hero-mobile.webp" media="(max-width: 640px)" fetchpriority="high">
-    <link rel="preload" as="image" href="/assets/hero-desktop.webp" media="(min-width: 641px)" fetchpriority="high">
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/foundry/foundry.css">
 </head>
 
 <!-- ======================================================================
-     HOME (Etapa 2)
-     Ce schimbi tu: textele marcate "EDIT". Imaginile: assets/hero-desktop.webp
-     (1920x1048) și assets/hero-mobile.webp (1080x1350). Acum sunt versiuni
-     temporare făcute din poza cu logo; le înlocuiești cu cele finale (aceleași nume).
+     FOUNDRY v2 (Faza A): postări News (adaugă, editează, șterge) + issue nou în viewer.
+     Se folosește local (Live Server) sau pe site la /foundry, protejată cu Cloudflare Access.
+     Nu conține nicio cheie: tokenul GitHub stă doar în browserul tău (Settings).
      ====================================================================== -->
 <body data-bg="css">
+<div class="bg-layer" aria-hidden="true"></div>
 
-<a class="skip-link" href="#main">Skip to content</a>
+<main class="fwrap">
+    <header class="fhead">
+        <div class="stack-sm"><span class="tag">// VA_COMICS // INTERNAL</span><h1 class="h1">Foundry</h1></div>
+        <span class="chip" id="connState">NOT CONNECTED</span>
+    </header>
 
-<div class="shell">
-    <nav class="nav" id="siteNav" aria-label="Main"></nav>
-    <script src="/site.js"></script>
+    <div class="chips" id="tabs" role="tablist" aria-label="Sections">
+        <button type="button" class="chip chip--active" data-tab="news" role="tab">NEWS</button>
+        <button type="button" class="chip" data-tab="issues" role="tab">ISSUES</button>
+        <button type="button" class="chip" data-tab="lab" role="tab">PRINT LAB</button>
+        <button type="button" class="chip" data-tab="settings" role="tab">SETTINGS</button>
+    </div>
 
-    <main class="main" id="main">
+    <div class="fstatus" id="status" role="status" aria-live="polite" hidden></div>
 
-        <!-- ===== HERO ===== -->
-        <section class="hero" aria-labelledby="homeTitle">
-            <div class="hero-media">
-                <div class="ph">[ HERO IMAGE ]</div>
-                <picture>
-                    <source media="(max-width: 640px)" srcset="/assets/hero-mobile.webp">
-                    <img src="/assets/hero-desktop.webp" alt="The VA Comics logo sprayed on a brick wall in a rainy neon alley" fetchpriority="high" onerror="this.remove()">
-                </picture>
-            </div>
-            <div class="hero-body">
-                <span class="tag">// VA COMICS PRESENTS</span>
-                <!-- EDIT: titlul (maxim 60 de caractere) -->
-                <h1 class="h1" id="homeTitle">Independent comics and illustrated novels</h1>
-                <!-- EDIT: fraza de sub titlu (maxim 160 de caractere) -->
-                <p class="lead">Two worlds, one studio: the dark tech-noir of Dead Drop and the real-world adventures of Vanguard Chronicles.</p>
+    <!-- ================= NEWS ================= -->
+    <section class="ftab" id="tab-news">
+        <div class="panel" data-label="AI_DRAFT // CLAUDE">
+            <div class="stack">
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="aiMode">What should Claude do?</label>
+                        <select id="aiMode"><option value="write">Write from my notes</option><option value="improve">Improve the text I already wrote</option></select></div>
+                    <div class="field" id="aiKindBox"><label for="aiKind">Kind of post</label>
+                        <select id="aiKind"><option value="update">News update</option><option value="release">Release announcement</option><option value="behind">Behind the scenes</option><option value="thanks">Thank you to readers</option></select></div>
+                    <div class="field" id="aiLengthBox"><label for="aiLength">Length</label>
+                        <select id="aiLength"><option value="short">Short (about 90 words)</option><option value="medium" selected>Medium (about 170)</option><option value="long">Long (about 280)</option></select></div>
+                </div>
+                <div class="field" id="aiIdeaBox">
+                    <label for="aiIdea">Your notes (rough, in any language)</label>
+                    <textarea id="aiIdea" style="min-height: 120px;" placeholder="e.g. Volume 2 is finished, issue 13 is out on Amazon, thanks for the reviews, what comes next is Book 2."></textarea>
+                    <span class="hint">Claude only knows what you write here plus the studio facts below. It does not invent dates or numbers.</span>
+                </div>
+                <details>
+                    <summary class="hint" style="cursor: pointer;">Studio facts Claude may use (edit if something changed)</summary>
+                    <div class="field" style="margin-top: 10px;"><textarea id="aiFacts" style="min-height: 150px;"></textarea></div>
+                </details>
                 <div class="row">
-                    <a class="btn btn--primary" href="/media/viewer.html">READ DEAD DROP ONLINE</a>
-                    <a class="btn" href="/projects.html">EXPLORE PROJECTS</a>
+                    <button type="button" class="btn btn--primary" id="aiGo">GENERATE_DRAFT</button>
+                    <button type="button" class="btn" id="aiUndo" hidden>UNDO_AI</button>
+                    <span class="meta" id="aiModelInfo"></span>
+                </div>
+                <span class="hint">The draft appears in the form below. Read it, fix it, then Preview and Publish. Nothing is published from here.</span>
+            </div>
+        </div>
+
+        <div class="panel" data-label="NEW_TRANSMISSION // NEWS_POST" id="formPanel">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="fTitle">Title</label><input id="fTitle" type="text" maxlength="120" autocomplete="off"></div>
+                    <div class="field"><label for="fDate">Date</label><input id="fDate" type="date"></div>
+                    <div class="field"><label for="fAuthor">Author</label><input id="fAuthor" type="text" maxlength="60" value="Aris"></div>
+                    <div class="field"><label for="fBadge">Badge (small text above the title)</label><input id="fBadge" type="text" maxlength="80" value="TRANSMISSION // DEADDROP BUNKER"></div>
+                </div>
+                <div class="field">
+                    <label for="fBody">Text</label>
+                    <textarea id="fBody"></textarea>
+                    <span class="hint">A blank line starts a new paragraph. Plain text only (links and bold are not supported yet).</span>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn" id="btnPreview">PREVIEW</button>
+                    <button type="button" class="btn btn--primary" id="btnPublish">PUBLISH</button>
+                    <button type="button" class="btn" id="btnCancel" hidden>CANCEL_EDIT</button>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- ===== PROJECTS (benzile cu ultima apariție) ===== -->
-        <section class="stack">
-            <h2 class="section-label"><span>Projects</span><a href="/projects.html">[ ALL PROJECTS ]</a></h2>
+        <div class="preview-box" id="previewBox" hidden>
+            <h2 class="section-label"><span>Preview</span></h2>
+            <div class="chronicles-list" id="preview"></div>
+        </div>
 
-            <!-- EDIT: o linie despre serie (150 de caractere) și "ultima apariție" -->
-            <article class="card card--row card--band">
-                <div class="media ratio-4x5 "><div class="ph">[ DEAD DROP KEY ART<br>deaddrop/assets/key-art.webp ]</div><img class="fade" src="/deaddrop/assets/key-art.webp" alt="Dead Drop key art" loading="lazy" onerror="this.remove()"></div>
-                <div class="card-body">
-                    <div class="stack">
-                        <span class="tag">PROJECT_FILE // 01 // FLAGSHIP</span>
-                        <h3 class="h2">Dead Drop</h3>
-                        <div class="chips"><span class="chip">COMIC SERIES</span><span class="chip">18+</span></div>
-                        <p class="small">A violent, uncensored tech-noir. Follow the operatives through the underground of a system in total collapse.</p>
-                        <p class="latest"><b>LATEST_RELEASE //</b> Issue #13 // Open Season</p>
-                    </div>
-                    <div class="row"><a class="btn btn--primary" href="/deaddrop/index.html">ENTER_PROJECT</a></div>
+        <div class="stack">
+            <h2 class="section-label"><span>Published posts</span><a href="#" id="reloadNews">[ RELOAD ]</a></h2>
+            <div class="flist" id="postList"><p class="hint">Connect in Settings first.</p></div>
+        </div>
+    </section>
+
+    <!-- ================= ISSUES ================= -->
+    <section class="ftab" id="tab-issues" hidden>
+        <div class="panel" data-label="NEW_ISSUE // READER_DATABASE">
+            <div class="stack">
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="iKey">Key (14, or 14_1 for a part)</label><input id="iKey" type="text" maxlength="12" autocomplete="off"></div>
+                    <div class="field"><label for="iBadge">Badge</label><input id="iBadge" type="text" maxlength="40"></div>
+                    <div class="field"><label for="iPages">Number of pages</label><input id="iPages" type="number" min="1" max="500"></div>
                 </div>
-            </article>
-
-            <article class="card card--row card--band">
-                <div class="media ratio-4x5 "><div class="ph">[ VANGUARD KEY ART ]</div><img class="fade" src="/vanguard/assets/key-art.webp" alt="Vanguard Chronicles: a stone gateway opening on a misty cliff, with a field Jeep in the distance" loading="lazy" onerror="this.remove()"></div>
-                <div class="card-body">
-                    <div class="stack">
-                        <span class="tag">PROJECT_FILE // 02</span>
-                        <h3 class="h2">Vanguard Chronicles</h3>
-                        <div class="chips"><span class="chip">ILLUSTRATED NOVELS</span><span class="chip">PG-13</span></div>
-                        <p class="small">Illustrated tech-adventure novels with a historical twist, set in the real world.</p>
-                        <p class="latest"><b>LATEST_RELEASE //</b> Book 1 // The Sunken Pharaoh</p>
-                    </div>
-                    <div class="row"><a class="btn btn--primary" href="/vanguard/index.html">ENTER_PROJECT</a></div>
+                <div class="fgrid">
+                    <div class="field"><label for="iTitle">Title</label><input id="iTitle" type="text" maxlength="120" autocomplete="off"></div>
+                    <div class="field"><label for="iFolder">Folder in R2</label><input id="iFolder" type="text" maxlength="60" autocomplete="off"></div>
                 </div>
-            </article>
-        </section>
-
-        <!-- ===== NEWS (apare singură din chronicles.html; dacă nu poate, rămâne cardul de rezervă) ===== -->
-        <section class="stack">
-            <h2 class="section-label"><span>News</span><a href="/chronicles.html">[ ALL NEWS ]</a></h2>
-            <div class="grid grid-2" id="newsList">
-                <a class="card" href="/chronicles.html">
-                    <div class="card-body">
-                        <div class="stack"><span class="tag">REPORT_LOG</span><h3 class="h3">Latest field reports</h3><p class="small">News, updates and behind-the-scenes from VA Comics.</p></div>
-                        <span class="meta">[ READ ]</span>
-                    </div>
-                </a>
+                <div class="field">
+                    <label for="iCover">Cover (optional, a .webp file, 2:3)</label>
+                    <input id="iCover" type="file" accept=".webp,image/webp">
+                    <span class="hint">It is saved as deaddrop/assets/coverNN.webp. Without it, the library shows a striped box until you add the cover.</span>
+                </div>
+                <div class="row"><button type="button" class="btn btn--primary" id="btnAddIssue">ADD_ISSUE</button></div>
+                <ol class="steps">
+                    <li>First upload the pages to R2 (drag and drop the folder in the Cloudflare dashboard): <code>page1.webp … pageN.webp</code> in the folder above.</li>
+                    <li>Then add the issue here. The reader shows it in 1-2 minutes.</li>
+                    <li>The card on the volume page (vol2.html, vol3.html) is still edited by hand for now.</li>
+                </ol>
             </div>
-        </section>
+        </div>
 
-        <!-- ===== ABOUT + FOLLOW ===== -->
-        <section class="grid grid-2">
-            <div class="panel" data-label="STUDIO_FILE // ABOUT">
-                <div class="stack">
-                    <!-- EDIT: 2 rânduri despre VA Comics (250 de caractere) -->
-                    <p class="copy">VA Comics is an independent studio telling stories that mainstream publishers skip: dark, fast and drawn to the edge of the map.</p>
-                    <div class="row"><a class="btn" href="/about.html">ABOUT US</a></div>
+        <div class="stack">
+            <h2 class="section-label"><span>Issues in the reader</span><a href="#" id="reloadIssues">[ RELOAD ]</a></h2>
+            <div class="flist" id="issueList"><p class="hint">Connect in Settings first.</p></div>
+        </div>
+    </section>
+
+    <!-- ================= PRINT LAB (Faza 1: convertor WebP) ================= -->
+    <section class="ftab" id="tab-lab" hidden>
+        <div class="panel" data-label="ISSUE_CONVERTER // R2_PAGES">
+            <div class="stack">
+                <p class="hint">Pick the folder with the original pages (<code>#14_frontcover.png</code>, <code>#14_p1.png</code> … <code>#14_backcover.png</code>, or the old way with <code>#14_p0</code> as the front cover). Everything happens in this browser: nothing is uploaded.</p>
+                <div class="ldrop" id="labDrop" tabindex="0">
+                    <b>DROP THE ISSUE FOLDER HERE</b>
+                    <span class="hint">or</span>
+                    <div class="row" style="justify-content: center;">
+                        <label class="btn btn--sm" for="labFolder">CHOOSE_FOLDER</label>
+                        <label class="btn btn--sm" for="labFiles">CHOOSE_FILES</label>
+                    </div>
+                    <input id="labFolder" type="file" webkitdirectory multiple hidden>
+                    <input id="labFiles" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" multiple hidden>
                 </div>
-            </div>
-            <div class="panel" data-label="UPLINK_CHANNELS // FOLLOW">
-                <div class="stack">
-                    <p class="small">News, updates and behind-the-scenes.</p>
+
+                <div id="labPlan" class="stack" hidden>
+                    <div class="fgrid fgrid--3">
+                        <div class="field"><label for="labKey">Issue key</label><input id="labKey" type="text" maxlength="12" autocomplete="off"></div>
+                        <div class="field"><label for="labFolderName">Folder in R2</label><input id="labFolderName" type="text" maxlength="60" autocomplete="off"></div>
+                        <div class="field"><label for="labQuality">WebP quality <span id="labQualityOut">85</span></label><input id="labQuality" type="range" min="60" max="95" step="1" value="85"></div>
+                    </div>
+                    <label class="lcheck" id="labOldBox" hidden><input type="checkbox" id="labOldBack" checked> Old naming: the last page (<span id="labOldLast"></span>) is the back cover</label>
+                    <div class="lsummary" id="labSummary"></div>
+                    <ul class="lproblems" id="labProblems"></ul>
+                    <details>
+                        <summary class="hint" style="cursor: pointer;">Page order (original file → file for R2)</summary>
+                        <ol class="lorder" id="labOrder"></ol>
+                    </details>
                     <div class="row">
-                        <a class="btn btn--primary" href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">FACEBOOK</a>
-                        <a class="btn" href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">X</a>
+                        <button type="button" class="btn btn--primary" id="labGo">CONVERT_TO_WEBP</button>
+                        <button type="button" class="btn" id="labToIssue" hidden>USE_IN_ISSUES_TAB</button>
                     </div>
+                    <div class="lprogress" id="labProgress" hidden><div class="lbar"><span id="labBar"></span></div><span class="meta" id="labProgressText"></span></div>
                 </div>
+                <ol class="steps">
+                    <li>The zip has a folder (for example <code>issue14</code>) with <code>page1.webp … pageN.webp</code>: front cover first, then the pages, then the back cover. Drag that folder into R2 under <code>deaddrop/</code>.</li>
+                    <li>It also has <code>cover14.webp</code> (600 px wide) for the library. USE_IN_ISSUES_TAB puts it, the key, folder and page count in the ISSUES tab for you.</li>
+                    <li>Pages keep their original size. Only the format changes.</li>
+                </ol>
             </div>
-        </section>
+        </div>
 
-    </main>
-</div>
+        <div class="panel" data-label="PAPERBACK_INTERIOR // KDP_PDF" id="prPanel" hidden>
+            <div class="stack">
+                <p class="hint">Uses the same folder as above. Only the story pages go in (no front or back cover). KDP setup: <b>Premium color · 6 x 9 in · Bleed · Glossy</b>. Each PDF page is 6.125 x 9.25 in at 300 DPI (1838 x 2775 px), black around the art, the whole page kept (nothing is cut).</p>
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="prSafe">Art size on the page <span id="prSafeOut">88</span>%</label><input id="prSafe" type="range" min="80" max="100" step="1" value="88"></div>
+                    <div class="field"><label for="prQuality">JPEG quality <span id="prQualityOut">92</span></label><input id="prQuality" type="range" min="80" max="100" step="1" value="92"></div>
+                    <div class="field"><label for="prPage">Preview page</label><select id="prPage"></select></div>
+                </div>
+                <div class="prwrap">
+                    <canvas id="prCanvas" class="prcanvas" width="306" height="462" aria-label="Preview of the print page"></canvas>
+                    <ul class="lproblems" id="prProblems"></ul>
+                </div>
+                <div class="row"><button type="button" class="btn btn--primary" id="prGo">MAKE_INTERIOR_PDF</button></div>
+                <div class="lprogress" id="prProgress" hidden><div class="lbar"><span id="prBar"></span></div><span class="meta" id="prProgressText"></span></div>
+                <ol class="steps">
+                    <li>88% is what your old script used (NUKE_SCALE 0.88): it keeps the art far from the cut and the binding. Go higher only if you know why.</li>
+                    <li>Upload the PDF in KDP as the paperback manuscript. The cover PDF comes in the next phase.</li>
+                    <li>Big issues take a minute or two: the pages are done one by one so the browser does not run out of memory.</li>
+                </ol>
+            </div>
+        </div>
 
-<footer class="site-footer" id="siteFooter"></footer>
-<script src="/assets/news.js" defer></script>
+        <div class="panel" data-label="QUICK_CONVERT // ANY_IMAGES">
+            <div class="stack">
+                <p class="hint">Any images to WebP: portraits, hero pictures, covers. One image downloads as a .webp, several come in a zip.</p>
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="qcPreset">Size</label>
+                        <select id="qcPreset">
+                            <option value="orig">Keep original size</option>
+                            <option value="crop:600x900">Character portrait 600 x 900 (crop)</option>
+                            <option value="width:600">Library cover, 600 px wide</option>
+                            <option value="crop:1920x1048">Home hero desktop 1920 x 1048 (crop)</option>
+                            <option value="crop:1080x1350">Home hero mobile 1080 x 1350 (crop)</option>
+                            <option value="maxw">Max width (choose)</option>
+                        </select></div>
+                    <div class="field" id="qcMaxBox" hidden><label for="qcMax">Max width (px)</label><input id="qcMax" type="number" min="50" max="8000" value="1600"></div>
+                    <div class="field"><label for="qcQuality">WebP quality <span id="qcQualityOut">85</span></label><input id="qcQuality" type="range" min="50" max="100" step="1" value="85"></div>
+                </div>
+                <div class="ldrop ldrop--small" id="qcDrop" tabindex="0">
+                    <b>DROP IMAGES HERE</b>
+                    <label class="btn btn--sm" for="qcFiles">CHOOSE_FILES</label>
+                    <input id="qcFiles" type="file" accept="image/*" multiple hidden>
+                </div>
+                <div class="lprogress" id="qcProgress" hidden><div class="lbar"><span id="qcBar"></span></div><span class="meta" id="qcProgressText"></span></div>
+                <ul class="lproblems" id="qcResult"></ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section class="ftab" id="tab-settings" hidden>
+        <div class="panel" data-label="UPLINK_CONFIG // GITHUB">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="sOwner">Owner</label><input id="sOwner" type="text" value="laiho66" autocomplete="off"></div>
+                    <div class="field"><label for="sRepo">Repository</label><input id="sRepo" type="text" value="va-comics.com-2.0" autocomplete="off"></div>
+                    <div class="field"><label for="sBranch">Branch</label><input id="sBranch" type="text" value="main" autocomplete="off"></div>
+                    <div class="field"><label for="sToken">GitHub token</label><input id="sToken" type="password" placeholder="github_pat_..." autocomplete="off"></div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="btnSave">SAVE_AND_TEST</button>
+                    <button type="button" class="btn btn--danger" id="btnForget">FORGET_TOKEN</button>
+                </div>
+                <span class="hint">The token stays only in this browser (local storage). It is never in the site's files and never sent anywhere except to GitHub.</span>
+            </div>
+        </div>
+        <div class="panel" data-label="AI_KEY // CLAUDE">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="sClaudeKey">Claude API key</label><input id="sClaudeKey" type="password" placeholder="sk-ant-..." autocomplete="off"></div>
+                    <div class="field"><label for="sClaudeModel">Model</label><input id="sClaudeModel" type="text" list="modelList" autocomplete="off"><datalist id="modelList"></datalist></div>
+                </div>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="btnSaveAi">SAVE_AI_SETTINGS</button>
+                    <button type="button" class="btn" id="btnListModels">LIST_MODELS</button>
+                    <button type="button" class="btn btn--danger" id="btnForgetAi">FORGET_KEY</button>
+                </div>
+                <ol class="steps">
+                    <li>Go to <b>console.anthropic.com</b> → sign in → <b>API keys</b> → <b>Create key</b>. Copy it once.</li>
+                    <li>This is separate from the Claude chat subscription: add a few dollars of credit under <b>Billing</b>. A draft costs a fraction of a cent to about a cent.</li>
+                    <li>The key stays only in this browser. What you write in the notes is sent to Anthropic to produce the draft, so do not paste anything private.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="panel" data-label="HOW_TO // MAKE_A_TOKEN">
+            <ol class="steps">
+                <li>GitHub → your picture (top right) → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
+                <li>Name: <code>foundry</code>. Expiration: 90 days (you will make a new one then).</li>
+                <li><b>Repository access</b> → <i>Only select repositories</i> → <code>va-comics.com-2.0</code> (the one with <b>-2.0</b>).</li>
+                <li><b>Permissions</b> → <i>Repository permissions</i> → <b>Contents</b> → <i>Read and write</i>. Nothing else.</li>
+                <li>Generate, copy the token once and paste it above.</li>
+            </ol>
+        </div>
+    </section>
+</main>
+
+<script src="/foundry/foundry-core.js"></script>
+<script src="/foundry/foundry-gh.js"></script>
+<script src="/foundry/foundry-ai.js"></script>
+<script src="/foundry/foundry.js"></script>
+<script src="/foundry/foundry-lab-core.js"></script>
+<script src="/foundry/foundry-lab.js"></script>
 </body>
 </html>
