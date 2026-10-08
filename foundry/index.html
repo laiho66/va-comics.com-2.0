@@ -28,6 +28,7 @@
     <div class="chips" id="tabs" role="tablist" aria-label="Sections">
         <button type="button" class="chip chip--active" data-tab="news" role="tab">NEWS</button>
         <button type="button" class="chip" data-tab="issues" role="tab">ISSUES</button>
+        <button type="button" class="chip" data-tab="lab" role="tab">PRINT LAB</button>
         <button type="button" class="chip" data-tab="settings" role="tab">SETTINGS</button>
     </div>
 
@@ -128,6 +129,76 @@
         </div>
     </section>
 
+    <!-- ================= PRINT LAB (Faza 1: convertor WebP) ================= -->
+    <section class="ftab" id="tab-lab" hidden>
+        <div class="panel" data-label="ISSUE_CONVERTER // R2_PAGES">
+            <div class="stack">
+                <p class="hint">Pick the folder with the original pages (<code>#14_frontcover.png</code>, <code>#14_p1.png</code> … <code>#14_backcover.png</code>, or the old way with <code>#14_p0</code> as the front cover). Everything happens in this browser: nothing is uploaded.</p>
+                <div class="ldrop" id="labDrop" tabindex="0">
+                    <b>DROP THE ISSUE FOLDER HERE</b>
+                    <span class="hint">or</span>
+                    <div class="row" style="justify-content: center;">
+                        <label class="btn btn--sm" for="labFolder">CHOOSE_FOLDER</label>
+                        <label class="btn btn--sm" for="labFiles">CHOOSE_FILES</label>
+                    </div>
+                    <input id="labFolder" type="file" webkitdirectory multiple hidden>
+                    <input id="labFiles" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" multiple hidden>
+                </div>
+
+                <div id="labPlan" class="stack" hidden>
+                    <div class="fgrid fgrid--3">
+                        <div class="field"><label for="labKey">Issue key</label><input id="labKey" type="text" maxlength="12" autocomplete="off"></div>
+                        <div class="field"><label for="labFolderName">Folder in R2</label><input id="labFolderName" type="text" maxlength="60" autocomplete="off"></div>
+                        <div class="field"><label for="labQuality">WebP quality <span id="labQualityOut">85</span></label><input id="labQuality" type="range" min="60" max="95" step="1" value="85"></div>
+                    </div>
+                    <label class="lcheck" id="labOldBox" hidden><input type="checkbox" id="labOldBack" checked> Old naming: the last page (<span id="labOldLast"></span>) is the back cover</label>
+                    <div class="lsummary" id="labSummary"></div>
+                    <ul class="lproblems" id="labProblems"></ul>
+                    <details>
+                        <summary class="hint" style="cursor: pointer;">Page order (original file → file for R2)</summary>
+                        <ol class="lorder" id="labOrder"></ol>
+                    </details>
+                    <div class="row">
+                        <button type="button" class="btn btn--primary" id="labGo">CONVERT_TO_WEBP</button>
+                        <button type="button" class="btn" id="labToIssue" hidden>USE_IN_ISSUES_TAB</button>
+                    </div>
+                    <div class="lprogress" id="labProgress" hidden><div class="lbar"><span id="labBar"></span></div><span class="meta" id="labProgressText"></span></div>
+                </div>
+                <ol class="steps">
+                    <li>The zip has a folder (for example <code>issue14</code>) with <code>page1.webp … pageN.webp</code>: front cover first, then the pages, then the back cover. Drag that folder into R2 under <code>deaddrop/</code>.</li>
+                    <li>It also has <code>cover14.webp</code> (600 px wide) for the library. USE_IN_ISSUES_TAB puts it, the key, folder and page count in the ISSUES tab for you.</li>
+                    <li>Pages keep their original size. Only the format changes.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="panel" data-label="QUICK_CONVERT // ANY_IMAGES">
+            <div class="stack">
+                <p class="hint">Any images to WebP: portraits, hero pictures, covers. One image downloads as a .webp, several come in a zip.</p>
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="qcPreset">Size</label>
+                        <select id="qcPreset">
+                            <option value="orig">Keep original size</option>
+                            <option value="crop:600x900">Character portrait 600 x 900 (crop)</option>
+                            <option value="width:600">Library cover, 600 px wide</option>
+                            <option value="crop:1920x1048">Home hero desktop 1920 x 1048 (crop)</option>
+                            <option value="crop:1080x1350">Home hero mobile 1080 x 1350 (crop)</option>
+                            <option value="maxw">Max width (choose)</option>
+                        </select></div>
+                    <div class="field" id="qcMaxBox" hidden><label for="qcMax">Max width (px)</label><input id="qcMax" type="number" min="50" max="8000" value="1600"></div>
+                    <div class="field"><label for="qcQuality">WebP quality <span id="qcQualityOut">85</span></label><input id="qcQuality" type="range" min="50" max="100" step="1" value="85"></div>
+                </div>
+                <div class="ldrop ldrop--small" id="qcDrop" tabindex="0">
+                    <b>DROP IMAGES HERE</b>
+                    <label class="btn btn--sm" for="qcFiles">CHOOSE_FILES</label>
+                    <input id="qcFiles" type="file" accept="image/*" multiple hidden>
+                </div>
+                <div class="lprogress" id="qcProgress" hidden><div class="lbar"><span id="qcBar"></span></div><span class="meta" id="qcProgressText"></span></div>
+                <ul class="lproblems" id="qcResult"></ul>
+            </div>
+        </div>
+    </section>
+
     <!-- ================= SETTINGS ================= -->
     <section class="ftab" id="tab-settings" hidden>
         <div class="panel" data-label="UPLINK_CONFIG // GITHUB">
@@ -179,5 +250,7 @@
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
 <script src="/foundry/foundry.js"></script>
+<script src="/foundry/foundry-lab-core.js"></script>
+<script src="/foundry/foundry-lab.js"></script>
 </body>
 </html>

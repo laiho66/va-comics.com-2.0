@@ -37,3 +37,29 @@
     .fitem { flex-direction: column; align-items: stretch; }
     .fitem-actions .btn { flex: 1 1 0; }
 }
+
+/* ---------- Print Lab ---------- */
+.ldrop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 150px; padding: 22px; text-align: center;
+    border: 1px dashed var(--line-3); background: rgba(0, 0, 0, 0.5); font-family: var(--mono); letter-spacing: 2px; transition: border-color var(--t-fast), background var(--t-fast); }
+.ldrop--small { min-height: 100px; }
+.ldrop.is-over { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.08); }
+.ldrop label.btn { cursor: pointer; }
+.lsummary { font-family: var(--mono); font-size: 13px; line-height: 1.7; color: var(--text-3); }
+.lsummary b { color: var(--text); }
+.lproblems { display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0; font-size: 14px; line-height: 1.5; }
+.lproblems li { padding: 8px 12px; border-left: 3px solid var(--line-3); background: var(--bg-2); overflow-wrap: anywhere; }
+.lproblems li.is-err { border-left-color: #ff5a5a; color: #ffc9c9; }
+.lproblems li.is-warn { border-left-color: #ffb020; color: #ffe2b0; }
+.lproblems li.is-ok { border-left-color: #35a867; color: #bff0d3; }
+.lproblems li.is-info { border-left-color: var(--line-3); color: var(--text-3); }
+.lproblems a { color: var(--accent); }
+.lorder { columns: 2 260px; padding-left: 22px; margin-top: 8px; font-family: var(--mono); font-size: 12px; line-height: 1.8; color: var(--text-3); }
+.lcheck { display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--text-3); cursor: pointer; }
+.lcheck input { width: 18px; height: 18px; accent-color: var(--accent); }
+.lprogress { display: flex; flex-direction: column; gap: 6px; }
+.lbar { height: 8px; background: var(--bg-2); border: 1px solid var(--line-3); overflow: hidden; }
+.lbar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+.field label input[type="range"], .field input[type="range"] { min-height: 0; padding: 0; border: 0; background: transparent; accent-color: var(--accent); }
+
+/* active tab stays readable on hover (orange text on orange was invisible) */
+button.chip.chip--active:hover { color: #000; }
