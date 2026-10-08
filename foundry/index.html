@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=lab2">
 </head>
 
 <!-- ======================================================================
@@ -172,8 +172,10 @@
             </div>
         </div>
 
-        <div class="panel" data-label="PAPERBACK_INTERIOR // KDP_PDF" id="prPanel" hidden>
+        <div class="panel" data-label="PAPERBACK_INTERIOR // KDP_PDF" id="prPanel">
             <div class="stack">
+                <p class="hint" id="prEmpty"><b>Load an issue folder in ISSUE_CONVERTER above first.</b> This panel uses the same pages.</p>
+                <div class="stack" id="prBody" hidden>
                 <p class="hint">Uses the same folder as above. Only the story pages go in (no front or back cover). KDP setup: <b>Premium color · 6 x 9 in · Bleed · Glossy</b>. Each PDF page is 6.125 x 9.25 in at 300 DPI (1838 x 2775 px), black around the art, the whole page kept (nothing is cut).</p>
                 <div class="fgrid fgrid--3">
                     <div class="field"><label for="prSafe">Art size on the page <span id="prSafeOut">88</span>%</label><input id="prSafe" type="range" min="80" max="100" step="1" value="88"></div>
@@ -191,6 +193,7 @@
                     <li>Upload the PDF in KDP as the paperback manuscript. The cover PDF comes in the next phase.</li>
                     <li>Big issues take a minute or two: the pages are done one by one so the browser does not run out of memory.</li>
                 </ol>
+                </div>
             </div>
         </div>
 
@@ -271,8 +274,8 @@
 <script src="/foundry/foundry-core.js"></script>
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
-<script src="/foundry/foundry.js"></script>
-<script src="/foundry/foundry-lab-core.js"></script>
-<script src="/foundry/foundry-lab.js"></script>
+<script src="/foundry/foundry.js?v=lab2"></script>
+<script src="/foundry/foundry-lab-core.js?v=lab2"></script>
+<script src="/foundry/foundry-lab.js?v=lab2"></script>
 </body>
 </html>

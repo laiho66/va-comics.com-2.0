@@ -103,7 +103,7 @@
         var ol = $('labOrder'); ol.innerHTML = '';
         plan.order.forEach(function (o) { ol.appendChild(el('li', '', o.file.name + '  →  ' + o.out)); });
         $('labGo').disabled = !plan.order.length;
-        $('prPanel').hidden = true;
+        $('prBody').hidden = true; $('prEmpty').hidden = false;
         if (plan.order.length) { checkSizesAsync(); }
     }
     function checkSizesAsync() {
@@ -201,7 +201,7 @@
     function safeVal() { return parseInt($('prSafe').value, 10) / 100; }
     function renderPrint() {
         var pages = storyPages();
-        $('prPanel').hidden = !pages.length;
+        $('prBody').hidden = !pages.length; $('prEmpty').hidden = !!pages.length;
         if (!pages.length) { return; }
         var sel = $('prPage'), keep = sel.value; sel.innerHTML = '';
         pages.forEach(function (p, i) { var o = document.createElement('option'); o.value = String(i); o.textContent = p.label + ' (' + p.file.name + ')'; sel.appendChild(o); });
