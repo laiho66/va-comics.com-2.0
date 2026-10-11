@@ -1,0 +1,22 @@
+// VA COMICS // Reading Room guard Worker. Separate from the site Worker (icy-sun-9f9e).
+// Cloudflare Workers Builds: connect the repo, Root directory = reader-worker
+{
+  "name": "va-reader",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "va-comics.com/api/reader/*", "zone_name": "va-comics.com" },
+    { "pattern": "va-comics.com/foundry/api/reader/*", "zone_name": "va-comics.com" }
+  ],
+  "kv_namespaces": [
+    { "binding": "CODES", "id": "766746362bde4f5ea955ad3a9b53bbb6" }
+  ],
+  "r2_buckets": [
+    { "binding": "BOOKS", "bucket_name": "va-comics-books" }
+  ],
+  "vars": {
+    "ACCESS_TEAM": "vacomics.cloudflareaccess.com",
+    "ACCESS_AUD": "f8b63cf1cbe6f7b660dd19c69ddf0670745ce268cc3ad9cdc1c27a79401ac38f"
+  }
+}

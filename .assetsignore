@@ -1,0 +1,10 @@
+# Files in the repo that must NOT be served on va-comics.com (Cloudflare static assets ignore list)
+reader-worker
+README.txt
+PUBLISH.txt
+_template.html
+components.html
+/foundry.js
+/foundry.css
+/foundry-lab.js
+/foundry-lab-core.js
