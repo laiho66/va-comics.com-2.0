@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Room // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="The Reading Room: read Vanguard Chronicles Book 1, The Sunken Pharaoh, online with a personal access code from VA Comics.">
+    <link rel="canonical" href="https://va-comics.com/media/reader">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="Reading Room // VA Comics">
+    <meta property="og:description" content="Read Vanguard Chronicles Book 1, The Sunken Pharaoh, online with a personal access code.">
+    <meta property="og:url" content="https://va-comics.com/media/reader">
+    <meta property="og:image" content="https://va-comics.com/vanguard/assets/og-vanguard.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/assets/reading-room.css?v=2">
+</head>
+
+<!-- ======================================================================
+     READING ROOM (R2). Cartea NU e în pagina asta și nici în repo: vine capitol cu capitol
+     din bucket-ul privat, prin Worker-ul va-reader (/api/reader/*), doar cu un cod valid.
+     Codurile se fac în Foundry (tab READER CODES). Logica e în /assets/reading-room.js.
+     ====================================================================== -->
+<body data-bg="vanguard">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
+    <script src="/site.js"></script>
+
+    <main class="main" id="main">
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">Reading Room</h1><span class="chip">BY INVITATION</span></div>
+            <p class="lead">Vanguard Chronicles, Book 1, read online with a personal access code.</p>
+        </div>
+
+        <!-- ===== GATE: enter the code ===== -->
+        <section class="rr-gate" id="rrGate" hidden>
+            <div class="rr-gate-cover"><img src="/vanguard/assets/covers/book1.webp" alt="The Sunken Pharaoh, Vanguard Chronicles Book 1 cover" loading="lazy" onerror="this.remove()"></div>
+            <div class="stack">
+                <span class="tag">ACCESS // CODE_REQUIRED</span>
+                <h2 class="h2">The Sunken Pharaoh</h2>
+                <p class="small">By Aris Menethil &amp; Alexi Void. The full book, chapter by chapter, with every illustration.</p>
+                <form class="rr-form" id="rrForm" autocomplete="off">
+                    <label class="rr-label" for="rrCode">Your access code</label>
+                    <div class="rr-row">
+                        <input id="rrCode" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="20" placeholder="VNG-XXXX-XXXX" required>
+                        <button type="submit" class="btn btn--primary" id="rrOpen">OPEN_BOOK</button>
+                    </div>
+                    <p class="rr-msg" id="rrMsg" role="alert" hidden></p>
+                </form>
+                <p class="small">No code yet? Send us a private message on <a href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">Facebook</a> or <a href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">X</a>. A code works for a limited time on up to two of your devices.</p>
+                <p class="small">Prefer your own copy? The book is on <a href="/vanguard/book1.html">Amazon</a> as eBook, paperback and hardcover.</p>
+            </div>
+        </section>
+
+        <p class="rr-loading meta" id="rrLoading">CONNECTING...</p>
+
+        <!-- ===== READER ===== -->
+        <section class="rr-reader" id="rrReader" hidden>
+            <div class="rr-bar">
+                <div class="rr-bar-info">
+                    <b id="rrBookTitle">The Sunken Pharaoh</b>
+                    <span class="meta" id="rrCopy"></span>
+                </div>
+                <div class="rr-bar-tools">
+                    <button type="button" class="btn btn--sm" id="rrToc" aria-expanded="false" aria-controls="rrTocPanel">CONTENTS</button>
+                    <button type="button" class="btn btn--sm" id="rrSmaller" aria-label="Smaller text">A-</button>
+                    <button type="button" class="btn btn--sm" id="rrBigger" aria-label="Bigger text">A+</button>
+                    <button type="button" class="btn btn--sm" id="rrLogout">CLOSE_BOOK</button>
+                </div>
+            </div>
+            <nav class="rr-toc" id="rrTocPanel" hidden aria-label="Contents"><ol id="rrTocList"></ol></nav>
+
+            <article class="rr-page" id="rrPage" aria-live="polite">
+                <p class="meta rr-chapter-label" id="rrChapterLabel"></p>
+                <div class="rr-text" id="rrText"></div>
+                <p class="rr-stamp meta" id="rrStamp"></p>
+            </article>
+
+            <div class="rr-nav">
+                <button type="button" class="btn" id="rrPrev">&larr; PREVIOUS</button>
+                <span class="meta" id="rrPos"></span>
+                <button type="button" class="btn btn--primary" id="rrNext">NEXT &rarr;</button>
+            </div>
+        </section>
+
+        <div class="rr-watermark" id="rrWatermark" aria-hidden="true" hidden></div>
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<p class="rr-noprint">Printing is not available in the Reading Room.</p>
+
+<script src="/assets/reading-room.js?v=2"></script>
+</body>
+</html>

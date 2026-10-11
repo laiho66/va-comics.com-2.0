@@ -52,7 +52,8 @@
             n: '04', label: 'MEDIA', href: '/media.html', base: ['/media'],
             groups: [{ label: null, items: [
                 { label: 'VIDEO', href: '/media/video.html' },
-                { label: 'VIEWER', href: '/media/viewer.html' }
+                { label: 'VIEWER', href: '/media/viewer.html' },
+                { label: 'READING ROOM', href: '/media/reader.html' }
             ] }]
         },
         { n: '05', label: 'ABOUT US', href: '/about.html' },

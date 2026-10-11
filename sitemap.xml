@@ -66,6 +66,11 @@
         <priority>0.5</priority>
     </url>
     <url>
+        <loc>https://va-comics.com/media/reader</loc>
+        <lastmod>2026-10-11</lastmod>
+        <priority>0.5</priority>
+    </url>
+    <url>
         <loc>https://va-comics.com/about</loc>
         <lastmod>2026-10-05</lastmod>
         <priority>0.5</priority>
