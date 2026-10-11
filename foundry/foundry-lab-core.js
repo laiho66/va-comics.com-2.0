@@ -262,9 +262,46 @@
         };
     }
 
+
+    /* ---------------- COVER (Faza 3): KDP paperback full wrap ---------------- */
+    /* Wrap = bleed + back + spine + front + bleed, height = trim + 2 x bleed. Covers are fitted (never cut)
+       inside each panel minus a safety margin (115 px, as in stitch.py); everything else is black. */
+    var COVER_SAFE = 115;
+    function coverLayout(totalPages, spineIn) {
+        var P = PRINT, sp = typeof spineIn === 'number' && spineIn >= 0 ? spineIn : spineInches(totalPages);
+        var wIn = P.bleed + P.trimW + sp + P.trimW + P.bleed, hIn = P.trimH + 2 * P.bleed;
+        var W = Math.round(wIn * P.dpi), H = Math.round(hIn * P.dpi), spinePx = Math.round(sp * P.dpi);
+        var panelW = Math.round((P.bleed + P.trimW) * P.dpi);
+        return {
+            wIn: wIn, hIn: hIn, W: W, H: H, spineIn: sp, spinePx: spinePx,
+            back: { x: 0, y: 0, w: panelW, h: H },
+            spine: { x: panelW, y: 0, w: W - 2 * panelW, h: H },
+            front: { x: W - panelW, y: 0, w: panelW, h: H }
+        };
+    }
+    /* where a cover image goes inside its panel (fit inside the safe box, centred) */
+    function coverPlacement(imgW, imgH, panel) {
+        var bw = panel.w - 2 * COVER_SAFE, bh = panel.h - 2 * COVER_SAFE, f = fitContain(imgW, imgH, bw, bh);
+        return { x: panel.x + Math.round((panel.w - f.w) / 2), y: panel.y + Math.round((panel.h - f.h) / 2), w: f.w, h: f.h,
+                 dpi: Math.round(imgH / (f.h / PRINT.dpi)) };
+    }
+    function coverCheck(front, back, layout) {
+        var out = [];
+        [['Front cover', front, layout.front], ['Back cover', back, layout.back]].forEach(function (x) {
+            if (!x[1] || !x[1].w) { out.push({ level: 'err', text: x[0] + ' is missing or cannot be read.' }); return; }
+            var pl = coverPlacement(x[1].w, x[1].h, x[2]);
+            if (pl.dpi < 200) { out.push({ level: 'err', text: x[0] + ': ' + x[1].w + 'x' + x[1].h + ' px gives only ' + pl.dpi + ' DPI in print (target 300). It will look soft: use a bigger image.' }); }
+            else if (pl.dpi < 290) { out.push({ level: 'warn', text: x[0] + ': about ' + pl.dpi + ' DPI in print (300 is the target).' }); }
+            else { out.push({ level: 'ok', text: x[0] + ': ' + x[1].w + 'x' + x[1].h + ' px, about ' + pl.dpi + ' DPI in print.' }); }
+        });
+        out.push({ level: 'info', text: 'Cover PDF: ' + layout.wIn.toFixed(3) + '" x ' + layout.hIn.toFixed(3) + '" = ' + layout.W + ' x ' + layout.H + ' px, spine ' + layout.spineIn.toFixed(4) + '" (' + layout.spinePx + ' px). Compare once with the KDP cover calculator for this page count.' });
+        return out;
+    }
+
     function baseName(name) { return String(name).replace(/\.[^.]+$/, '').replace(/^#/, '').replace(/[^\w\-]+/g, '_'); }
 
     return { parseName: parseName, naturalCompare: naturalCompare, planIssue: planIssue, readSize: readSize, checkSizes: checkSizes,
              coverCrop: coverCrop, crc32: crc32, buildZip: buildZip, baseName: baseName,
-             PRINT: PRINT, fitContain: fitContain, printPlacement: printPlacement, spineInches: spineInches, printCheck: printCheck, pdfWriter: pdfWriter };
+             PRINT: PRINT, fitContain: fitContain, printPlacement: printPlacement, spineInches: spineInches, printCheck: printCheck, pdfWriter: pdfWriter,
+             coverLayout: coverLayout, coverPlacement: coverPlacement, coverCheck: coverCheck };
 });

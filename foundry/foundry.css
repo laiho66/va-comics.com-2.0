@@ -91,3 +91,6 @@ button.chip.chip--active:hover { color: #000; }
 .rc-lib .rc-ready { grid-column: 1 / -1; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; }
 .rc-lib .rc-ready.is-ok { color: #8fd6ad; } .rc-lib .rc-ready.is-no { color: #ff9b9b; }
 @media (max-width: 800px) { .rc-lib { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- Print Lab: cover wrap ---------- */
+.pccanvas { width: 100%; max-width: 738px; height: auto; aspect-ratio: 3692 / 2775; background: #000; border: 1px solid var(--line-3); }

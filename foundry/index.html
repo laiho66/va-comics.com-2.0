@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=rc3">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=lab3">
 </head>
 
 <!-- ======================================================================
@@ -201,6 +201,33 @@
             </div>
         </div>
 
+        <div class="panel" data-label="PAPERBACK_COVER // KDP_PDF" id="pcPanel">
+            <div class="stack">
+                <p class="hint" id="pcEmpty"><b>Load an issue folder in ISSUE_CONVERTER above first.</b> The cover uses <code>_frontcover</code> / <code>_backcover</code> (or <code>_p0</code> and the last page in the old naming).</p>
+                <div class="stack" id="pcBody" hidden>
+                <p class="hint">Full wrap for KDP (replaces stitch.py): back cover + spine + front cover, with bleed, black around the art. The width follows the page count, so a 24-page and a 50-page issue get different spines.</p>
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="pcPages">Pages in the paperback</label><input id="pcPages" type="number" min="24" max="828"></div>
+                    <div class="field"><label for="pcSpine">Spine width (inches)</label><input id="pcSpine" type="number" min="0" max="2" step="0.0001"></div>
+                    <div class="field"><label for="pcQuality">JPEG quality <span id="pcQualityOut">92</span></label><input id="pcQuality" type="range" min="80" max="100" step="1" value="92"></div>
+                </div>
+                <span class="hint">Pages and spine are filled in from the interior above (Premium color, about 0.002347" per page). If the KDP cover calculator says a different spine, type its number here.</span>
+                <canvas id="pcCanvas" class="pccanvas" width="738" height="555" aria-label="Preview of the cover wrap"></canvas>
+                <ul class="lproblems" id="pcProblems"></ul>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="pcGo">MAKE_COVER_PDF</button>
+                    <button type="button" class="btn" id="pcKindle">KINDLE_COVER_JPG</button>
+                </div>
+                <div class="lprogress" id="pcProgress" hidden><div class="lbar"><span id="pcBar"></span></div><span class="meta" id="pcProgressText"></span></div>
+                <ol class="steps">
+                    <li>Orange dashed lines = where KDP cuts (trim) and the spine. Keep text away from them; the covers are placed 115 px inside, like in stitch.py.</li>
+                    <li>Under 79 pages KDP does not allow text on the spine, so the spine stays black.</li>
+                    <li>KINDLE_COVER_JPG saves the front cover as a JPEG for the Kindle eBook upload (Amazon likes about 2560 px tall).</li>
+                </ol>
+                </div>
+            </div>
+        </div>
+
         <div class="panel" data-label="QUICK_CONVERT // ANY_IMAGES">
             <div class="stack">
                 <p class="hint">Any images to WebP: portraits, hero pictures, covers. One image downloads as a .webp, several come in a zip.</p>
@@ -326,8 +353,8 @@
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
 <script src="/foundry/foundry.js?v=rc1"></script>
-<script src="/foundry/foundry-lab-core.js?v=lab2"></script>
-<script src="/foundry/foundry-lab.js?v=lab2"></script>
+<script src="/foundry/foundry-lab-core.js?v=lab3"></script>
+<script src="/foundry/foundry-lab.js?v=lab3"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 </body>
 </html>

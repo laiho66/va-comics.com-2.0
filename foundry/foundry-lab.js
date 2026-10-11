@@ -104,6 +104,7 @@
         plan.order.forEach(function (o) { ol.appendChild(el('li', '', o.file.name + '  →  ' + o.out)); });
         $('labGo').disabled = !plan.order.length;
         $('prBody').hidden = true; $('prEmpty').hidden = false;
+        $('pcBody').hidden = true; $('pcEmpty').hidden = false; $('pcPages').value = ''; $('pcSpine').value = ''; pcAuto = { pages: 0, spine: 0 };
         if (plan.order.length) { checkSizesAsync(); }
     }
     function checkSizesAsync() {
@@ -209,6 +210,7 @@
         var chk = L.printCheck(pages, safeVal());
         list($('prProblems'), chk.problems);
         drawPreview();
+        renderCover();
     }
     var previewToken = 0;
     function drawPreview() {
@@ -273,6 +275,122 @@
     $('prQuality').addEventListener('input', function () { $('prQualityOut').textContent = this.value; });
     $('prPage').addEventListener('change', drawPreview);
     $('prGo').addEventListener('click', makeInterior);
+
+    /* ======================== PAPERBACK COVER (Faza 3) ======================== */
+    function coverFiles() {
+        if (!plan || !plan.sizes) { return null; }
+        var f = null, b = null;
+        plan.order.forEach(function (o, i) {
+            var z = plan.sizes[i] || {}, x = { file: o.file, w: z.w, h: z.h };
+            if (o.role === 'front') { f = x; } if (o.role === 'back') { b = x; }
+        });
+        return { front: f, back: b };
+    }
+    var pcAuto = { pages: 0, spine: 0 };
+    function pcLayout() {
+        var pages = parseInt($('pcPages').value, 10) || 24, sp = parseFloat($('pcSpine').value);
+        return L.coverLayout(pages, isNaN(sp) ? undefined : sp);
+    }
+    function renderCover() {
+        var c = coverFiles(), pages = storyPages();
+        var has = !!(c && (c.front || c.back));
+        $('pcBody').hidden = !has; $('pcEmpty').hidden = has;
+        if (!has) { return; }
+        var total = L.printCheck(pages, safeVal()).total || 24;
+        /* refill pages/spine only while the user has not typed their own values */
+        if (!$('pcPages').value || +$('pcPages').value === pcAuto.pages) { $('pcPages').value = total; pcAuto.pages = total; }
+        var auto = +L.spineInches(+$('pcPages').value).toFixed(4);
+        if (!$('pcSpine').value || +$('pcSpine').value === pcAuto.spine) { $('pcSpine').value = auto; pcAuto.spine = auto; }
+        var lay = pcLayout();
+        list($('pcProblems'), L.coverCheck(c.front, c.back, lay));
+        drawCoverPreview(c, lay);
+    }
+    var pcToken = 0;
+    function drawCoverPreview(c, lay) {
+        var cv = $('pcCanvas'), my = ++pcToken;
+        cv.width = 738; cv.height = Math.round(738 * lay.H / lay.W);
+        var k = cv.width / lay.W, ctx = cv.getContext('2d');
+        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
+        var jobs = [[c.back, lay.back], [c.front, lay.front]].map(function (x) {
+            if (!x[0]) { return Promise.resolve(); }
+            return createImageBitmap(x[0].file).then(function (bmp) {
+                if (my !== pcToken) { bmp.close(); return; }
+                var pl = L.coverPlacement(bmp.width, bmp.height, x[1]);
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(bmp, pl.x * k, pl.y * k, pl.w * k, pl.h * k); bmp.close();
+            }).catch(function () { /* the preflight already says it */ });
+        });
+        Promise.all(jobs).then(function () {
+            if (my !== pcToken) { return; }
+            var b = L.PRINT.bleed * L.PRINT.dpi * k;
+            ctx.setLineDash([5, 4]); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255, 69, 0, 0.95)';
+            ctx.strokeRect(b, b, cv.width - 2 * b, cv.height - 2 * b);                      /* trim */
+            ctx.beginPath(); ctx.moveTo(lay.spine.x * k, 0); ctx.lineTo(lay.spine.x * k, cv.height);
+            ctx.moveTo((lay.spine.x + lay.spine.w) * k, 0); ctx.lineTo((lay.spine.x + lay.spine.w) * k, cv.height); ctx.stroke();
+            ctx.setLineDash([]); ctx.fillStyle = 'rgba(255, 255, 255, 0.55)'; ctx.font = '11px monospace';
+            ctx.fillText('BACK', 10, 18); ctx.fillText('FRONT', cv.width - 48, 18);
+        });
+    }
+    function makeCover() {
+        var c = coverFiles();
+        if (running || !c) { return; }
+        if (!c.front || !c.back) { if (!confirm('Only one cover was found. Make the PDF with the other side black?')) { return; } }
+        var lay = pcLayout(), probs = L.coverCheck(c.front, c.back, lay);
+        if (probs.some(function (x) { return x.level === 'err'; }) && !confirm('The preflight found problems (red). Make the cover PDF anyway?')) { return; }
+        running = true; $('pcGo').disabled = true; $('pcKindle').disabled = true;
+        var q = parseInt($('pcQuality').value, 10) / 100, t0 = Date.now();
+        var cv = document.createElement('canvas'); cv.width = lay.W; cv.height = lay.H;
+        var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, lay.W, lay.H);
+        progress('pc', 0, 3, 'Placing the covers...');
+        var parts = [[c.back, lay.back], [c.front, lay.front]];
+        parts.reduce(function (p, x, i) {
+            return p.then(function () {
+                if (!x[0]) { return; }
+                return decode(x[0].file).then(function (bmp) {
+                    var pl = L.coverPlacement(bmp.width, bmp.height, x[1]);
+                    ctx.drawImage(bmp, pl.x, pl.y, pl.w, pl.h); bmp.close();
+                    progress('pc', i + 1, 3, (i ? 'Front' : 'Back') + ' cover placed.');
+                });
+            });
+        }, Promise.resolve()).then(function () {
+            return new Promise(function (res, rej) { cv.toBlob(function (b) { if (b) { res(b); } else { rej(new Error('The browser could not make the JPEG.')); } }, 'image/jpeg', q); });
+        }).then(function (jpg) {
+            var pdf = L.pdfWriter(Math.round(lay.wIn * 72 * 1000) / 1000, Math.round(lay.hIn * 72 * 1000) / 1000);
+            pdf.addJpegPage(jpg, lay.W, lay.H);
+            var key = ($('labKey').value.trim() || plan.issue).replace(/[^\w]/g, '_');
+            var name = 'DeadDrop_Issue_' + key + '_COVER_' + $('pcPages').value + 'p.pdf';
+            var blob = new Blob(pdf.finish('Dead Drop Issue ' + key + ' - cover'), { type: 'application/pdf' });
+            download(blob, name);
+            progress('pc', 3, 3, 'Done in ' + Math.round((Date.now() - t0) / 1000) + ' s: ' + lay.W + ' x ' + lay.H + ' px, ' + lay.wIn.toFixed(3) + '" x ' + lay.hIn.toFixed(3) + '", ' + kb(blob.size) + '. File: ' + name);
+        }).catch(function (e) {
+            progress('pc', 0, 1, 'Stopped: ' + (e && e.message ? e.message : e));
+        }).then(function () { running = false; $('pcGo').disabled = false; $('pcKindle').disabled = false; freeCanvas(cv); });
+    }
+    function kindleCover() {
+        var c = coverFiles();
+        if (running || !c || !c.front) { alert('No front cover in this folder.'); return; }
+        running = true;
+        decode(c.front.file).then(function (bmp) {
+            var cv = draw(bmp, bmp.width, bmp.height), w = bmp.width, h = bmp.height; bmp.close();
+            return new Promise(function (res, rej) { cv.toBlob(function (b) { freeCanvas(cv); if (b) { res({ b: b, w: w, h: h }); } else { rej(new Error('The browser could not make the JPEG.')); } }, 'image/jpeg', 0.92); });
+        }).then(function (r) {
+            var key = ($('labKey').value.trim() || plan.issue).replace(/[^\w]/g, '_');
+            download(r.b, 'DeadDrop_Issue_' + key + '_KINDLE_COVER.jpg');
+            var note = r.h < 1000 ? ' Too small for Kindle (minimum 1000 px tall).' : (r.h < 2560 ? ' OK for Kindle; about 2560 px tall looks sharper in the store.' : ' Good size for Kindle.');
+            progress('pc', 1, 1, 'Kindle cover: ' + r.w + ' x ' + r.h + ' px, ' + kb(r.b.size) + '.' + note);
+        }).catch(function (e) { progress('pc', 0, 1, 'Stopped: ' + (e && e.message ? e.message : e)); })
+          .then(function () { running = false; });
+    }
+    $('pcPages').addEventListener('input', function () {
+        var auto = +L.spineInches(+this.value || 24).toFixed(4);
+        if (+$('pcSpine').value === pcAuto.spine) { $('pcSpine').value = auto; pcAuto.spine = auto; }
+        renderCover();
+    });
+    $('pcSpine').addEventListener('input', renderCover);
+    $('pcQuality').addEventListener('input', function () { $('pcQualityOut').textContent = this.value; });
+    $('pcGo').addEventListener('click', makeCover);
+    $('pcKindle').addEventListener('click', kindleCover);
 
     /* ======================== QUICK CONVERT ======================== */
     function targetSize(preset, w, h) {
