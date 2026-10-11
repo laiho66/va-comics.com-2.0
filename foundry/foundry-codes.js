@@ -39,46 +39,68 @@
     }
 
     /* ---------- list ---------- */
+    /* Cloudflare KV lists can lag up to ~60 s after a change, so after REVOKE / DELETE / a new code
+       the list is updated here in the page from the answer, instead of being reloaded. */
+    var codes = [], nowSec = 0, overrides = {};
     function load() {
         if (!onSite) { return; }
         var box = $('rcList'); box.innerHTML = ''; box.appendChild(el('p', 'hint', 'Loading...'));
         api('codes').then(function (j) {
-            loaded = true; box.innerHTML = '';
-            if (!j.codes.length) { box.appendChild(el('p', 'hint', 'No codes yet.')); return; }
-            j.codes.forEach(function (c) {
-                var state = c.revoked ? 'revoked' : (c.expires <= j.now ? 'expired' : 'active');
-                var row = el('div', 'fitem'), main = el('div', 'fitem-main'), act = el('div', 'fitem-actions');
-                var top = el('b'); top.appendChild(el('span', 'rc-codeline', c.code)); top.appendChild(document.createTextNode('  //  ' + c.label));
-                main.appendChild(top);
-                var left = Math.ceil((c.expires - j.now) / 86400);
-                var meta = el('span', 'meta', (state === 'active' ? 'until ' + fmt(c.expires) + ' (' + left + ' day' + (left === 1 ? '' : 's') + ' left)' : 'ended ' + fmt(c.expires)) +
-                    '  //  devices ' + (c.devices || 0) + '/2' + (c.lastUsed ? '  //  last opened ' + fmt(c.lastUsed) : '  //  not used yet'));
-                main.appendChild(meta);
-                var st = el('span', 'rc-state is-' + state, state.toUpperCase()); main.appendChild(st);
-                if (state === 'active') {
-                    var bm = el('button', 'btn btn--sm', 'COPY_MESSAGE'); bm.type = 'button';
-                    bm.addEventListener('click', function () { copy(message(c), 'Message'); });
-                    var br = el('button', 'btn btn--sm btn--danger', 'REVOKE'); br.type = 'button';
-                    br.addEventListener('click', function () { revoke(c, br); });
-                    act.appendChild(bm); act.appendChild(br);
-                }
-                var bd = el('button', 'btn btn--sm btn--danger', 'DELETE'); bd.type = 'button';
-                bd.addEventListener('click', function () { del(c, bd); });
-                act.appendChild(bd);
-                row.appendChild(main); row.appendChild(act); box.appendChild(row);
+            loaded = true; nowSec = j.now;
+            codes = j.codes.filter(function (c) { return overrides[c.code] !== 'deleted'; }).map(function (c) {
+                var o = overrides[c.code]; return o && typeof o === 'object' ? o : c;
             });
+            Object.keys(overrides).forEach(function (k) {
+                var o = overrides[k];
+                if (o && typeof o === 'object' && !codes.some(function (c) { return c.code === k; })) { codes.unshift(o); }
+            });
+            render();
         }).catch(function (e) { box.innerHTML = ''; box.appendChild(el('p', 'hint', e.message)); });
+    }
+    function render() {
+        var box = $('rcList'); box.innerHTML = '';
+        var j = { now: nowSec || Math.floor(Date.now() / 1000) };
+        if (!codes.length) { box.appendChild(el('p', 'hint', 'No codes yet.')); return; }
+        codes.sort(function (a, b) { return (b.created || 0) - (a.created || 0); });
+        codes.forEach(function (c) {
+            var state = c.revoked ? 'revoked' : (c.expires <= j.now ? 'expired' : 'active');
+            var row = el('div', 'fitem'), main = el('div', 'fitem-main'), act = el('div', 'fitem-actions');
+            var top = el('b'); top.appendChild(el('span', 'rc-codeline', c.code)); top.appendChild(document.createTextNode('  //  ' + c.label));
+            main.appendChild(top);
+            var left = Math.ceil((c.expires - j.now) / 86400);
+            var meta = el('span', 'meta', (state === 'active' ? 'until ' + fmt(c.expires) + ' (' + left + ' day' + (left === 1 ? '' : 's') + ' left)' : 'ended ' + fmt(c.expires)) +
+                '  //  devices ' + (c.devices || 0) + '/2' + (c.lastUsed ? '  //  last opened ' + fmt(c.lastUsed) : '  //  not used yet'));
+            main.appendChild(meta);
+            main.appendChild(el('span', 'rc-state is-' + state, state.toUpperCase()));
+            if (state === 'active') {
+                var bm = el('button', 'btn btn--sm', 'COPY_MESSAGE'); bm.type = 'button';
+                bm.addEventListener('click', function () { copy(message(c), 'Message'); });
+                var br = el('button', 'btn btn--sm btn--danger', 'REVOKE'); br.type = 'button';
+                br.addEventListener('click', function () { revoke(c, br); });
+                act.appendChild(bm); act.appendChild(br);
+            }
+            var bd = el('button', 'btn btn--sm btn--danger', 'DELETE'); bd.type = 'button';
+            bd.addEventListener('click', function () { del(c, bd); });
+            act.appendChild(bd);
+            row.appendChild(main); row.appendChild(act); box.appendChild(row);
+        });
+    }
+    function upsert(c) {
+        overrides[c.code] = c;
+        var i = codes.findIndex(function (x) { return x.code === c.code; });
+        if (i >= 0) { codes[i] = c; } else { codes.unshift(c); }
+        render();
     }
     function revoke(c, btn) {
         if (!confirm('Revoke ' + c.code + ' (' + c.label + ')? The book closes for this code right away.')) { return; }
         btn.disabled = true;
-        api('codes/' + c.code + '/revoke', { method: 'POST' }).then(function () { say(c.code + ' revoked.', 'ok'); load(); })
+        api('codes/' + c.code + '/revoke', { method: 'POST' }).then(function (r) { say(c.code + ' revoked. The book is closed for this code.', 'ok'); upsert(r); })
             .catch(function (e) { say(e.message, 'err'); btn.disabled = false; });
     }
     function del(c, btn) {
         if (!confirm('Delete ' + c.code + ' (' + c.label + ') from the list? It stops working too.')) { return; }
         btn.disabled = true;
-        api('codes/' + c.code, { method: 'DELETE' }).then(function () { say(c.code + ' deleted.', 'ok'); load(); })
+        api('codes/' + c.code, { method: 'DELETE' }).then(function () { say(c.code + ' deleted.', 'ok'); overrides[c.code] = 'deleted'; codes = codes.filter(function (x) { return x.code !== c.code; }); render(); })
             .catch(function (e) { say(e.message, 'err'); btn.disabled = false; });
     }
 
@@ -96,7 +118,7 @@
                 $('rcCopyMsg').onclick = function () { copy($('rcMsg').value, 'Message'); };
                 $('rcLabel').value = '';
                 say('Code ' + c.code + ' for ' + c.label + ' is ready (until ' + fmt(c.expires) + ').', 'ok');
-                load();
+                upsert(c);
             }).catch(function (e) { say(e.message, 'err'); })
             .then(function () { b.disabled = false; });
     });
