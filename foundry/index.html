@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=rc1">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=rc3">
 </head>
 
 <!-- ======================================================================
@@ -233,10 +233,13 @@
         <p class="hint" id="rcLocal" hidden><b>Reader codes work only on va-comics.com/foundry</b> (they need your Cloudflare Access login). Here, on the laptop copy, this tab cannot reach them.</p>
         <div class="panel" data-label="NEW_CODE // READING_ROOM">
             <div class="stack">
-                <div class="fgrid fgrid--3">
+                <div class="fgrid">
                     <div class="field"><label for="rcLabel">Who is it for (name or @handle)</label><input id="rcLabel" type="text" maxlength="60" autocomplete="off" placeholder="@someone on X"></div>
                     <div class="field"><label for="rcDays">Valid for (days)</label><input id="rcDays" type="number" min="1" max="365" value="14"></div>
-                    <div class="field"><label for="rcBook">Book</label><select id="rcBook"><option value="sunken-pharaoh">The Sunken Pharaoh (Vanguard Book 1)</option></select></div>
+                </div>
+                <div class="field"><label>Books this code opens</label>
+                    <div class="rc-books" id="rcBooks"><span class="hint">Loading the books...</span></div>
+                    <span class="hint">"All books" also opens every book you make visible later. A hidden book (not public yet) opens only if you tick it by name, for example for a beta reader.</span>
                 </div>
                 <div class="row"><button type="button" class="btn btn--primary" id="rcGo">GENERATE_CODE</button></div>
                 <div class="rc-result" id="rcResult" hidden>
@@ -245,9 +248,23 @@
                     <div class="field"><label for="rcMsg">Message ready to send (Facebook / X)</label><textarea id="rcMsg" style="min-height: 130px;"></textarea></div>
                 </div>
                 <ol class="steps">
-                    <li>A code opens the whole book in the Reading Room (va-comics.com/media/reader) on up to 2 devices, until it expires.</li>
+                    <li>A code opens the chosen books in the Reading Room (va-comics.com/media/reader) on up to 2 devices, until it expires. With more than one book, the reader first sees a shelf.</li>
                     <li>REVOKE closes the book for that code at once, even if someone is reading. Expired codes delete themselves a day later.</li>
                     <li>The name you write is shown faintly on every page (watermark), so a leaked screenshot tells you whose code it was.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="panel" data-label="BOOKS // READING_ROOM_SHELF">
+            <div class="stack">
+                <div class="flist" id="rcLib"><p class="hint">Open this tab to load the books.</p></div>
+                <div class="row">
+                    <button type="button" class="btn" id="rcAddBook">ADD_BOOK</button>
+                    <button type="button" class="btn btn--primary" id="rcSaveBooks">SAVE_BOOKS</button>
+                </div>
+                <ol class="steps">
+                    <li>New book: send the EPUB to Rook (or later: Print Lab) to get its reading pack, a folder like <code>book-2-name</code>.</li>
+                    <li>Upload that whole folder into the PRIVATE R2 bucket <code>va-comics-books</code> (never to GitHub).</li>
+                    <li>Here: ADD_BOOK, write the folder name exactly, the title, the series line and the cover path, then SAVE_BOOKS. Untick "visible" to keep it secret until release.</li>
                 </ol>
             </div>
         </div>
@@ -311,6 +328,6 @@
 <script src="/foundry/foundry.js?v=rc1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab2"></script>
 <script src="/foundry/foundry-lab.js?v=lab2"></script>
-<script src="/foundry/foundry-codes.js?v=rc2"></script>
+<script src="/foundry/foundry-codes.js?v=rc3"></script>
 </body>
 </html>

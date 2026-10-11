@@ -81,3 +81,13 @@ button.chip.chip--active:hover { color: #000; }
 .rc-state { align-self: flex-start; }
 #rcList .fitem-actions { flex-wrap: wrap; }
 @media (max-width: 700px) { #rcList .fitem-actions .btn { flex: 1 1 auto; padding: 6px 8px; font-size: 11px; } }
+.rc-books { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 10px 12px; border: 1px solid var(--line-3); background: #000; }
+.rc-books label { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--text-2); cursor: pointer; text-transform: none; letter-spacing: 0; font-family: inherit; }
+.rc-books input, .rc-lib input[type="checkbox"] { width: 18px; height: 18px; min-height: 0; accent-color: var(--accent); }
+.rc-books .rc-all { color: var(--accent); font-weight: 700; }
+.rc-lib { display: grid; grid-template-columns: 1fr 1.4fr 1.4fr 1.4fr auto auto; gap: 8px; align-items: center; padding: 10px; background: var(--bg-2); border: 1px solid #1f1f1f; }
+.rc-lib input[type="text"] { min-height: 38px; padding: 6px 8px; font-size: 13px; background: #000; color: var(--text); border: 1px solid var(--line-3); width: 100%; min-width: 0; }
+.rc-lib label { display: flex; gap: 6px; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--text-4); }
+.rc-lib .rc-ready { grid-column: 1 / -1; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; }
+.rc-lib .rc-ready.is-ok { color: #8fd6ad; } .rc-lib .rc-ready.is-no { color: #ff9b9b; }
+@media (max-width: 800px) { .rc-lib { grid-template-columns: 1fr 1fr; } }

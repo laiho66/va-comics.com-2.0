@@ -6,12 +6,12 @@
     <title>Reading Room // VA Comics</title>
 
     <!-- SEO (descrierea: maxim 155 de caractere) -->
-    <meta name="description" content="The Reading Room: read Vanguard Chronicles Book 1, The Sunken Pharaoh, online with a personal access code from VA Comics.">
+    <meta name="description" content="The Reading Room: read the Vanguard Chronicles online with a personal access code from VA Comics.">
     <link rel="canonical" href="https://va-comics.com/media/reader">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
     <meta property="og:title" content="Reading Room // VA Comics">
-    <meta property="og:description" content="Read Vanguard Chronicles Book 1, The Sunken Pharaoh, online with a personal access code.">
+    <meta property="og:description" content="Read the Vanguard Chronicles online with a personal access code.">
     <meta property="og:url" content="https://va-comics.com/media/reader">
     <meta property="og:image" content="https://va-comics.com/vanguard/assets/og-vanguard.png">
     <meta property="og:image:width" content="1200">
@@ -21,7 +21,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/assets/reading-room.css?v=2">
+    <link rel="stylesheet" href="/assets/reading-room.css?v=3">
 </head>
 
 <!-- ======================================================================
@@ -41,16 +41,16 @@
         <div class="page-head">
             <nav class="crumbs" id="crumbs"></nav>
             <div class="title-row"><h1 class="h1">Reading Room</h1><span class="chip">BY INVITATION</span></div>
-            <p class="lead">Vanguard Chronicles, Book 1, read online with a personal access code.</p>
+            <p class="lead">The Vanguard Chronicles, read online with a personal access code.</p>
         </div>
 
         <!-- ===== GATE: enter the code ===== -->
         <section class="rr-gate" id="rrGate" hidden>
-            <div class="rr-gate-cover"><img src="/vanguard/assets/covers/book1.webp" alt="The Sunken Pharaoh, Vanguard Chronicles Book 1 cover" loading="lazy" onerror="this.remove()"></div>
+            <div class="rr-gate-cover" id="rrGateCover"><img src="/vanguard/assets/covers/book1.webp" alt="The Sunken Pharaoh, Vanguard Chronicles Book 1 cover" loading="lazy" onerror="this.remove()"></div>
             <div class="stack">
                 <span class="tag">ACCESS // CODE_REQUIRED</span>
-                <h2 class="h2">The Sunken Pharaoh</h2>
-                <p class="small">By Aris Menethil &amp; Alexi Void. The full book, chapter by chapter, with every illustration.</p>
+                <h2 class="h2" id="rrGateTitle">The Sunken Pharaoh</h2>
+                <p class="small" id="rrGateText">By Aris Menethil &amp; Alexi Void. The full book, chapter by chapter, with every illustration.</p>
                 <form class="rr-form" id="rrForm" autocomplete="off">
                     <label class="rr-label" for="rrCode">Your access code</label>
                     <div class="rr-row">
@@ -59,12 +59,21 @@
                     </div>
                     <p class="rr-msg" id="rrMsg" role="alert" hidden></p>
                 </form>
-                <p class="small">No code yet? Send us a private message on <a href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">Facebook</a> or <a href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">X</a>. A code works for a limited time on up to two of your devices.</p>
-                <p class="small">Prefer your own copy? The book is on <a href="/vanguard/book1.html">Amazon</a> as eBook, paperback and hardcover.</p>
+                <p class="small">No code yet? Send us a private message on <a href="https://www.facebook.com/vacomics66" target="_blank" rel="noopener noreferrer">Facebook</a> or <a href="https://x.com/VAComics" target="_blank" rel="noopener noreferrer">X</a>. A code works for a limited time on up to two of your devices, for one book or for all of them.</p>
+                <p class="small">Prefer your own copy? The books are on <a href="/vanguard/index.html">Amazon</a> as eBook, paperback and hardcover.</p>
             </div>
         </section>
 
         <p class="rr-loading meta" id="rrLoading">CONNECTING...</p>
+
+        <!-- ===== SHELF: the code opens more than one book ===== -->
+        <section class="rr-shelf stack" id="rrShelf" hidden>
+            <div class="rr-bar">
+                <div class="rr-bar-info"><b>Your shelf</b><span class="meta" id="rrShelfCopy"></span></div>
+                <div class="rr-bar-tools"><button type="button" class="btn btn--sm" id="rrShelfLogout">CLOSE_ROOM</button></div>
+            </div>
+            <div class="rr-books" id="rrBooks"></div>
+        </section>
 
         <!-- ===== READER ===== -->
         <section class="rr-reader" id="rrReader" hidden>
@@ -74,6 +83,7 @@
                     <span class="meta" id="rrCopy"></span>
                 </div>
                 <div class="rr-bar-tools">
+                    <button type="button" class="btn btn--sm" id="rrShelfBtn" hidden>SHELF</button>
                     <button type="button" class="btn btn--sm" id="rrToc" aria-expanded="false" aria-controls="rrTocPanel">CONTENTS</button>
                     <button type="button" class="btn btn--sm" id="rrSmaller" aria-label="Smaller text">A-</button>
                     <button type="button" class="btn btn--sm" id="rrBigger" aria-label="Bigger text">A+</button>
@@ -102,6 +112,6 @@
 <footer class="site-footer" id="siteFooter"></footer>
 <p class="rr-noprint">Printing is not available in the Reading Room.</p>
 
-<script src="/assets/reading-room.js?v=2"></script>
+<script src="/assets/reading-room.js?v=3"></script>
 </body>
 </html>
