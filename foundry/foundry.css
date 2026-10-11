@@ -68,3 +68,16 @@ button.chip.chip--active:hover { color: #000; }
 .prwrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; }
 .prcanvas { width: 220px; height: auto; aspect-ratio: 1838 / 2775; background: #000; border: 1px solid var(--line-3); }
 @media (max-width: 700px) { .prwrap { grid-template-columns: minmax(0, 1fr); } .prcanvas { width: 60%; justify-self: center; } }
+
+/* ---------- header link + Reader codes ---------- */
+.fhead-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fhead-right .btn--sm { text-decoration: none; }
+.rc-result { display: flex; flex-direction: column; gap: 12px; padding: 16px; border: 1px solid var(--accent); background: rgba(var(--accent-rgb), 0.06); }
+.rc-code { font-family: var(--mono); font-size: clamp(24px, 6vw, 36px); font-weight: 700; letter-spacing: 4px; color: var(--accent); user-select: all; }
+.rc-state { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 2px 8px; border: 1px solid var(--line-3); }
+.rc-state.is-active { color: #bff0d3; border-color: #35a867; }
+.rc-state.is-revoked, .rc-state.is-expired { color: #ffc9c9; border-color: #ff5a5a; }
+.fitem-main .rc-codeline { font-family: var(--mono); letter-spacing: 2px; }
+.rc-state { align-self: flex-start; }
+#rcList .fitem-actions { flex-wrap: wrap; }
+@media (max-width: 700px) { #rcList .fitem-actions .btn { flex: 1 1 auto; padding: 6px 8px; font-size: 11px; } }
