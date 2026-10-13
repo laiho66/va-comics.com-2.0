@@ -31,7 +31,7 @@
     ];
 
     /* The 18+ notice is shown ONLY on pages whose address starts with one of these. */
-    var ADULT_PATHS = ['/deaddrop', '/media/viewer', '/media/video'];
+    var ADULT_PATHS = ['/deaddrop', '/media/viewer', '/media/video', '/media/talk'];
 
     /* ================================================================== */
 
@@ -56,7 +56,13 @@
                 { label: 'READING ROOM', href: '/media/reader.html' }
             ] }]
         },
-        { n: '05', label: 'ABOUT US', href: '/about.html' },
+        {
+            n: '05', label: 'ABOUT US', href: '/about.html', base: ['/about', '/qa'],
+            groups: [{ label: null, items: [
+                { label: 'ABOUT US', href: '/about.html' },
+                { label: 'Q&A', href: '/qa.html' }
+            ] }]
+        },
         { n: '06', label: 'CONTACT', href: '/contact.html' }
     ];
 

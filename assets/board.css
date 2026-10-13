@@ -1,0 +1,26 @@
+/* VA COMICS // Comments + Q&A widget (assets/board.css). Uses the colours from /style.css. */
+.vboard { display: flex; flex-direction: column; gap: 16px; }
+.vboard .section-label { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.vb-form { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: rgba(8, 8, 8, 0.92); border: 1px solid var(--line-2); }
+.vb-row { display: flex; gap: 10px; }
+.vb-nick, .vb-body { width: 100%; min-height: 44px; padding: 10px 12px; background: #000; color: var(--text); border: 1px solid var(--line-3); font: inherit; font-size: 15px; }
+.vb-nick { max-width: 280px; font-family: var(--mono); letter-spacing: 1px; }
+.vb-body { min-height: 96px; line-height: 1.6; resize: vertical; }
+.vb-nick:focus, .vb-body:focus { outline: none; border-color: var(--accent); }
+.vb-foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vb-rules { flex: 1 1 260px; font-size: 12px; line-height: 1.5; color: var(--text-4); }
+.vb-rules a { color: var(--accent); }
+.vb-ts:empty { display: none; }
+.vb-msg { padding: 8px 12px; border-left: 3px solid var(--line-3); background: var(--bg-2); font-size: 14px; }
+.vb-msg.is-ok { border-left-color: #35a867; color: #bff0d3; }
+.vb-msg.is-err { border-left-color: #ff5a5a; color: #ffc9c9; }
+.vb-msg.is-info { border-left-color: var(--accent); color: #ffd3c2; }
+.vb-list { display: flex; flex-direction: column; gap: 10px; }
+.vb-item { padding: 14px 16px; background: rgba(8, 8, 8, 0.92); border: 1px solid var(--line); border-left: 2px solid var(--line-3); }
+.vb-top { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.vb-who { font-family: var(--mono); letter-spacing: 1px; color: var(--text); }
+.vb-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.6; color: var(--text-2); }
+.vb-report { margin-left: auto; background: none; border: 0; padding: 2px 4px; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--text-5); cursor: pointer; }
+.vb-report:hover { color: #ff9b9b; }
+.vb-reply { margin-top: 10px; padding: 10px 12px; border-left: 2px solid var(--accent); background: rgba(var(--accent-rgb), 0.06); display: flex; flex-direction: column; gap: 6px; }
+@media (max-width: 640px) { .vb-nick { max-width: none; } .vb-foot .btn { flex: 1 1 100%; } }

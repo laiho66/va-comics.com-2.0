@@ -33,6 +33,7 @@
         <button type="button" class="chip" data-tab="issues" role="tab">ISSUES</button>
         <button type="button" class="chip" data-tab="lab" role="tab">PRINT LAB</button>
         <button type="button" class="chip" data-tab="codes" role="tab">READER CODES</button>
+        <button type="button" class="chip" data-tab="board" role="tab">BOARD <span id="bdBadge" class="bd-badge" hidden></span></button>
         <button type="button" class="chip" data-tab="settings" role="tab">SETTINGS</button>
     </div>
 
@@ -302,6 +303,36 @@
         </div>
     </section>
 
+    <!-- ================= BOARD (comments + Q&A moderation) ================= -->
+    <section class="ftab" id="tab-board" hidden>
+        <p class="hint" id="bdLocal" hidden><b>The board works only on va-comics.com/foundry</b> (it needs your Cloudflare Access login).</p>
+        <div class="panel" data-label="BOARD // OVERVIEW">
+            <div class="stack">
+                <div class="bd-sum" id="bdSum"><span class="hint">Open this tab to load.</span></div>
+                <div class="fgrid">
+                    <div class="field"><label for="bdStatus">Show</label>
+                        <select id="bdStatus">
+                            <option value="pending">WAITING FOR YOU (pending)</option>
+                            <option value="approved">PUBLISHED</option>
+                            <option value="rejected">REJECTED (auto-deleted after 30 days)</option>
+                            <option value="all">ALL</option>
+                        </select></div>
+                    <div class="field"><label for="bdTarget">Where</label>
+                        <select id="bdTarget"><option value="">Everywhere</option></select></div>
+                </div>
+                <ol class="steps">
+                    <li>Clean English messages appear on the site at once. Doubtful ones (links, unsure AI verdict, reported by a reader) wait here and are NOT public until you press APPROVE.</li>
+                    <li>REPLY adds an answer under the message, marked "VA COMICS" (that is how Q&amp;A answers work). An empty reply removes it.</li>
+                    <li>DELETE removes the message for good.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="stack">
+            <h2 class="section-label"><span>Messages</span><a href="#" id="bdReload">[ RELOAD ]</a></h2>
+            <div class="flist" id="bdList"><p class="hint">Open this tab to load the messages.</p></div>
+        </div>
+    </section>
+
     <!-- ================= SETTINGS ================= -->
     <section class="ftab" id="tab-settings" hidden>
         <div class="panel" data-label="UPLINK_CONFIG // GITHUB">
@@ -352,9 +383,10 @@
 <script src="/foundry/foundry-core.js"></script>
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
-<script src="/foundry/foundry.js?v=rc1"></script>
+<script src="/foundry/foundry.js?v=bd1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab3"></script>
 <script src="/foundry/foundry-lab.js?v=lab3"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
+<script src="/foundry/foundry-board.js?v=bd2"></script>
 </body>
 </html>

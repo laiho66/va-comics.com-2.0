@@ -94,3 +94,21 @@ button.chip.chip--active:hover { color: #000; }
 
 /* ---------- Print Lab: cover wrap ---------- */
 .pccanvas { width: 100%; max-width: 738px; height: auto; aspect-ratio: 3692 / 2775; background: #000; border: 1px solid var(--line-3); }
+
+/* ---------- BOARD tab ---------- */
+.bd-badge { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; background: var(--accent); color: #000; font-weight: 700; font-size: 11px; line-height: 18px; text-align: center; }
+.bd-sum { display: flex; flex-wrap: wrap; gap: 8px; }
+.bd-sum button { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; padding: 6px 10px; background: #000; color: var(--text-2); border: 1px solid var(--line-3); cursor: pointer; }
+.bd-sum button:hover { border-color: var(--accent); color: var(--accent); }
+.bd-sum .is-wait { color: var(--accent); border-color: var(--accent); }
+#bdList .fitem { align-items: flex-start; }
+#bdList .fitem-actions { flex-wrap: wrap; }
+.bd-meta { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--text-4); }
+.bd-body { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); font-size: 15px; margin: 2px 0; }
+.bd-why { font-family: var(--mono); font-size: 11px; color: #ffc98a; }
+.bd-reply { border-left: 2px solid var(--accent); padding: 4px 10px; color: var(--text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+.bd-reply-box { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.bd-reply-box textarea { min-height: 90px; background: #000; color: var(--text); border: 1px solid var(--line-3); padding: 8px; font: inherit; }
+.bd-st { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 1px 6px; border: 1px solid var(--line-3); margin-left: 6px; }
+.bd-st.is-pending { color: #ffc98a; border-color: #ff9a3c; } .bd-st.is-approved { color: #bff0d3; border-color: #35a867; } .bd-st.is-rejected { color: #ffc9c9; border-color: #ff5a5a; }
+@media (max-width: 700px) { #bdList .fitem-actions .btn { flex: 1 1 auto; padding: 6px 8px; font-size: 11px; } }
