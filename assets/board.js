@@ -97,16 +97,21 @@
             if (!/^[A-Za-z0-9][A-Za-z0-9 _.\-]{1,22}[A-Za-z0-9_]$/.test(n)) { say('Nickname: 3 to 24 English letters or digits.', 'err'); nick.focus(); return; }
             if (b.length < 3) { say('Write a bit more.', 'err'); area.focus(); return; }
             btn.disabled = true; say('Sending...', 'info');
-            ensureWidget().then(function () { return waitToken(8000); }).then(function (t) {
+            var needHuman = false;
+            ensureWidget().then(function () { return waitToken(token ? 0 : 6000); }).then(function (t) {
+                if (!t) { needHuman = true; return null; }     /* Turnstile wants a click: do not send, ask for it */
                 return api('post', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target: target, nick: n, body: b, token: t }) });
             }).then(function (j) {
+                if (needHuman) { say('Almost there: tick the "Verify you are human" box below, then press ' + words.btn + ' again.', 'info'); return; }
                 save('vb_nick', n);
                 if (j.status === 'published') { area.value = ''; left.textContent = String(MAX); say('Posted. Thanks!', 'ok'); render([j.message].concat(items), true); }
                 else if (j.status === 'pending') { area.value = ''; left.textContent = String(MAX); say(j.message, 'info'); }
                 else { say(j.message, 'err'); }
             }).catch(function (err) { say(err.message, 'err'); })
               .then(function () {
-                  btn.disabled = false; token = '';
+                  btn.disabled = false;
+                  if (needHuman) { return; }                      /* keep the widget as it is, the reader ticks it */
+                  token = '';
                   try { if (window.turnstile && widgetId !== null) { window.turnstile.reset(widgetId); } } catch (x) { /* ignore */ }
               });
         });
