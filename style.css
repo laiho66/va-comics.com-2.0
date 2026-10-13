@@ -689,3 +689,9 @@ body.reader-full .reader-top { display: none; }
     .btn { width: 100%; }
     .age-gate-box { padding: 34px 20px 24px; }
 }
+
+/* Phones: issue / book cards sit 2 per row, so their buttons must fit a narrow card (no spill past the card edge) */
+@media (max-width: 640px) {
+    .grid-3 .card-body, .grid-4 .card-body { padding: 16px 12px; }
+    .card-body .btn-stack .btn { min-width: 0; padding: 10px 6px; font-size: 11px; letter-spacing: 1px; gap: 0.4em; }
+}
