@@ -22,6 +22,13 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/assets/board.css?v=1">
+    <link rel="preload" as="image" href="/assets/qa-mobile.webp" media="(max-width: 640px)" fetchpriority="high">
+    <link rel="preload" as="image" href="/assets/qa-desktop.webp" media="(min-width: 641px)" fetchpriority="high">
+    <style>
+        /* Q&A banner. Images: assets/qa-desktop.webp (2080x880) and assets/qa-mobile.webp (1080x806) */
+        .qa-banner { margin: 0; border: 1px solid var(--line-3); background: #000; overflow: hidden; }
+        .qa-banner img { display: block; width: 100%; height: auto; }
+    </style>
 </head>
 
 <body data-bg="wall">
@@ -38,6 +45,12 @@
             <div class="title-row"><h1 class="h1" id="vbTalkTitle">Q&amp;A</h1></div>
             <p class="lead">Ask us anything about Dead Drop, the Vanguard Chronicles or the studio. We answer here.</p>
         </div>
+        <figure class="qa-banner">
+            <picture>
+                <source media="(max-width: 640px)" srcset="/assets/qa-mobile.webp" width="1080" height="806">
+                <img src="/assets/qa-desktop.webp" width="2080" height="880" alt="Marcus Reed, Kira Mercer and Dead Drop around a workbench under the glowing VA Comics logo" fetchpriority="high" onerror="this.closest('figure').remove()">
+            </picture>
+        </figure>
         <section class="vboard" data-target="qa" data-kind="qa" aria-label="Questions and answers"></section>
 
     </main>
