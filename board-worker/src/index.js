@@ -25,6 +25,29 @@ const BAD_WORDS = ['fuck', 'fucking', 'fucker', 'motherfucker', 'shit', 'bullshi
     'bitch', 'bastard', 'asshole', 'whore', 'slut', 'nigger', 'nigga', 'faggot', 'fag', 'retard', 'porn', 'porno',
     'nude', 'nudes', 'blowjob', 'dildo', 'rape'];
 const BAD_RE = new RegExp('\\b(' + BAD_WORDS.join('|') + ')s?\\b', 'i');
+/* other-language swearing typed with plain letters (the AI also rejects non-English text; this is a fast extra net) */
+const FOREIGN_BAD = ['pula', 'pizda', 'muie', 'futu', 'futui', 'fut', 'cacat', 'curva', 'coaie', 'sugi', 'labagiu', 'bulangiu', 'handicapat',
+    'kurva', 'geci', 'baszd', 'cazzo', 'puta', 'mierda', 'scheisse', 'blyat', 'suka'];
+const FOREIGN_RE = new RegExp('\\b(' + FOREIGN_BAD.join('|') + ')\\b', 'i');
+/* roots searched INSIDE letters someone spaced out on purpose ("f u c k", "s.u.g.i p.u.l.a") */
+const SPACED_ROOTS = ['fuck', 'fuk', 'shit', 'cunt', 'dick', 'cock', 'pusy', 'bitch', 'whore', 'slut', 'niger', 'niga', 'fag', 'porn', 'rape',
+    'pula', 'pizda', 'muie', 'futu', 'sugi', 'cacat', 'curva', 'kurva', 'puta'];
+const LEET = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '@': 'a', '$': 's', '|': 'i' };
+/* turn tricks back into plain words: f.u.c.k / f u c k / fuuuuck / sh1t / $hit */
+function normalizeTricks(s) {
+    let t = String(s).toLowerCase().replace(/[013457@$|]/g, c => LEET[c]);
+    t = t.replace(/([a-z])\1{2,}/g, '$1$1');                              /* fuuuuck -> fuuck */
+    return t;
+}
+function trickyBad(s) {
+    const t = normalizeTricks(s);
+    if (BAD_RE.test(t) || FOREIGN_RE.test(t) || BAD_RE.test(t.replace(/([a-z])\1+/g, '$1'))) { return true; }
+    /* runs of single letters split by spaces / dots / dashes / stars: join them and look for the roots inside */
+    const runs = t.match(/(?:\b[a-z][\s.\-_*+~,]+){2,}[a-z]\b/g) || [];
+    return runs.some(r => { const j = r.replace(/[^a-z]/g, '').replace(/([a-z])\1+/g, '$1'); return SPACED_ROOTS.some(w => j.includes(w)); });
+}
+/* nobody but the studio signs as the studio */
+const RESERVED_NICK = /(va[\W_]*comics|\badmin|moderator|\bmod\b|aris\s*menethil|alexi\s*void|official)/i;
 const LINK_RE = /(https?:\/\/|www\.|\b[a-z0-9-]+\.(com|net|org|io|ru|xyz|info|biz|link|top|shop|site|online|ro|hu|co)\b|@[a-z0-9_]{3,}\b)/i;
 
 const REJECT_TEXT = {
@@ -33,6 +56,8 @@ const REJECT_TEXT = {
     rules: 'Your message was not published because it does not follow the board rules.',
     too_fast: 'You are posting too fast. Try again in an hour.'
 };
+const MAX_REPLIES = 100;                /* per thread */
+const STAFF_NICK = 'VA Comics';
 const MAX_MAILS_PER_HOUR = 10;          /* instant notifications; the rest waits for the daily summary */
 const FOUNDRY_URL = 'https://va-comics.com/foundry/#board';
 const PENDING_TEXT = 'Thanks! Your message will appear after a quick review.';
@@ -76,7 +101,8 @@ const MOD_PROMPT = 'You moderate public comments on the website of an independen
     'The stories are an adult tech-noir crime comic (violence, guns, gangs are normal story topics) and PG-13 underwater archaeology adventure novels. ' +
     'Rules: comments must be in English. Not allowed: swearing or vulgar words (also disguised or misspelled), sexual content or innuendo, ' +
     'religious topics or preaching (casual exclamations like "oh my god" are fine), hate, insults or harassment of people, spam or advertising, ' +
-    'personal data (phone numbers, addresses, emails). Talking about the story, characters, violence in the story, art, questions to the author, praise or polite criticism is fine. ' +
+    'personal data (phone numbers, addresses, emails). Watch for tricks: words split with spaces or dots, letters swapped for digits or symbols, ' +
+    'and swearing in other languages written without accents (for example Romanian) - treat those as breaking the rules or as not English. Talking about the story, characters, violence in the story, art, questions to the author, praise or polite criticism is fine. ' +
     'Answer with JSON: english (true if the message is written in English), verdict ("ok" if it clearly follows every rule, "block" if it clearly breaks a rule, ' +
     '"review" if you are not sure), why (a few words).';
 async function aiCheck(env, nick, body) {
@@ -84,7 +110,7 @@ async function aiCheck(env, nick, body) {
     if (!env.AI) { return { verdict: 'review', english: true, why: 'no ai' }; }
     try {
         const r = await env.AI.run(AI_MODEL, {
-            messages: [{ role: 'system', content: MOD_PROMPT }, { role: 'user', content: 'Nickname: ' + nick + '\nComment:\n' + body }],
+            messages: [{ role: 'system', content: MOD_PROMPT }, { role: 'user', content: 'Nickname: ' + nick + '\nComment:\n' + body + '\n\n(Same comment with tricks undone, for checking only: ' + normalizeTricks(body).replace(/(\b[a-z])[\s.\-_*]+(?=[a-z]\b)/g, '$1') + ')' }],
             response_format: { type: 'json_schema', json_schema: { type: 'object', properties: { english: { type: 'boolean' }, verdict: { type: 'string', enum: ['ok', 'review', 'block'] }, why: { type: 'string' } }, required: ['english', 'verdict', 'why'] } },
             max_tokens: 80, temperature: 0
         });
@@ -132,13 +158,17 @@ async function verifyAccess(req, env) {
 }
 
 /* ------------------------------------------------------------------ public */
-const PUBLIC_COLS = 'id, nick, body, created, reply, reply_at';
+const PUBLIC_COLS = 'id, nick, body, created, reply, reply_at, staff, parent';
 
 async function list(env, url) {
     const target = url.searchParams.get('target') || '';
     if (!TARGET.test(target)) { return err(400, 'bad_target', 'Unknown page.'); }
-    const rows = await env.DB.prepare('SELECT ' + PUBLIC_COLS + " FROM messages WHERE target = ? AND status = 'approved' ORDER BY created DESC LIMIT 200").bind(target).all();
-    return new Response(JSON.stringify({ target, messages: rows.results || [] }), {
+    const rows = await env.DB.prepare('SELECT ' + PUBLIC_COLS + " FROM messages WHERE target = ? AND status = 'approved' AND parent = 0 ORDER BY created DESC, id DESC LIMIT 200").bind(target).all();
+    const tops = rows.results || [];
+    const reps = tops.length ? ((await env.DB.prepare('SELECT ' + PUBLIC_COLS + " FROM messages WHERE target = ? AND status = 'approved' AND parent > 0 ORDER BY created ASC, id ASC LIMIT 2000").bind(target).all()).results || []) : [];
+    const byId = {}; tops.forEach(m => { m.replies = []; byId[m.id] = m; });
+    reps.forEach(r => { if (byId[r.parent]) { byId[r.parent].replies.push(r); } });
+    return new Response(JSON.stringify({ target, messages: tops }), {
         headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=20', 'x-robots-tag': 'noindex' }
     });
 }
@@ -149,6 +179,15 @@ async function post(req, env, ctx) {
     const target = String(b.target || ''), nick = clean(b.nick).replace(/\s+/g, ' '), body = clean(b.body);
     if (!TARGET.test(target)) { return err(400, 'bad_target', 'Unknown page.'); }
     if (!NICK.test(nick)) { return err(400, 'bad_nick', 'Nickname: 3 to 24 English letters or digits (spaces, _ . - allowed inside).'); }
+    if (RESERVED_NICK.test(nick)) { return err(400, 'bad_nick', 'That nickname is reserved. Please pick another one.'); }
+    let parent = parseInt(b.parent, 10) || 0, top = null;
+    if (parent) {
+        top = await env.DB.prepare("SELECT id, target, parent, nick, body, reply, staff FROM messages WHERE id = ? AND status = 'approved'").bind(parent).first();
+        if (top && top.parent) { parent = top.parent; top = await env.DB.prepare("SELECT id, target, parent, nick, body, reply, staff FROM messages WHERE id = ? AND status = 'approved'").bind(parent).first(); }
+        if (!top || top.target !== target) { return err(400, 'bad_parent', 'That conversation is not available any more. Reload the page.'); }
+        const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM messages WHERE parent = ?').bind(parent).first();
+        if (n && n.n >= MAX_REPLIES) { return err(400, 'thread_full', 'This conversation is full. Start a new one above.'); }
+    }
     if (body.length < MIN_BODY || body.length > MAX_BODY) { return err(400, 'bad_length', 'Message: ' + MIN_BODY + ' to ' + MAX_BODY + ' characters.'); }
     if (!(await turnstileOk(env, b.token, req.headers.get('cf-connecting-ip')))) { return err(403, 'bot_check', 'The anti-bot check failed. Reload the page and try again.'); }
 
@@ -159,7 +198,7 @@ async function post(req, env, ctx) {
     let status = 'approved', reason = 'ok';
     const whole = nick + '\n' + body;
     if (nonEnglishLetters(whole)) { status = 'rejected'; reason = 'english_only'; }
-    else if (BAD_RE.test(whole)) { status = 'rejected'; reason = 'language'; }
+    else if (BAD_RE.test(whole) || trickyBad(whole)) { status = 'rejected'; reason = 'language'; }
     else {
         const ai = await aiCheck(env, nick, body);
         if (!ai.english) { status = 'rejected'; reason = 'english_only'; }
@@ -167,12 +206,23 @@ async function post(req, env, ctx) {
         else if (ai.verdict === 'review') { status = 'pending'; reason = 'ai unsure: ' + ai.why; }
         if (status === 'approved' && LINK_RE.test(whole)) { status = 'pending'; reason = 'contains a link or handle'; }
     }
-    const r = await env.DB.prepare('INSERT INTO messages (target, nick, body, status, reason, created, fp) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(target, nick, body, status, reason, now(), fp).run();
+    const r = await env.DB.prepare('INSERT INTO messages (target, nick, body, status, reason, created, fp, parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+        .bind(target, nick, body, status, reason, now(), fp, parent).run();
     const id = r.meta && r.meta.last_row_id;
-    if (status === 'approved') { return json({ status: 'published', message: { id, nick, body, created: now(), reply: '', reply_at: 0 } }, 201); }
+    if (status === 'approved') {
+        if (top) {                                                         /* a reader answered back in a conversation where the studio already spoke: tell Aris */
+            const spoke = top.reply || top.staff || (await env.DB.prepare("SELECT COUNT(*) AS n FROM messages WHERE parent = ? AND staff = 1 AND status = 'approved'").bind(parent).first() || {}).n;
+            if (spoke) {
+                const mail = notifyNow(env, 'VA Board: new reply on ' + placeName(target), ['A reader replied in a conversation you are part of (' + placeName(target) + ').', '',
+                    'Started by ' + top.nick + ': ' + (top.body.length > 160 ? top.body.slice(0, 160) + '...' : top.body), '',
+                    'New reply from ' + nick + ':', '----------', body, '----------', '', 'Answer it: ' + FOUNDRY_URL].join('\n'));
+                if (ctx && ctx.waitUntil) { ctx.waitUntil(mail); } else { await mail; }
+            }
+        }
+        return json({ status: 'published', message: { id, nick, body, created: now(), reply: '', reply_at: 0, staff: 0, parent, replies: [] } }, 201);
+    }
     if (status === 'pending') {
-        const mail = notifyNow(env, 'VA Board: message waiting (' + placeName(target) + ')', waitingMail({ target, nick, body, reason }));
+        const mail = notifyNow(env, 'VA Board: message waiting (' + placeName(target) + ')', waitingMail({ target, nick, body, reason, parent, top }));
         if (ctx && ctx.waitUntil) { ctx.waitUntil(mail); } else { await mail; }
         return json({ status: 'pending', message: PENDING_TEXT }, 202);
     }
@@ -185,7 +235,7 @@ async function report(req, env, ctx) {
     try { b = await req.json(); } catch (e) { /* empty */ }
     const id = parseInt(b.id, 10);
     if (!(id > 0)) { return err(400, 'bad_id', 'Unknown message.'); }
-    const r = await env.DB.prepare("UPDATE messages SET reports = reports + 1, status = 'pending', reason = 'reported by a reader' WHERE id = ? AND status = 'approved'").bind(id).run();
+    const r = await env.DB.prepare("UPDATE messages SET reports = reports + 1, status = 'pending', reason = 'reported by a reader' WHERE id = ? AND status = 'approved' AND staff = 0").bind(id).run();
     if (r.meta && r.meta.changes) {                                        /* only the first report of a live message mails */
         const m = await env.DB.prepare('SELECT target, nick, body, reason FROM messages WHERE id = ?').bind(id).first();
         if (m) {
@@ -226,18 +276,19 @@ async function notifyNow(env, subject, text) {
 }
 function waitingMail(m) {
     return ['A message is waiting for you on ' + placeName(m.target) + '. It is NOT public until you approve it.', '',
+        ...(m.top ? ['It is a reply to ' + m.top.nick + ': ' + (m.top.body.length > 120 ? m.top.body.slice(0, 120) + '...' : m.top.body), ''] : []),
         'Nickname: ' + m.nick, 'Why it waits: ' + m.reason, '', '----------', m.body, '----------', '',
         'Approve, reply or delete: ' + FOUNDRY_URL].join('\n');
 }
 async function dailySummary(env) {
     const day = now() - 86400;
     const c = async (sql, ...a) => ((await env.DB.prepare(sql).bind(...a).first()) || {}).n || 0;
-    const published = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'approved' AND created > ?", day);
+    const published = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'approved' AND staff = 0 AND created > ?", day);
     const rejected = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'rejected' AND created > ?", day);
     const waiting = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'pending'");
     const reported = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'pending' AND reports > 0");
     if (!published && !rejected && !waiting) { return; }                 /* quiet day: no mail */
-    const rows = await env.DB.prepare("SELECT target, nick, body FROM messages WHERE status = 'approved' AND created > ? ORDER BY created DESC LIMIT 15").bind(day).all();
+    const rows = await env.DB.prepare("SELECT target, nick, body FROM messages WHERE status = 'approved' AND staff = 0 AND created > ? ORDER BY created DESC LIMIT 15").bind(day).all();
     const lines = ['VA Comics board, last 24 hours:', '',
         'Published automatically: ' + published, 'Blocked by the filters: ' + rejected,
         'Waiting for you now: ' + waiting + (reported ? ' (' + reported + ' reported by readers)' : ''), ''];
@@ -256,18 +307,31 @@ async function admin(req, env, path, url) {
     if (path === 'messages' && req.method === 'GET') {
         const st = url.searchParams.get('status') || 'pending', target = url.searchParams.get('target') || '';
         if (!['pending', 'approved', 'rejected', 'all'].includes(st)) { return err(400, 'bad_status', 'Bad status.'); }
-        let sql = 'SELECT id, target, nick, body, status, reason, created, reply, reply_at, reports FROM messages WHERE 1=1', args = [];
-        if (st !== 'all') { sql += ' AND status = ?'; args.push(st); }
-        if (target) { if (!TARGET.test(target)) { return err(400, 'bad_target', 'Bad target.'); } sql += ' AND target = ?'; args.push(target); }
-        sql += ' ORDER BY created DESC LIMIT 300';
+        let sql = 'SELECT m.id, m.target, m.nick, m.body, m.status, m.reason, m.created, m.reply, m.reply_at, m.reports, m.staff, m.parent, ' +
+            "(SELECT p.nick || ': ' || substr(p.body, 1, 140) FROM messages p WHERE p.id = m.parent) AS parent_text, " +
+            "(SELECT COUNT(*) FROM messages c WHERE c.parent = m.id) AS n_replies FROM messages m WHERE 1=1", args = [];
+        if (st !== 'all') { sql += ' AND m.status = ?'; args.push(st); }
+        if (target) { if (!TARGET.test(target)) { return err(400, 'bad_target', 'Bad target.'); } sql += ' AND m.target = ?'; args.push(target); }
+        sql += ' ORDER BY m.created DESC, m.id DESC LIMIT 300';
         const rows = await env.DB.prepare(sql).bind(...args).all();
         return json({ messages: rows.results || [] });
     }
-    const m = path.match(/^messages\/(\d+)(?:\/(approve|reply))?$/);
+    const m = path.match(/^messages\/(\d+)(?:\/(approve|reply|answer))?$/);
     if (m) {
         const id = parseInt(m[1], 10);
         if (m[2] === 'approve' && req.method === 'POST') {
             await env.DB.prepare("UPDATE messages SET status = 'approved', reason = 'approved by VA Comics', reports = 0 WHERE id = ?").bind(id).run();
+            return json({ ok: true });
+        }
+        if (m[2] === 'answer' && req.method === 'POST') {          /* the studio writes in the conversation (as VA Comics) */
+            let b = {}; try { b = await req.json(); } catch (e) { /* empty */ }
+            const text = clean(b.text).slice(0, 2000);
+            if (text.length < 1) { return err(400, 'empty', 'Write the answer first.'); }
+            const t = await env.DB.prepare('SELECT id, target, parent FROM messages WHERE id = ?').bind(id).first();
+            if (!t) { return err(404, 'not_found', 'Message not found.'); }
+            const top = t.parent || t.id;
+            await env.DB.prepare("INSERT INTO messages (target, nick, body, status, reason, created, staff, parent) VALUES (?, ?, ?, 'approved', 'VA Comics answer', ?, 1, ?)")
+                .bind(t.target, STAFF_NICK, text, now(), top).run();
             return json({ ok: true });
         }
         if (m[2] === 'reply' && req.method === 'POST') {
@@ -277,7 +341,7 @@ async function admin(req, env, path, url) {
             return json({ ok: true });
         }
         if (!m[2] && req.method === 'DELETE') {
-            await env.DB.prepare('DELETE FROM messages WHERE id = ?').bind(id).run();
+            await env.DB.prepare('DELETE FROM messages WHERE id = ? OR parent = ?').bind(id, id).run();   /* a conversation goes with its replies */
             return json({ ok: true });
         }
     }
