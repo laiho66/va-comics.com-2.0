@@ -28,6 +28,13 @@
         });
     }
 
+    /* ---------- are you the studio? (logged in to Foundry through Cloudflare Access) ---------- */
+    var STAFF = false;
+    function checkStaff() {
+        return fetch('/foundry/api/board/whoami', { credentials: 'same-origin', redirect: 'manual', cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { STAFF = !!(j && j.ok); }).catch(function () { STAFF = false; });
+    }
+
     /* ---------- Turnstile (invisible anti-bot), loaded once ---------- */
     var tsReady = null;
     function turnstile() {
@@ -44,10 +51,22 @@
 
     /* ---------- one form (the main one, or a small one under a conversation) ---------- */
     function Form(target, words, parent, onDone) {
-        var form = el('form', 'vb-form' + (parent ? ' vb-form--reply' : '')); form.setAttribute('autocomplete', 'off');
+        var form = el('form', 'vb-form' + (parent ? ' vb-form--reply' : '') + (STAFF ? ' is-staff' : '')); form.setAttribute('autocomplete', 'off');
+        var mention = '', replyTo = 0;
         var row = el('div', 'vb-row');
         var nick = el('input', 'vb-nick'); nick.type = 'text'; nick.maxLength = 24; nick.placeholder = 'Nickname'; nick.setAttribute('aria-label', 'Nickname'); nick.value = load('vb_nick', '');
-        row.appendChild(nick); form.appendChild(row);
+        if (STAFF) { nick.hidden = true; row.appendChild(el('span', 'tag', 'POSTING AS VA COMICS')); }
+        row.appendChild(nick);
+        var to = el('span', 'vb-to'); to.hidden = true; row.appendChild(to);
+        form.appendChild(row);
+        form._mention = function (who, id) {
+            mention = who || ''; replyTo = id || 0; to.hidden = !mention; to.innerHTML = '';
+            if (mention) {
+                to.appendChild(document.createTextNode('Replying to ' + (mention === 'VA Comics' ? 'VA COMICS' : mention) + ' '));
+                var x = el('button', 'vb-to-x', '×'); x.type = 'button'; x.title = 'Reply to the conversation instead';
+                x.addEventListener('click', function () { form._mention(''); }); to.appendChild(x);
+            }
+        };
         var area = el('textarea', 'vb-body'); area.maxLength = MAX; area.placeholder = (parent ? 'Your reply' : words.field) + ' (English only)'; area.setAttribute('aria-label', parent ? 'Your reply' : words.field); area.rows = parent ? 2 : 3;
         form.appendChild(area);
         var foot = el('div', 'vb-foot');
@@ -74,7 +93,7 @@
             });
         }
         function say(text, kind) { msg.hidden = !text; msg.textContent = text || ''; msg.className = 'vb-msg' + (kind ? ' is-' + kind : ''); }
-        area.addEventListener('focus', function () { ensureWidget().catch(function (e) { say(e.message, 'err'); }); }, { once: true });
+        area.addEventListener('focus', function () { if (!STAFF) { ensureWidget().catch(function (e) { say(e.message, 'err'); }); } }, { once: true });
         nick.addEventListener('focus', function () { ensureWidget().catch(function () { /* shown on submit */ }); }, { once: true });
         function waitToken(ms) {
             return new Promise(function (res) {
@@ -85,18 +104,28 @@
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             var n = nick.value.trim(), b = area.value.trim();
+            if (STAFF) {
+                if (!b) { say('Write the message first.', 'err'); area.focus(); return; }
+                btn.disabled = true; say('Sending...', 'info');
+                fetch('/foundry/api/board/post', { method: 'POST', credentials: 'same-origin', redirect: 'manual', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target: target, body: b, parent: parent || 0, reply_to: replyTo }) })
+                    .then(function (r) { if (!r.ok) { throw new Error(r.type === 'opaqueredirect' || r.status === 403 ? 'Your Foundry login expired. Open va-comics.com/foundry, log in, then reload this page.' : 'Could not post. Try again.'); } return r.json(); })
+                    .then(function (j) { area.value = ''; left.textContent = String(MAX); say('Posted as VA COMICS.', 'ok'); form._mention(''); onDone(j.message); })
+                    .catch(function (err) { say(err.message, 'err'); })
+                    .then(function () { btn.disabled = false; });
+                return;
+            }
             if (!/^[A-Za-z0-9][A-Za-z0-9 _.\-]{1,22}[A-Za-z0-9_]$/.test(n)) { say('Nickname: 3 to 24 English letters or digits.', 'err'); nick.focus(); return; }
             if (b.length < 3) { say('Write a bit more.', 'err'); area.focus(); return; }
             btn.disabled = true; say('Sending...', 'info');
             var needHuman = false;
             ensureWidget().then(function () { return waitToken(token ? 0 : 6000); }).then(function (t) {
                 if (!t) { needHuman = true; return null; }     /* Turnstile wants a click: do not send, ask for it */
-                return api('post', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target: target, nick: n, body: b, token: t, parent: parent || 0 }) });
+                return api('post', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target: target, nick: n, body: b, token: t, parent: parent || 0, reply_to: replyTo }) });
             }).then(function (j) {
                 if (needHuman) { say('Almost there: tick the "Verify you are human" box below, then press ' + label + ' again.', 'info'); return; }
                 save('vb_nick', n);
-                if (j.status === 'published') { area.value = ''; left.textContent = String(MAX); say('Posted. Thanks!', 'ok'); onDone(j.message); }
-                else if (j.status === 'pending') { area.value = ''; left.textContent = String(MAX); say(j.message, 'info'); }
+                if (j.status === 'published') { area.value = ''; left.textContent = String(MAX); say('Posted. Thanks!', 'ok'); form._mention(''); onDone(j.message); }
+                else if (j.status === 'pending') { area.value = ''; left.textContent = String(MAX); say(j.message, 'info'); form._mention(''); }
                 else { say(j.message, 'err'); }
             }).catch(function (err) { say(err.message, 'err'); })
               .then(function () {
@@ -106,7 +135,7 @@
                   try { if (window.turnstile && widgetId !== null) { window.turnstile.reset(widgetId); } } catch (x) { /* ignore */ }
               });
         });
-        form._focus = function () { (nick.value ? area : nick).focus(); };
+        form._focus = function () { (nick.value || STAFF ? area : nick).focus(); };
         return form;
     }
 
@@ -130,34 +159,72 @@
             });
             return rep;
         }
-        function line(m, node) {
+        function line(m, node, onReply) {
             var top = el('div', 'vb-top');
             if (m.staff) { top.appendChild(el('span', 'tag', 'VA COMICS')); } else { top.appendChild(el('b', 'vb-who', m.nick)); }
             top.appendChild(el('span', 'meta', when(m.created)));
-            if (!m.staff) { top.appendChild(reportBtn(m, node)); }
+            var tools = el('span', 'vb-tools');
+            var rb = el('button', 'vb-replybtn', 'REPLY'); rb.type = 'button'; rb.addEventListener('click', onReply); tools.appendChild(rb);
+            if (!m.staff && !STAFF) { tools.appendChild(reportBtn(m, node)); }
+            top.appendChild(tools);
             return top;
         }
+        function body(text, names) {      /* "@Name rest" -> the @Name in accent (only names that are in the conversation) */
+            var p = el('p', 'vb-text'), hit = '';
+            (names || []).slice().sort(function (a, b) { return b.length - a.length; }).some(function (n) { if (text.indexOf('@' + n + ' ') === 0) { hit = n; return true; } return false; });
+            if (hit) { p.appendChild(el('span', 'vb-at', '@' + hit)); p.appendChild(document.createTextNode(' ' + text.slice(hit.length + 2))); }
+            else { p.textContent = text; }
+            return p;
+        }
         function thread(m) {
-            var it = el('article', 'vb-item');
-            it.appendChild(line(m, it));
-            it.appendChild(el('p', 'vb-text', m.body));
+            var it = el('article', 'vb-item'), form = null, nodes = {};
+            var count = el('span', 'meta vb-n');
+            function setCount() { var n = (m.replies || []).length; count.textContent = n ? n + (n === 1 ? ' reply' : ' replies') : ''; }
+            function names() { return ['VA Comics', m.nick].concat((m.replies || []).map(function (x) { return x.nick; })); }
+            function openReply(x) {
+                if (!form || !form.isConnected) {
+                    form = Form(target, words, m.id, function (y) { m.replies = (m.replies || []).concat([y]); addSub(y); setCount(); });
+                    it.appendChild(form);
+                }
+                form._mention(x.staff ? 'VA Comics' : x.nick, x.id); form._focus();
+            }
+            function find(id) { if (id === m.id) { return m; } var f = null; (m.replies || []).some(function (x) { if (x.id === id) { f = x; return true; } return false; }); return f; }
+            function quote(x) {      /* "↳ Boby: Congrats! Kudos!…" - who and what this reply answers; click = jump there */
+                var q = el('button', 'vb-quote'); q.type = 'button';
+                var o = find(x.reply_to);
+                if (!o) { q.textContent = '\u21b3 a removed message'; q.disabled = true; return q; }
+                var txt = o.body; names().some(function (n) { if (txt.indexOf('@' + n + ' ') === 0) { txt = txt.slice(n.length + 2); return true; } return false; });
+                q.appendChild(document.createTextNode('\u21b3 '));
+                q.appendChild(el('b', '', o.staff ? 'VA COMICS' : o.nick));
+                q.appendChild(document.createTextNode(': ' + (txt.length > 70 ? txt.slice(0, 70).replace(/\s+\S*$/, '') + '\u2026' : txt)));
+                q.title = 'Show the message this answers';
+                q.addEventListener('click', function () {
+                    var n = nodes[o.id]; if (!n) { return; }
+                    n.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    n.classList.remove('is-flash'); void n.offsetWidth; n.classList.add('is-flash');
+                });
+                return q;
+            }
+            nodes[m.id] = it;
+            it.appendChild(line(m, it, function () { openReply(m); }));
+            it.appendChild(body(m.body, []));
             if (m.reply) {      /* the studio's first answer (before conversations existed) */
                 var r = el('div', 'vb-reply'); r.appendChild(el('span', 'tag', 'VA COMICS')); r.appendChild(el('p', 'vb-text', m.reply)); it.appendChild(r);
             }
             var subs = el('div', 'vb-replies'); it.appendChild(subs);
             function addSub(x) {
-                var sub = el('div', 'vb-sub' + (x.staff ? ' is-staff' : ''));
-                sub.appendChild(line(x, sub)); sub.appendChild(el('p', 'vb-text', x.body)); subs.appendChild(sub);
+                var sub = el('div', 'vb-sub' + (x.staff ? ' is-staff' : '')); nodes[x.id] = sub;
+                sub.appendChild(line(x, sub, function () { openReply(x); }));
+                var txt = x.body;
+                if (x.reply_to) {     /* the quote line already says who it answers: drop the leading @name */
+                    sub.appendChild(quote(x));
+                    names().some(function (n) { if (txt.indexOf('@' + n + ' ') === 0) { txt = txt.slice(n.length + 2); return true; } return false; });
+                    sub.appendChild(el('p', 'vb-text', txt));
+                } else { sub.appendChild(body(txt, names())); }
+                subs.appendChild(sub);
             }
             (m.replies || []).forEach(addSub);
-            var act = el('div', 'vb-actions');
-            var rb = el('button', 'vb-replybtn', 'REPLY' + ((m.replies || []).length ? ' · ' + m.replies.length : '')); rb.type = 'button';
-            rb.addEventListener('click', function () {
-                var open = it.querySelector('.vb-form--reply'); if (open) { open._focus(); return; }
-                var f = Form(target, words, m.id, function (x) { m.replies = (m.replies || []).concat([x]); addSub(x); rb.textContent = 'REPLY · ' + m.replies.length; setTimeout(function () { f.remove(); }, 1500); });
-                it.appendChild(f); f._focus();
-            });
-            act.appendChild(rb); it.appendChild(act);
+            setCount(); it.appendChild(count);
             return it;
         }
         function render(list) {
@@ -203,6 +270,6 @@
         root.setAttribute('data-target', 'issue:' + key);
     }
 
-    function start() { talkPage(); mountAll(); readerHook(); }
+    function start() { talkPage(); readerHook(); checkStaff().then(mountAll); }
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); } else { start(); }
 })();

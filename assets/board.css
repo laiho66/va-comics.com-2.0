@@ -36,3 +36,24 @@
 .vb-form--reply { margin-top: 10px; margin-left: 18px; padding: 12px; }
 .vb-form--reply .vb-rules { display: none; }
 @media (max-width: 640px) { .vb-sub, .vb-form--reply { margin-left: 8px; } }
+/* round 2: reply on every message, @mentions, studio posting */
+.vb-tools { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.vb-top .vb-report { margin-left: 0; }
+.vb-top .vb-replybtn { padding: 2px 8px; font-size: 10px; }
+.vb-n { display: block; margin-top: 8px; text-align: right; }
+.vb-n:empty { display: none; }
+.vb-actions { display: none; }
+.vb-at { color: var(--accent); font-family: var(--mono); font-size: 13px; letter-spacing: 0.5px; }
+.vb-to { align-self: center; font-family: var(--mono); font-size: 12px; color: var(--accent); }
+.vb-to-x { background: none; border: 0; color: var(--text-4); cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px; }
+.vb-to-x:hover { color: #ff9b9b; }
+.vb-form.is-staff { border-color: rgba(var(--accent-rgb), 0.55); }
+.vb-form.is-staff .vb-row .tag { align-self: center; }
+.vb-row { flex-wrap: wrap; align-items: center; }
+/* round 3: who answers what */
+.vb-quote { display: block; max-width: 100%; margin: 0 0 6px; padding: 3px 8px; background: rgba(255, 255, 255, 0.03); border: 0; border-left: 2px solid var(--line-3); text-align: left; font: inherit; font-size: 12px; line-height: 1.5; color: var(--text-4); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vb-quote b { color: var(--text-3); font-family: var(--mono); font-weight: 700; letter-spacing: 0.5px; }
+.vb-quote:hover { color: var(--text-2); border-left-color: var(--accent); }
+.vb-quote:disabled { cursor: default; }
+@keyframes vbFlash { 0% { box-shadow: 0 0 0 2px var(--accent); } 100% { box-shadow: 0 0 0 2px transparent; } }
+.is-flash { animation: vbFlash 1.6s ease-out; }
