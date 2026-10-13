@@ -1,5 +1,6 @@
 // VA COMICS // Comments + Q&A guard Worker. Separate from the site Worker (icy-sun-9f9e) and from va-reader.
 // Cloudflare Workers Builds: connect the repo, Root directory = board-worker
+// Your email address is NOT here either: secret NOTIFY_TO (dashboard). Needs Email Routing on va-comics.com with that address verified.
 // The Turnstile SECRET is NOT here (the repo is public): it is set in the dashboard as a Secret named TURNSTILE_SECRET.
 {
   "name": "va-board",
@@ -14,8 +15,10 @@
     { "binding": "DB", "database_name": "va-board", "database_id": "6c000527-428e-446a-8278-3e1be4dae504" }
   ],
   "ai": { "binding": "AI" },
+  "send_email": [ { "name": "MAILER" } ],
   "triggers": { "crons": ["17 3 * * *"] },
   "vars": {
+    "NOTIFY_FROM": "board@va-comics.com",
     "ACCESS_TEAM": "vacomics.cloudflareaccess.com",
     "ACCESS_AUD": "f8b63cf1cbe6f7b660dd19c69ddf0670745ce268cc3ad9cdc1c27a79401ac38f"
   }

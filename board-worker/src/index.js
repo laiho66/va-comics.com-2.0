@@ -7,6 +7,9 @@
      AI                Workers AI (moderation)
      TURNSTILE_SECRET  secret (Cloudflare Turnstile, anti-bot)   -- set in the dashboard, NEVER in the repo
      ACCESS_TEAM, ACCESS_AUD  same Access app as Foundry
+     MAILER            send_email binding (Cloudflare Email Routing) for the notifications to Aris
+     NOTIFY_TO         secret: Aris's verified address  -- set in the dashboard, NEVER in the repo (public)
+     NOTIFY_FROM       var: sender on the domain (board@va-comics.com)
 
    Rules (Aris): English only · no vulgar, sexual, religious, hateful content · anything doubtful is NOT published
    (it waits in the Foundry BOARD queue) · no email, no account, no IP stored. */
@@ -30,6 +33,8 @@ const REJECT_TEXT = {
     rules: 'Your message was not published because it does not follow the board rules.',
     too_fast: 'You are posting too fast. Try again in an hour.'
 };
+const MAX_MAILS_PER_HOUR = 10;          /* instant notifications; the rest waits for the daily summary */
+const FOUNDRY_URL = 'https://va-comics.com/foundry/#board';
 const PENDING_TEXT = 'Thanks! Your message will appear after a quick review.';
 
 /* ------------------------------------------------------------------ helpers */
@@ -138,7 +143,7 @@ async function list(env, url) {
     });
 }
 
-async function post(req, env) {
+async function post(req, env, ctx) {
     let b = {};
     try { b = await req.json(); } catch (e) { /* empty */ }
     const target = String(b.target || ''), nick = clean(b.nick).replace(/\s+/g, ' '), body = clean(b.body);
@@ -166,18 +171,79 @@ async function post(req, env) {
         .bind(target, nick, body, status, reason, now(), fp).run();
     const id = r.meta && r.meta.last_row_id;
     if (status === 'approved') { return json({ status: 'published', message: { id, nick, body, created: now(), reply: '', reply_at: 0 } }, 201); }
-    if (status === 'pending') { return json({ status: 'pending', message: PENDING_TEXT }, 202); }
+    if (status === 'pending') {
+        const mail = notifyNow(env, 'VA Board: message waiting (' + placeName(target) + ')', waitingMail({ target, nick, body, reason }));
+        if (ctx && ctx.waitUntil) { ctx.waitUntil(mail); } else { await mail; }
+        return json({ status: 'pending', message: PENDING_TEXT }, 202);
+    }
     const key = reason === 'english_only' ? 'english_only' : (reason === 'language' ? 'language' : 'rules');
     return json({ status: 'rejected', reason: key, message: REJECT_TEXT[key] }, 200);
 }
 
-async function report(req, env) {
+async function report(req, env, ctx) {
     let b = {};
     try { b = await req.json(); } catch (e) { /* empty */ }
     const id = parseInt(b.id, 10);
     if (!(id > 0)) { return err(400, 'bad_id', 'Unknown message.'); }
-    await env.DB.prepare("UPDATE messages SET reports = reports + 1, status = 'pending', reason = 'reported by a reader' WHERE id = ? AND status = 'approved'").bind(id).run();
+    const r = await env.DB.prepare("UPDATE messages SET reports = reports + 1, status = 'pending', reason = 'reported by a reader' WHERE id = ? AND status = 'approved'").bind(id).run();
+    if (r.meta && r.meta.changes) {                                        /* only the first report of a live message mails */
+        const m = await env.DB.prepare('SELECT target, nick, body, reason FROM messages WHERE id = ?').bind(id).first();
+        if (m) {
+            const mail = notifyNow(env, 'VA Board: a reader reported a message (' + placeName(m.target) + ')',
+                waitingMail(m).replace('A message is waiting', 'A reader reported a message. It is hidden now and waits').replace(' It is NOT public until you approve it.', ' APPROVE puts it back, DELETE removes it.'));
+            if (ctx && ctx.waitUntil) { ctx.waitUntil(mail); } else { await mail; }
+        }
+    }
     return json({ ok: true, message: 'Thanks. The message is hidden until we check it.' });
+}
+
+/* ------------------------------------------------------------------ notifications (email to Aris) */
+function placeName(t) {
+    if (t === 'qa') { return 'Q&A'; }
+    let m = /^issue:(\d+)(?:_(\d+))?$/.exec(t);
+    if (m) { return 'Dead Drop #' + (m[1].length < 2 ? '0' + m[1] : m[1]) + (m[2] ? ' Part ' + m[2] : ''); }
+    m = /^book:(.+)$/.exec(t);
+    return m ? 'Vanguard: ' + m[1] : t;
+}
+async function sendMail(env, subject, text) {
+    if (!env.MAILER || !env.NOTIFY_TO) { return false; }               /* not set up yet: stay quiet */
+    try {
+        await env.MAILER.send({ to: env.NOTIFY_TO, from: { email: env.NOTIFY_FROM || 'board@va-comics.com', name: 'VA Comics Board' }, subject, text });
+        return true;
+    } catch (e) { console.log('mail failed', e && e.message); return false; }
+}
+/* instant mail, at most MAX_MAILS_PER_HOUR (a flood of spam must not flood the inbox) */
+async function notifyNow(env, subject, text) {
+    try {
+        const hour = Math.floor(now() / 3600);
+        await env.DB.prepare('INSERT INTO notify (hour, n) VALUES (?, 1) ON CONFLICT(hour) DO UPDATE SET n = n + 1').bind(hour).run();
+        const row = await env.DB.prepare('SELECT n FROM notify WHERE hour = ?').bind(hour).first();
+        const n = row ? row.n : 1;
+        if (n > MAX_MAILS_PER_HOUR) { return; }
+        if (n === MAX_MAILS_PER_HOUR) { text += '\n\nThis is the last instant mail this hour. More messages may be waiting: check Foundry or the daily summary.'; }
+        await sendMail(env, subject, text);
+    } catch (e) { console.log('notify failed', e && e.message); }
+}
+function waitingMail(m) {
+    return ['A message is waiting for you on ' + placeName(m.target) + '. It is NOT public until you approve it.', '',
+        'Nickname: ' + m.nick, 'Why it waits: ' + m.reason, '', '----------', m.body, '----------', '',
+        'Approve, reply or delete: ' + FOUNDRY_URL].join('\n');
+}
+async function dailySummary(env) {
+    const day = now() - 86400;
+    const c = async (sql, ...a) => ((await env.DB.prepare(sql).bind(...a).first()) || {}).n || 0;
+    const published = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'approved' AND created > ?", day);
+    const rejected = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'rejected' AND created > ?", day);
+    const waiting = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'pending'");
+    const reported = await c("SELECT COUNT(*) AS n FROM messages WHERE status = 'pending' AND reports > 0");
+    if (!published && !rejected && !waiting) { return; }                 /* quiet day: no mail */
+    const rows = await env.DB.prepare("SELECT target, nick, body FROM messages WHERE status = 'approved' AND created > ? ORDER BY created DESC LIMIT 15").bind(day).all();
+    const lines = ['VA Comics board, last 24 hours:', '',
+        'Published automatically: ' + published, 'Blocked by the filters: ' + rejected,
+        'Waiting for you now: ' + waiting + (reported ? ' (' + reported + ' reported by readers)' : ''), ''];
+    (rows.results || []).forEach(m => { lines.push('[' + placeName(m.target) + '] ' + m.nick + ': ' + (m.body.length > 160 ? m.body.slice(0, 160) + '...' : m.body)); });
+    lines.push('', 'Foundry > BOARD: ' + FOUNDRY_URL);
+    await sendMail(env, 'VA Board daily: ' + published + ' new, ' + waiting + ' waiting', lines.join('\n'));
 }
 
 /* ------------------------------------------------------------------ admin */
@@ -220,7 +286,7 @@ async function admin(req, env, path, url) {
 
 /* ------------------------------------------------------------------ router + daily cleanup */
 export default {
-    async fetch(req, env) {
+    async fetch(req, env, ctx) {
         const url = new URL(req.url), p = url.pathname;
         try {
             if (p.startsWith('/foundry/api/board/')) { return await admin(req, env, p.slice('/foundry/api/board/'.length), url); }
@@ -230,15 +296,17 @@ export default {
             if ((r === 'post' || r === 'report') && req.method === 'POST') {
                 const origin = req.headers.get('origin');
                 if (origin && origin !== url.origin) { return err(403, 'bad_origin', 'Wrong origin.'); }
-                return r === 'post' ? await post(req, env) : await report(req, env);
+                return r === 'post' ? await post(req, env, ctx) : await report(req, env, ctx);
             }
             return err(404, 'not_found', 'Not here.');
         } catch (e) {
             return err(500, 'server', 'Something went wrong. Try again in a minute.');
         }
     },
-    /* every night: forget the anonymous fingerprints after 2 days, delete rejected messages after 30 days */
+    /* every night: forget the anonymous fingerprints after 2 days, delete rejected messages after 30 days, mail the summary */
     async scheduled(event, env) {
+        try { await dailySummary(env); } catch (e) { console.log('summary failed', e && e.message); }
+        await env.DB.prepare('DELETE FROM notify WHERE hour < ?').bind(Math.floor(now() / 3600) - 48).run();
         await env.DB.prepare("UPDATE messages SET fp = '' WHERE fp != '' AND created < ?").bind(now() - 2 * 86400).run();
         await env.DB.prepare("DELETE FROM messages WHERE status = 'rejected' AND created < ?").bind(now() - 30 * 86400).run();
     }
