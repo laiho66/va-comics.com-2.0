@@ -170,7 +170,9 @@
         var p = key.split('_'), label = 'Issue #' + (p[0].length < 2 ? '0' + p[0] : p[0]) + (p[1] ? ' Part ' + p[1] : '');
         document.title = 'Discuss ' + label + ' // Dead Drop // VA Comics';
         var h = document.getElementById('vbTalkTitle'); if (h) { h.textContent = 'Dead Drop // ' + label; }
-        var r = document.getElementById('vbTalkRead'); if (r) { r.href = '/media/viewer.html'; }
+        var r = document.getElementById('vbTalkRead'); if (r) { r.href = '/media/viewer.html?issue=' + key; r.textContent = 'READ_ISSUE_#' + (p[0].length < 2 ? '0' + p[0] : p[0]) + (p[1] ? '_PART_' + p[1] : ''); }
+        var v = document.getElementById('vbTalkVol'), n = parseInt(p[0], 10);
+        if (v) { var vol = n <= 8 ? 1 : 2; v.href = '/deaddrop/vol' + vol + '.html'; v.innerHTML = '&larr; ALL_ISSUES // VOL_' + vol; }   /* Vol 1 = #1-8, Vol 2 = #9 and up (add Vol 3 here when it exists) */
         root.setAttribute('data-target', 'issue:' + key);
     }
 
