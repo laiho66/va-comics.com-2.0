@@ -158,7 +158,7 @@ async function verifyAccess(req, env) {
 }
 
 /* ------------------------------------------------------------------ public */
-const PUBLIC_COLS = 'id, nick, body, created, reply, reply_at, staff, parent';
+const PUBLIC_COLS = 'id, nick, body, created, reply, reply_at, staff, parent, reply_to';
 
 async function list(env, url) {
     const target = url.searchParams.get('target') || '';
@@ -176,7 +176,7 @@ async function list(env, url) {
 async function post(req, env, ctx) {
     let b = {};
     try { b = await req.json(); } catch (e) { /* empty */ }
-    const target = String(b.target || ''), nick = clean(b.nick).replace(/\s+/g, ' '), body = clean(b.body);
+    const target = String(b.target || ''), nick = clean(b.nick).replace(/\s+/g, ' '), body = clean(b.body), mention = clean(b.mention).replace(/\s+/g, ' ').slice(0, 24);
     if (!TARGET.test(target)) { return err(400, 'bad_target', 'Unknown page.'); }
     if (!NICK.test(nick)) { return err(400, 'bad_nick', 'Nickname: 3 to 24 English letters or digits (spaces, _ . - allowed inside).'); }
     if (RESERVED_NICK.test(nick)) { return err(400, 'bad_nick', 'That nickname is reserved. Please pick another one.'); }
@@ -188,6 +188,12 @@ async function post(req, env, ctx) {
         const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM messages WHERE parent = ?').bind(parent).first();
         if (n && n.n >= MAX_REPLIES) { return err(400, 'thread_full', 'This conversation is full. Start a new one above.'); }
     }
+    let replyTo = parseInt(b.reply_to, 10) || 0, at = mention;
+    if (replyTo) {                                                       /* the exact message this answers (the starter or a reply in the same conversation) */
+        const rt = parent ? await env.DB.prepare("SELECT id, nick, staff, parent FROM messages WHERE id = ? AND status = 'approved' AND (id = ? OR parent = ?)").bind(replyTo, parent, parent).first() : null;
+        if (!rt) { return err(400, 'bad_parent', 'That message is not available any more. Reload the page.'); }
+        at = rt.id === parent ? '' : (rt.staff ? STAFF_NICK : rt.nick);   /* answering the starter needs no @name */
+    } else if (mention && !(await inThread(env, parent, mention))) { return err(400, 'bad_mention', 'That person is not in this conversation.'); }
     if (body.length < MIN_BODY || body.length > MAX_BODY) { return err(400, 'bad_length', 'Message: ' + MIN_BODY + ' to ' + MAX_BODY + ' characters.'); }
     if (!(await turnstileOk(env, b.token, req.headers.get('cf-connecting-ip')))) { return err(403, 'bot_check', 'The anti-bot check failed. Reload the page and try again.'); }
 
@@ -206,8 +212,9 @@ async function post(req, env, ctx) {
         else if (ai.verdict === 'review') { status = 'pending'; reason = 'ai unsure: ' + ai.why; }
         if (status === 'approved' && LINK_RE.test(whole)) { status = 'pending'; reason = 'contains a link or handle'; }
     }
-    const r = await env.DB.prepare('INSERT INTO messages (target, nick, body, status, reason, created, fp, parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-        .bind(target, nick, body, status, reason, now(), fp, parent).run();
+    const stored = at ? '@' + at + ' ' + body : body;             /* the @name is added by the server, so it never trips the link filter */
+    const r = await env.DB.prepare('INSERT INTO messages (target, nick, body, status, reason, created, fp, parent, reply_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+        .bind(target, nick, stored, status, reason, now(), fp, parent, replyTo).run();
     const id = r.meta && r.meta.last_row_id;
     if (status === 'approved') {
         if (top) {                                                         /* a reader answered back in a conversation where the studio already spoke: tell Aris */
@@ -219,15 +226,23 @@ async function post(req, env, ctx) {
                 if (ctx && ctx.waitUntil) { ctx.waitUntil(mail); } else { await mail; }
             }
         }
-        return json({ status: 'published', message: { id, nick, body, created: now(), reply: '', reply_at: 0, staff: 0, parent, replies: [] } }, 201);
+        return json({ status: 'published', message: { id, nick, body: stored, created: now(), reply: '', reply_at: 0, staff: 0, parent, reply_to: replyTo, replies: [] } }, 201);
     }
     if (status === 'pending') {
-        const mail = notifyNow(env, 'VA Board: message waiting (' + placeName(target) + ')', waitingMail({ target, nick, body, reason, parent, top }));
+        const mail = notifyNow(env, 'VA Board: message waiting (' + placeName(target) + ')', waitingMail({ target, nick, body: stored, reason, parent, top }));
         if (ctx && ctx.waitUntil) { ctx.waitUntil(mail); } else { await mail; }
         return json({ status: 'pending', message: PENDING_TEXT }, 202);
     }
     const key = reason === 'english_only' ? 'english_only' : (reason === 'language' ? 'language' : 'rules');
     return json({ status: 'rejected', reason: key, message: REJECT_TEXT[key] }, 200);
+}
+
+/* is this nickname part of conversation #top (the starter, a reply, or the studio)? */
+async function inThread(env, top, who) {
+    if (!top) { return false; }
+    if (who.toLowerCase() === STAFF_NICK.toLowerCase()) { return true; }
+    const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM messages WHERE (id = ? OR parent = ?) AND status = 'approved' AND lower(nick) = lower(?)").bind(top, top, who).first();
+    return !!(r && r.n);
 }
 
 async function report(req, env, ctx) {
@@ -300,6 +315,29 @@ async function dailySummary(env) {
 /* ------------------------------------------------------------------ admin */
 async function admin(req, env, path, url) {
     if (!(await verifyAccess(req, env))) { return err(403, 'forbidden', 'Admin only (log in to Foundry through Cloudflare Access).'); }
+    if (path === 'whoami' && req.method === 'GET') { return json({ ok: true, staff: STAFF_NICK }); }
+    if (path === 'post' && req.method === 'POST') {                  /* the studio writes straight from the site (logged in through Access) */
+        let b = {}; try { b = await req.json(); } catch (e) { /* empty */ }
+        const target = String(b.target || ''), text = clean(b.body).slice(0, 2000), mention = clean(b.mention).replace(/\s+/g, ' ').slice(0, 24);
+        if (!TARGET.test(target)) { return err(400, 'bad_target', 'Unknown page.'); }
+        if (text.length < 1) { return err(400, 'empty', 'Write the message first.'); }
+        let parent = parseInt(b.parent, 10) || 0, replyTo = parseInt(b.reply_to, 10) || 0, at = parent ? mention : '';
+        if (parent) {
+            const t = await env.DB.prepare('SELECT id, target, parent FROM messages WHERE id = ?').bind(parent).first();
+            if (!t || t.target !== target) { return err(400, 'bad_parent', 'That conversation is not available any more.'); }
+            parent = t.parent || t.id;
+        }
+        if (replyTo && parent) {
+            const rt = await env.DB.prepare('SELECT id, nick, staff FROM messages WHERE id = ? AND (id = ? OR parent = ?)').bind(replyTo, parent, parent).first();
+            if (!rt) { return err(400, 'bad_parent', 'That message is not available any more.'); }
+            at = rt.id === parent ? '' : (rt.staff ? STAFF_NICK : rt.nick);
+        } else { replyTo = 0; }
+        const body = at ? '@' + at + ' ' + text : text;
+        const r = await env.DB.prepare("INSERT INTO messages (target, nick, body, status, reason, created, staff, parent, reply_to) VALUES (?, ?, ?, 'approved', 'VA Comics', ?, 1, ?, ?)")
+            .bind(target, STAFF_NICK, body, now(), parent, replyTo).run();
+        const id = r.meta && r.meta.last_row_id;
+        return json({ status: 'published', message: { id, nick: STAFF_NICK, body, created: now(), reply: '', reply_at: 0, staff: 1, parent, reply_to: replyTo, replies: [] } }, 201);
+    }
     if (path === 'summary' && req.method === 'GET') {
         const rows = await env.DB.prepare('SELECT target, status, COUNT(*) AS n FROM messages GROUP BY target, status').all();
         return json({ rows: rows.results || [] });
@@ -307,8 +345,8 @@ async function admin(req, env, path, url) {
     if (path === 'messages' && req.method === 'GET') {
         const st = url.searchParams.get('status') || 'pending', target = url.searchParams.get('target') || '';
         if (!['pending', 'approved', 'rejected', 'all'].includes(st)) { return err(400, 'bad_status', 'Bad status.'); }
-        let sql = 'SELECT m.id, m.target, m.nick, m.body, m.status, m.reason, m.created, m.reply, m.reply_at, m.reports, m.staff, m.parent, ' +
-            "(SELECT p.nick || ': ' || substr(p.body, 1, 140) FROM messages p WHERE p.id = m.parent) AS parent_text, " +
+        let sql = 'SELECT m.id, m.target, m.nick, m.body, m.status, m.reason, m.created, m.reply, m.reply_at, m.reports, m.staff, m.parent, m.reply_to, ' +
+            "(SELECT p.nick || ': ' || substr(p.body, 1, 140) FROM messages p WHERE p.id = CASE WHEN m.reply_to > 0 THEN m.reply_to ELSE m.parent END) AS parent_text, " +
             "(SELECT COUNT(*) FROM messages c WHERE c.parent = m.id) AS n_replies FROM messages m WHERE 1=1", args = [];
         if (st !== 'all') { sql += ' AND m.status = ?'; args.push(st); }
         if (target) { if (!TARGET.test(target)) { return err(400, 'bad_target', 'Bad target.'); } sql += ' AND m.target = ?'; args.push(target); }
@@ -330,8 +368,10 @@ async function admin(req, env, path, url) {
             const t = await env.DB.prepare('SELECT id, target, parent FROM messages WHERE id = ?').bind(id).first();
             if (!t) { return err(404, 'not_found', 'Message not found.'); }
             const top = t.parent || t.id;
-            await env.DB.prepare("INSERT INTO messages (target, nick, body, status, reason, created, staff, parent) VALUES (?, ?, ?, 'approved', 'VA Comics answer', ?, 1, ?)")
-                .bind(t.target, STAFF_NICK, text, now(), top).run();
+            const who = t.parent ? await env.DB.prepare('SELECT nick, staff FROM messages WHERE id = ?').bind(t.id).first() : null;
+            const body = who ? '@' + (who.staff ? STAFF_NICK : who.nick) + ' ' + text : text;
+            await env.DB.prepare("INSERT INTO messages (target, nick, body, status, reason, created, staff, parent, reply_to) VALUES (?, ?, ?, 'approved', 'VA Comics answer', ?, 1, ?, ?)")
+                .bind(t.target, STAFF_NICK, body, now(), top, t.id).run();
             return json({ ok: true });
         }
         if (m[2] === 'reply' && req.method === 'POST') {
@@ -353,7 +393,11 @@ export default {
     async fetch(req, env, ctx) {
         const url = new URL(req.url), p = url.pathname;
         try {
-            if (p.startsWith('/foundry/api/board/')) { return await admin(req, env, p.slice('/foundry/api/board/'.length), url); }
+            if (p.startsWith('/foundry/api/board/')) {
+                const o = req.headers.get('origin');
+                if (req.method !== 'GET' && o && o !== url.origin) { return err(403, 'bad_origin', 'Wrong origin.'); }
+                return await admin(req, env, p.slice('/foundry/api/board/'.length), url);
+            }
             if (!p.startsWith('/api/board/')) { return err(404, 'not_found', 'Not here.'); }
             const r = p.slice('/api/board/'.length);
             if (r === 'list' && req.method === 'GET') { return await list(env, url); }
