@@ -90,33 +90,47 @@
             top.appendChild(document.createTextNode(' · ' + when(m.created)));
             top.appendChild(el('span', 'bd-st is-' + m.status, m.status.toUpperCase()));
             main.appendChild(top);
-            main.appendChild(el('b', '', m.nick));
+            if (m.parent) { main.appendChild(el('span', 'bd-parent', '↳ reply to ' + (m.parent_text || 'a deleted message'))); }
+            if (m.staff) { main.appendChild(el('span', 'tag', 'VA COMICS (you)')); } else { main.appendChild(el('b', '', m.nick)); }
             main.appendChild(el('p', 'bd-body', m.body));
             if (m.status !== 'approved' && m.reason) { main.appendChild(el('span', 'bd-why', 'Why: ' + m.reason + (m.reports ? ' (' + m.reports + ' report' + (m.reports > 1 ? 's' : '') + ')' : ''))); }
-            if (m.reply) { main.appendChild(el('div', 'bd-reply', 'VA COMICS: ' + m.reply)); }
+            if (m.reply) { main.appendChild(el('div', 'bd-reply', 'VA COMICS (first answer): ' + m.reply)); }
+            if (!m.parent && m.n_replies) { main.appendChild(el('span', 'bd-meta', m.n_replies + ' repl' + (m.n_replies === 1 ? 'y' : 'ies') + ' in this conversation')); }
 
             if (m.status !== 'approved') {
                 var ok = el('button', 'btn btn--sm btn--primary', 'APPROVE'); ok.type = 'button';
                 ok.addEventListener('click', function () { act_(ok, 'messages/' + m.id + '/approve', { method: 'POST' }, 'Approved: it is on the site now.'); });
                 act.appendChild(ok);
             }
-            var rp = el('button', 'btn btn--sm', m.reply ? 'EDIT_REPLY' : 'REPLY'); rp.type = 'button';
-            rp.addEventListener('click', function () {
+            function openBox(label, initial, path, makeBody, doneText) {
                 if (main.querySelector('.bd-reply-box')) { return; }
-                var wrap = el('div', 'bd-reply-box'), ta = document.createElement('textarea'); ta.maxLength = 2000; ta.value = m.reply || ''; ta.placeholder = 'Your answer (shown under the message as VA COMICS). Empty = remove the reply.';
-                var r2 = el('div', 'row'), send = el('button', 'btn btn--sm btn--primary', 'SAVE_REPLY'), cancel = el('button', 'btn btn--sm', 'CANCEL');
+                var wrap = el('div', 'bd-reply-box'), ta = document.createElement('textarea'); ta.maxLength = 2000; ta.value = initial; ta.placeholder = label;
+                var r2 = el('div', 'row'), send = el('button', 'btn btn--sm btn--primary', 'SAVE'), cancel = el('button', 'btn btn--sm', 'CANCEL');
                 send.type = cancel.type = 'button';
                 cancel.addEventListener('click', function () { wrap.remove(); });
                 send.addEventListener('click', function () {
-                    act_(send, 'messages/' + m.id + '/reply', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: ta.value.trim() }) },
-                        ta.value.trim() ? (m.status === 'approved' ? 'Reply saved: it is on the site now.' : 'Reply saved. It shows once the message is approved.') : 'Reply removed.');
+                    act_(send, path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(makeBody(ta.value.trim())) }, doneText(ta.value.trim()));
                 });
                 r2.appendChild(send); r2.appendChild(cancel); wrap.appendChild(ta); wrap.appendChild(r2); main.appendChild(wrap); ta.focus();
-            });
-            act.appendChild(rp);
+            }
+            if (!m.staff && m.status !== 'rejected') {
+                var rp = el('button', 'btn btn--sm', 'REPLY'); rp.type = 'button';
+                rp.addEventListener('click', function () {
+                    openBox('Your answer, shown in the conversation as VA COMICS.', '', 'messages/' + m.id + '/answer', function (t) { return { text: t }; },
+                        function () { return m.status === 'approved' ? 'Answer posted: it is on the site now.' : 'Answer saved. The conversation shows once you approve the message.'; });
+                });
+                act.appendChild(rp);
+            }
+            if (m.reply) {      /* old single answer, from before conversations */
+                var ed = el('button', 'btn btn--sm', 'EDIT_FIRST_ANSWER'); ed.type = 'button';
+                ed.addEventListener('click', function () {
+                    openBox('Empty = remove this answer.', m.reply, 'messages/' + m.id + '/reply', function (t) { return { text: t }; }, function (t) { return t ? 'Answer updated.' : 'Answer removed.'; });
+                });
+                act.appendChild(ed);
+            }
             var del = el('button', 'btn btn--sm btn--danger', 'DELETE'); del.type = 'button';
             del.addEventListener('click', function () {
-                if (!confirm('Delete this message from ' + m.nick + ' for good?')) { return; }
+                if (!confirm('Delete this message from ' + m.nick + ' for good?' + (!m.parent && m.n_replies ? ' Its ' + m.n_replies + ' replies go with it.' : ''))) { return; }
                 act_(del, 'messages/' + m.id, { method: 'DELETE' }, 'Deleted.');
             });
             act.appendChild(del);

@@ -42,32 +42,25 @@
         return tsReady;
     }
 
-    /* ---------- one board ---------- */
-    function Board(root) {
-        var target = root.getAttribute('data-target'), qa = root.getAttribute('data-kind') === 'qa';
-        var words = qa ? { title: 'Questions & answers', empty: 'No questions yet. Ask the first one.', field: 'Your question', btn: 'ASK', count: 'questions' }
-                       : { title: 'Comments', empty: 'No comments yet. Be the first.', field: 'Your comment', btn: 'POST_COMMENT', count: 'comments' };
-        root.innerHTML = '';
-        var head = el('h2', 'section-label'); head.appendChild(el('span', '', words.title)); var cnt = el('span', 'meta vb-count', ''); head.appendChild(cnt); root.appendChild(head);
-
-        /* form */
-        var form = el('form', 'vb-form'); form.setAttribute('autocomplete', 'off');
+    /* ---------- one form (the main one, or a small one under a conversation) ---------- */
+    function Form(target, words, parent, onDone) {
+        var form = el('form', 'vb-form' + (parent ? ' vb-form--reply' : '')); form.setAttribute('autocomplete', 'off');
         var row = el('div', 'vb-row');
         var nick = el('input', 'vb-nick'); nick.type = 'text'; nick.maxLength = 24; nick.placeholder = 'Nickname'; nick.setAttribute('aria-label', 'Nickname'); nick.value = load('vb_nick', '');
         row.appendChild(nick); form.appendChild(row);
-        var area = el('textarea', 'vb-body'); area.maxLength = MAX; area.placeholder = words.field + ' (English only)'; area.setAttribute('aria-label', words.field); area.rows = 3;
+        var area = el('textarea', 'vb-body'); area.maxLength = MAX; area.placeholder = (parent ? 'Your reply' : words.field) + ' (English only)'; area.setAttribute('aria-label', parent ? 'Your reply' : words.field); area.rows = parent ? 2 : 3;
         form.appendChild(area);
         var foot = el('div', 'vb-foot');
         var rules = el('span', 'vb-rules', 'English only · no swearing, sexual, religious or hateful content · see the board rules in our ');
         var a = el('a', '', 'Terms'); a.href = '/legal.html#terms'; rules.appendChild(a); rules.appendChild(document.createTextNode('.'));
         var left = el('span', 'meta vb-left', MAX + '');
-        var btn = el('button', 'btn btn--primary btn--sm', words.btn); btn.type = 'submit';
-        foot.appendChild(rules); foot.appendChild(left); foot.appendChild(btn); form.appendChild(foot);
+        var label = parent ? 'REPLY' : words.btn;
+        var btn = el('button', 'btn btn--primary btn--sm', label); btn.type = 'submit';
+        foot.appendChild(rules); foot.appendChild(left);
+        if (parent) { var cancel = el('button', 'btn btn--sm', 'CANCEL'); cancel.type = 'button'; cancel.addEventListener('click', function () { form.remove(); }); foot.appendChild(cancel); }
+        foot.appendChild(btn); form.appendChild(foot);
         var ts = el('div', 'vb-ts'); form.appendChild(ts);
         var msg = el('p', 'vb-msg'); msg.hidden = true; form.appendChild(msg);
-        root.appendChild(form);
-
-        var listBox = el('div', 'vb-list'); root.appendChild(listBox);
 
         area.addEventListener('input', function () { left.textContent = String(MAX - area.value.length); });
         ['keydown', 'keyup', 'keypress'].forEach(function (t) { form.addEventListener(t, function (e) { e.stopPropagation(); }); });   /* typing never turns comic pages */
@@ -80,17 +73,15 @@
                     callback: function (t) { token = t; }, 'expired-callback': function () { token = ''; }, 'error-callback': function () { token = ''; } });
             });
         }
+        function say(text, kind) { msg.hidden = !text; msg.textContent = text || ''; msg.className = 'vb-msg' + (kind ? ' is-' + kind : ''); }
         area.addEventListener('focus', function () { ensureWidget().catch(function (e) { say(e.message, 'err'); }); }, { once: true });
         nick.addEventListener('focus', function () { ensureWidget().catch(function () { /* shown on submit */ }); }, { once: true });
-
-        function say(text, kind) { msg.hidden = !text; msg.textContent = text || ''; msg.className = 'vb-msg' + (kind ? ' is-' + kind : ''); }
         function waitToken(ms) {
             return new Promise(function (res) {
                 var t0 = Date.now();
                 (function check() { if (token || Date.now() - t0 > ms) { res(token); } else { setTimeout(check, 200); } })();
             });
         }
-
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             var n = nick.value.trim(), b = area.value.trim();
@@ -100,11 +91,11 @@
             var needHuman = false;
             ensureWidget().then(function () { return waitToken(token ? 0 : 6000); }).then(function (t) {
                 if (!t) { needHuman = true; return null; }     /* Turnstile wants a click: do not send, ask for it */
-                return api('post', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target: target, nick: n, body: b, token: t }) });
+                return api('post', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ target: target, nick: n, body: b, token: t, parent: parent || 0 }) });
             }).then(function (j) {
-                if (needHuman) { say('Almost there: tick the "Verify you are human" box below, then press ' + words.btn + ' again.', 'info'); return; }
+                if (needHuman) { say('Almost there: tick the "Verify you are human" box below, then press ' + label + ' again.', 'info'); return; }
                 save('vb_nick', n);
-                if (j.status === 'published') { area.value = ''; left.textContent = String(MAX); say('Posted. Thanks!', 'ok'); render([j.message].concat(items), true); }
+                if (j.status === 'published') { area.value = ''; left.textContent = String(MAX); say('Posted. Thanks!', 'ok'); onDone(j.message); }
                 else if (j.status === 'pending') { area.value = ''; left.textContent = String(MAX); say(j.message, 'info'); }
                 else { say(j.message, 'err'); }
             }).catch(function (err) { say(err.message, 'err'); })
@@ -115,29 +106,65 @@
                   try { if (window.turnstile && widgetId !== null) { window.turnstile.reset(widgetId); } } catch (x) { /* ignore */ }
               });
         });
+        form._focus = function () { (nick.value ? area : nick).focus(); };
+        return form;
+    }
 
-        /* list */
+    /* ---------- one board ---------- */
+    function Board(root) {
+        var target = root.getAttribute('data-target'), qa = root.getAttribute('data-kind') === 'qa';
+        var words = qa ? { title: 'Questions & answers', empty: 'No questions yet. Ask the first one.', field: 'Your question', btn: 'ASK', count: 'questions' }
+                       : { title: 'Comments', empty: 'No comments yet. Be the first.', field: 'Your comment', btn: 'POST_COMMENT', count: 'comments' };
+        root.innerHTML = '';
+        var head = el('h2', 'section-label'); head.appendChild(el('span', '', words.title)); var cnt = el('span', 'meta vb-count', ''); head.appendChild(cnt); root.appendChild(head);
         var items = [];
+        root.appendChild(Form(target, words, 0, function (m) { render([m].concat(items)); }));
+        var listBox = el('div', 'vb-list'); root.appendChild(listBox);
+
+        function reportBtn(m, node) {
+            var rep = el('button', 'vb-report', 'REPORT'); rep.type = 'button'; rep.title = 'Report this message';
+            rep.addEventListener('click', function () {
+                if (!confirm('Report this message? It will be hidden until we check it.')) { return; }
+                api('report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: m.id }) })
+                    .then(function () { node.remove(); }).catch(function (e) { alert(e.message); });
+            });
+            return rep;
+        }
+        function line(m, node) {
+            var top = el('div', 'vb-top');
+            if (m.staff) { top.appendChild(el('span', 'tag', 'VA COMICS')); } else { top.appendChild(el('b', 'vb-who', m.nick)); }
+            top.appendChild(el('span', 'meta', when(m.created)));
+            if (!m.staff) { top.appendChild(reportBtn(m, node)); }
+            return top;
+        }
+        function thread(m) {
+            var it = el('article', 'vb-item');
+            it.appendChild(line(m, it));
+            it.appendChild(el('p', 'vb-text', m.body));
+            if (m.reply) {      /* the studio's first answer (before conversations existed) */
+                var r = el('div', 'vb-reply'); r.appendChild(el('span', 'tag', 'VA COMICS')); r.appendChild(el('p', 'vb-text', m.reply)); it.appendChild(r);
+            }
+            var subs = el('div', 'vb-replies'); it.appendChild(subs);
+            function addSub(x) {
+                var sub = el('div', 'vb-sub' + (x.staff ? ' is-staff' : ''));
+                sub.appendChild(line(x, sub)); sub.appendChild(el('p', 'vb-text', x.body)); subs.appendChild(sub);
+            }
+            (m.replies || []).forEach(addSub);
+            var act = el('div', 'vb-actions');
+            var rb = el('button', 'vb-replybtn', 'REPLY' + ((m.replies || []).length ? ' · ' + m.replies.length : '')); rb.type = 'button';
+            rb.addEventListener('click', function () {
+                var open = it.querySelector('.vb-form--reply'); if (open) { open._focus(); return; }
+                var f = Form(target, words, m.id, function (x) { m.replies = (m.replies || []).concat([x]); addSub(x); rb.textContent = 'REPLY · ' + m.replies.length; setTimeout(function () { f.remove(); }, 1500); });
+                it.appendChild(f); f._focus();
+            });
+            act.appendChild(rb); it.appendChild(act);
+            return it;
+        }
         function render(list) {
             items = list; listBox.innerHTML = '';
             cnt.textContent = list.length ? ' ' + list.length + ' ' + (list.length === 1 ? words.count.replace(/s$/, '') : words.count) : '';
             if (!list.length) { listBox.appendChild(el('p', 'hint vb-empty', words.empty)); return; }
-            list.forEach(function (m) {
-                var it = el('article', 'vb-item');
-                var top = el('div', 'vb-top'); top.appendChild(el('b', 'vb-who', m.nick)); top.appendChild(el('span', 'meta', when(m.created)));
-                var rep = el('button', 'vb-report', 'REPORT'); rep.type = 'button'; rep.title = 'Report this message';
-                rep.addEventListener('click', function () {
-                    if (!confirm('Report this message? It will be hidden until we check it.')) { return; }
-                    api('report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: m.id }) })
-                        .then(function () { it.remove(); }).catch(function (e) { alert(e.message); });
-                });
-                top.appendChild(rep); it.appendChild(top);
-                it.appendChild(el('p', 'vb-text', m.body));
-                if (m.reply) {
-                    var r = el('div', 'vb-reply'); r.appendChild(el('span', 'tag', 'VA COMICS')); r.appendChild(el('p', 'vb-text', m.reply)); it.appendChild(r);
-                }
-                listBox.appendChild(it);
-            });
+            list.forEach(function (m) { listBox.appendChild(thread(m)); });
         }
         listBox.appendChild(el('p', 'meta', 'LOADING...'));
         fetch(API + 'list?target=' + encodeURIComponent(target)).then(function (r) { return r.json(); })

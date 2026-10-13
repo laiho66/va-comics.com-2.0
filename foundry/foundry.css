@@ -112,3 +112,4 @@ button.chip.chip--active:hover { color: #000; }
 .bd-st { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; padding: 1px 6px; border: 1px solid var(--line-3); margin-left: 6px; }
 .bd-st.is-pending { color: #ffc98a; border-color: #ff9a3c; } .bd-st.is-approved { color: #bff0d3; border-color: #35a867; } .bd-st.is-rejected { color: #ffc9c9; border-color: #ff5a5a; }
 @media (max-width: 700px) { #bdList .fitem-actions .btn { flex: 1 1 auto; padding: 6px 8px; font-size: 11px; } }
+.bd-parent { font-family: var(--mono); font-size: 11px; color: var(--text-4); overflow-wrap: anywhere; }

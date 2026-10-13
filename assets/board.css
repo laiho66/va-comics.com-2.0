@@ -24,3 +24,15 @@
 .vb-report:hover { color: #ff9b9b; }
 .vb-reply { margin-top: 10px; padding: 10px 12px; border-left: 2px solid var(--accent); background: rgba(var(--accent-rgb), 0.06); display: flex; flex-direction: column; gap: 6px; }
 @media (max-width: 640px) { .vb-nick { max-width: none; } .vb-foot .btn { flex: 1 1 100%; } }
+
+/* conversations (replies) */
+.vb-replies { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.vb-replies:empty { display: none; }
+.vb-sub { margin-left: 18px; padding: 10px 12px; border-left: 2px solid var(--line-3); background: rgba(255, 255, 255, 0.02); }
+.vb-sub.is-staff { border-left-color: var(--accent); background: rgba(var(--accent-rgb), 0.06); }
+.vb-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+.vb-replybtn { background: none; border: 1px solid var(--line-3); padding: 4px 10px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--text-3); cursor: pointer; }
+.vb-replybtn:hover { color: var(--accent); border-color: var(--accent); }
+.vb-form--reply { margin-top: 10px; margin-left: 18px; padding: 12px; }
+.vb-form--reply .vb-rules { display: none; }
+@media (max-width: 640px) { .vb-sub, .vb-form--reply { margin-left: 8px; } }
