@@ -95,9 +95,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 4px);
     opacity: 0.5;
 }
-body[data-bg="wall"]      { --bg-img: url('/assets/bg-pages.webp'), url('/bg-home.webp'); }
-body[data-bg="deaddrop"]  { --bg-img: url('/deaddrop/assets/bg-deaddrop.webp'), url('/assets/bg-pages.webp'), url('/bg-home.webp'); }
-body[data-bg="vanguard"]  { --bg-img: url('/vanguard/assets/bg-vanguard.webp'), url('/assets/bg-pages.webp'), url('/bg-home.webp'); }
+body[data-bg="wall"]      { --bg-img: none; }
+body[data-bg="deaddrop"]  { --bg-img: url('/deaddrop/assets/bg-deaddrop.webp'), none; }
+body[data-bg="vanguard"]  { --bg-img: none; }
 body[data-bg="css"] .bg-layer {
     background:
         radial-gradient(ellipse 60% 50% at 78% 20%, rgba(var(--accent-rgb), 0.16), transparent 70%),
