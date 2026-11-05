@@ -3,7 +3,7 @@
 (function () {
     'use strict';
     var API = '/foundry/api/board/';
-    var BOOK_PAGES = { 'sunken-pharaoh': '/vanguard/book1.html' };   /* book id -> public page (add Book 2 here later) */
+    var BOOK_PAGES = { 'sunken-pharaoh': '/vanguard/book1.html', 'jade-seal-of-leyre': '/vanguard/book2.html' };   /* book id -> public page */
     var $ = function (id) { return document.getElementById(id); };
     function el(tag, cls, text) { var n = document.createElement(tag); if (cls) { n.className = cls; } if (text !== undefined) { n.textContent = text; } return n; }
     var onSite = /(^|\.)va-comics\.com$/.test(location.hostname);

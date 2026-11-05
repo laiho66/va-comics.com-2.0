@@ -26,8 +26,8 @@
     /* Vanguard Chronicles: add a line here when a new book appears. */
     var SHOW_VANGUARD = true;
     var VANGUARD_BOOKS = [
-        { label: 'BOOK 1', href: '/vanguard/book1.html' }
-        /* , { label: 'BOOK 2', href: '/vanguard/book2.html' } */
+        { label: 'BOOK 1', href: '/vanguard/book1.html' },
+        { label: 'BOOK 2', href: '/vanguard/book2.html' }
     ];
 
     /* The 18+ notice is shown ONLY on pages whose address starts with one of these. */
