@@ -144,6 +144,9 @@
     var loadingCh = 0;
     function openChapter(n, scrollRatio) {
         var chs = state.book.chapters, idx = Math.max(0, Math.min(chs.length - 1, n)), my = ++loadingCh, bid = state.book.id;
+        /* no jumping text (layout shift): go back to the top of the page first, keep the box tall while loading */
+        var start = readerTop();
+        if (window.pageYOffset > start) { window.scrollTo(0, start); }
         $('rrText').innerHTML = '<p class="meta">LOADING...</p>';
         return api('book/' + encodeURIComponent(bid) + '/chapter/' + chs[idx].n).then(function (c) {
             if (my !== loadingCh) { return; }
@@ -153,6 +156,11 @@
             box.innerHTML = c.html;    /* our own cleaned book text, prepared once from the EPUB */
             Array.prototype.forEach.call(box.querySelectorAll('img[data-img]'), function (img) {
                 img.loading = 'lazy'; img.decoding = 'async'; img.draggable = false;
+                var w = +img.getAttribute('width'), h = +img.getAttribute('height');
+                if (w > 0 && h > 0) {      /* reserve the picture's space before it arrives, so the text below does not jump */
+                    img.style.aspectRatio = w + ' / ' + h;
+                    img.style.width = 'min(100%, ' + (86 * w / h).toFixed(2) + 'vh, ' + w + 'px)';
+                }
                 img.src = API + 'book/' + encodeURIComponent(bid) + '/img/' + parseInt(img.getAttribute('data-img'), 10);
             });
             $('rrStamp').textContent = 'Reader copy for ' + state.label + ' · ' + state.code + ' · not for sharing';
@@ -160,13 +168,14 @@
             $('rrPos').textContent = (idx + 1) + ' / ' + chs.length;
             Array.prototype.forEach.call($('rrTocList').querySelectorAll('button'), function (b) { b.classList.toggle('is-current', +b.getAttribute('data-ch') === chs[idx].n); });
             save('rr_pos_' + bid, { ch: idx, at: 0 });
-            requestAnimationFrame(function () {
-                var bar = document.querySelector('.topbar'), off = bar && /fixed|sticky/.test(getComputedStyle(bar).position) ? bar.offsetHeight : 0;
-                var top = $('rrReader').getBoundingClientRect().top + window.pageYOffset - 8 - off;
-                if (scrollRatio) { top = $('rrPage').offsetTop + scrollRatio * $('rrPage').offsetHeight; }
-                window.scrollTo(0, Math.max(0, top));
-            });
+            var top = readerTop();
+            if (scrollRatio) { top = $('rrPage').offsetTop + scrollRatio * $('rrPage').offsetHeight; }
+            window.scrollTo(0, Math.max(0, top));
         }).catch(fail);
+    }
+    function readerTop() {
+        var bar = document.querySelector('.topbar'), off = bar && /fixed|sticky/.test(getComputedStyle(bar).position) ? bar.offsetHeight : 0;
+        return Math.max(0, $('rrReader').getBoundingClientRect().top + window.pageYOffset - 8 - off);
     }
     function fail(err) {
         if (err && (err.status === 401 || (err.status === 403 && err.code !== 'not_your_book'))) { gate(err.status === 401 ? '' : err.message); return; }
