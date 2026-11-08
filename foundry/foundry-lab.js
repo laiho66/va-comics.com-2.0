@@ -200,6 +200,7 @@
             .filter(function (o) { return o.role === 'page'; });
     }
     function safeVal() { return parseInt($('prSafe').value, 10) / 100; }
+    function fitVal() { return $('prFit').value; }
     function renderPrint() {
         var pages = storyPages();
         $('prBody').hidden = !pages.length; $('prEmpty').hidden = !!pages.length;
@@ -207,7 +208,7 @@
         var sel = $('prPage'), keep = sel.value; sel.innerHTML = '';
         pages.forEach(function (p, i) { var o = document.createElement('option'); o.value = String(i); o.textContent = p.label + ' (' + p.file.name + ')'; sel.appendChild(o); });
         if (keep && +keep < pages.length) { sel.value = keep; }
-        var chk = L.printCheck(pages, safeVal());
+        var chk = L.printCheck(pages, safeVal(), fitVal());
         list($('prProblems'), chk.problems);
         drawPreview();
         renderCover();
@@ -220,9 +221,9 @@
         ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cv.width, cv.height);
         createImageBitmap(p.file).then(function (bmp) {
             if (my !== previewToken) { bmp.close(); return; }
-            var pl = L.printPlacement(bmp.width, bmp.height, safeVal());
+            var pl = L.printPlacement(bmp.width, bmp.height, safeVal(), fitVal());
             ctx.imageSmoothingQuality = 'high';
-            ctx.drawImage(bmp, pl.x * k, pl.y * k, pl.w * k, pl.h * k); bmp.close();
+            ctx.drawImage(bmp, pl.sx, pl.sy, pl.sw, pl.sh, pl.x * k, pl.y * k, pl.w * k, pl.h * k); bmp.close();
             /* trim line: 0.125 in of bleed top, bottom and outer edge (shown for a right-hand page) */
             var b = P.bleed * P.dpi * k;
             ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255, 69, 0, 0.9)'; ctx.lineWidth = 1;
@@ -233,11 +234,11 @@
     function makeInterior() {
         var pages = storyPages();
         if (running || !pages.length) { return; }
-        var chk = L.printCheck(pages, safeVal());
+        var chk = L.printCheck(pages, safeVal(), fitVal());
         if (chk.problems.some(function (p) { return p.level === 'err'; }) &&
             !confirm('The preflight found problems (red). Make the PDF anyway?')) { return; }
         running = true; $('prGo').disabled = true;
-        var P = L.PRINT, q = parseInt($('prQuality').value, 10) / 100, safe = safeVal(), t0 = Date.now();
+        var P = L.PRINT, q = parseInt($('prQuality').value, 10) / 100, safe = safeVal(), fit = fitVal(), t0 = Date.now();
         var pdf = L.pdfWriter(Math.round((P.trimW + P.bleed) * 72 * 1000) / 1000, Math.round((P.trimH + 2 * P.bleed) * 72 * 1000) / 1000);
         var steps = chk.total, blankJpeg = null;
         var cv = document.createElement('canvas'); cv.width = P.pageW; cv.height = P.pageH;
@@ -250,9 +251,9 @@
             var p = pages[i];
             progress('pr', i, steps, 'Page ' + (i + 1) + ' / ' + steps + ': ' + p.file.name);
             return decode(p.file).then(function (bmp) {
-                var pl = L.printPlacement(bmp.width, bmp.height, safe);
+                var pl = L.printPlacement(bmp.width, bmp.height, safe, fit);
                 ctx.fillStyle = '#000'; ctx.fillRect(0, 0, P.pageW, P.pageH);
-                ctx.drawImage(bmp, pl.x, pl.y, pl.w, pl.h); bmp.close();
+                ctx.drawImage(bmp, pl.sx, pl.sy, pl.sw, pl.sh, pl.x, pl.y, pl.w, pl.h); bmp.close();
                 return jpeg();
             }).then(function (b) { pdf.addJpegPage(b, P.pageW, P.pageH); return one(i + 1); });
         }
@@ -272,6 +273,7 @@
         }).then(function () { running = false; $('prGo').disabled = false; freeCanvas(cv); });
     }
     $('prSafe').addEventListener('input', function () { $('prSafeOut').textContent = this.value; renderPrint(); });
+    $('prFit').addEventListener('change', renderPrint);
     $('prQuality').addEventListener('input', function () { $('prQualityOut').textContent = this.value; });
     $('prPage').addEventListener('change', drawPreview);
     $('prGo').addEventListener('click', makeInterior);

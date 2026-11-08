@@ -257,6 +257,7 @@
                 <div class="stack" id="prBody" hidden>
                 <p class="hint">Uses the same folder as above. Only the story pages go in (no front or back cover). KDP setup: <b>Premium color · 6 x 9 in · Bleed · Glossy</b>. Each PDF page is 6.125 x 9.25 in at 300 DPI (1838 x 2775 px), black around the art, the whole page kept (nothing is cut).</p>
                 <div class="fgrid fgrid--3">
+                    <div class="field"><label for="prFit">How the page art is placed</label><select id="prFit"><option value="contain">Whole page, nothing cut (black bands)</option><option value="fill">Fill the box, cut the edges (old Master Factory script)</option></select></div>
                     <div class="field"><label for="prSafe">Art size on the page <span id="prSafeOut">88</span>%</label><input id="prSafe" type="range" min="80" max="100" step="1" value="88"></div>
                     <div class="field"><label for="prQuality">JPEG quality <span id="prQualityOut">92</span></label><input id="prQuality" type="range" min="80" max="100" step="1" value="92"></div>
                     <div class="field"><label for="prPage">Preview page</label><select id="prPage"></select></div>
@@ -556,8 +557,8 @@
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
 <script src="/foundry/foundry.js?v=vd1"></script>
-<script src="/foundry/foundry-lab-core.js?v=lab3"></script>
-<script src="/foundry/foundry-lab.js?v=lab3"></script>
+<script src="/foundry/foundry-lab-core.js?v=lab4"></script>
+<script src="/foundry/foundry-lab.js?v=lab4"></script>
 <script src="/foundry/foundry-bookcover.js?v=bc5"></script>
 <script src="/foundry/foundry-pdf.js?v=ip1"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>

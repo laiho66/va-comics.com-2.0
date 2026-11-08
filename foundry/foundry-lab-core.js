@@ -10,14 +10,16 @@
     var IMG_EXT = /\.(png|jpe?g|webp)$/i;
 
     /* "#13_p7.png" -> { issue: "13", kind: "page", num: 7 }
-       "#13_frontcover.png" -> { issue: "13", kind: "front" }   "#11_1_p3.png" -> issue "11_1" */
+       "#13_frontcover.png" -> { issue: "13", kind: "front" }   "#11_1_p3.png" -> issue "11_1"
+       Parts can also be written like in DeadDrop_Master_Factory.py: "#11part2_p3.png", "11pt2_p3", "11-2_p3" -> issue "11_2".
+       Spaces in the name are ignored (as in that script). */
     function parseName(name) {
-        var m = /^#?(\d+(?:_\d+)?)_(p(\d+)|frontcover|backcover)\.(png|jpe?g|webp)$/i.exec(String(name).trim());
+        var m = /^#?(\d+)(?:(?:_|-|part|pt)(\d+))?_(p(\d+)|frontcover|backcover)\.(png|jpe?g|webp)$/i.exec(String(name).trim().replace(/\s+/g, ''));
         if (!m) { return null; }
-        var tag = m[2].toLowerCase();
-        if (tag === 'frontcover') { return { issue: m[1], kind: 'front' }; }
-        if (tag === 'backcover') { return { issue: m[1], kind: 'back' }; }
-        return { issue: m[1], kind: 'page', num: parseInt(m[3], 10) };
+        var issue = m[1] + (m[2] ? '_' + m[2] : ''), tag = m[3].toLowerCase();
+        if (tag === 'frontcover') { return { issue: issue, kind: 'front' }; }
+        if (tag === 'backcover') { return { issue: issue, kind: 'back' }; }
+        return { issue: issue, kind: 'page', num: parseInt(m[4], 10) };
     }
 
     function naturalKey(s) {
@@ -203,20 +205,27 @@
         return { w: dw, h: dh, scale: s };
     }
     /* Where one story page goes on the print page (safe = share of the page used by the art, e.g. 0.88). */
-    function printPlacement(w, h, safe) {
+    /* mode 'contain' (default): whole page inside the box, black bands, nothing cut.
+       mode 'fill': exactly like DeadDrop_Master_Factory.py (ImageOps.fit): the box is filled, the overflow is cut, centred. */
+    function printPlacement(w, h, safe, mode) {
+        if (mode === 'fill') {
+            var sw = Math.floor(PRINT.pageW * safe), sh = Math.floor(PRINT.pageH * safe), c = coverCrop(w, h, sw, sh);
+            return { x: Math.floor((PRINT.pageW - sw) / 2), y: Math.floor((PRINT.pageH - sh) / 2), w: sw, h: sh,
+                     sx: c.sx, sy: c.sy, sw: c.sw, sh: c.sh, dpi: Math.round(c.sw / (sw / PRINT.dpi)), cut: Math.round((1 - (c.sw * c.sh) / (w * h)) * 100) };
+        }
         var boxW = Math.round(PRINT.pageW * safe), boxH = Math.round(PRINT.pageH * safe), f = fitContain(w, h, boxW, boxH);
         return { x: Math.round((PRINT.pageW - f.w) / 2), y: Math.round((PRINT.pageH - f.h) / 2), w: f.w, h: f.h,
-                 dpi: Math.round(w / (f.w / PRINT.dpi)) };
+                 sx: 0, sy: 0, sw: w, sh: h, dpi: Math.round(w / (f.w / PRINT.dpi)), cut: 0 };
     }
     function spineInches(pages) { return pages * PRINT.perPageIn; }
 
     /* Print preflight. pages: [{ label, w, h }] (story pages only, in order). */
-    function printCheck(pages, safe) {
-        var out = [], n = pages.length, low = [], soft = [];
+    function printCheck(pages, safe, mode) {
+        var out = [], n = pages.length, low = [], soft = [], maxCut = 0;
         if (!n) { return { problems: [{ level: 'err', text: 'No story pages to print.' }], blanks: 0, total: 0 }; }
         pages.forEach(function (p) {
             if (!p.w) { return; }
-            var pl = printPlacement(p.w, p.h, safe);
+            var pl = printPlacement(p.w, p.h, safe, mode); if (pl.cut > maxCut) { maxCut = pl.cut; }
             if (pl.dpi < 200) { low.push(p.label + ' (' + pl.dpi + ' DPI)'); } else if (pl.dpi < 290) { soft.push(p.label + ' (' + pl.dpi + ' DPI)'); }
         });
         var blanks = Math.max(0, PRINT.minPages - n), total = n + blanks;
@@ -224,6 +233,7 @@
         if (low.length) { out.push({ level: 'err', text: 'Too small for print (will look blurry): ' + low.join(', ') + '. 300 DPI is the target.' }); }
         if (soft.length) { out.push({ level: 'warn', text: 'A bit under 300 DPI (usually still fine): ' + soft.join(', ') + '.' }); }
         if (!low.length && !soft.length) { out.push({ level: 'ok', text: 'Resolution: every page is about 300 DPI or better at this size.' }); }
+        if (mode === 'fill' && maxCut >= 1) { out.push({ level: 'info', text: 'Fill mode (old script): up to ' + maxCut + '% of the art is cut at the edges of some pages, so that the box is full. Check speech balloons near the edges in the preview.' }); }
         var sp = spineInches(total);
         out.push({ level: 'info', text: 'For the cover PDF later: about ' + total + ' pages → spine ≈ ' + sp.toFixed(3) + '" (' + Math.round(sp * PRINT.dpi) + ' px). Check it once in the KDP cover calculator.' });
         return { problems: out, blanks: blanks, total: total };
