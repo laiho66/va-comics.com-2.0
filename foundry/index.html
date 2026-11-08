@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=vd1">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=bc1">
 </head>
 
 <!-- ======================================================================
@@ -256,6 +256,62 @@
             </div>
         </div>
 
+        <div class="panel" data-label="BOOK_COVER // PAPERBACK + HARDCOVER" id="bcPanel">
+            <div class="stack">
+                <p class="hint">Full cover for a book (Vanguard and any other): back + spine + front in one PDF for KDP, made from two images. Any image the browser opens works (JPG, PNG, WebP, AVIF...). The art fills each cover face; the bleed / wrap around it is filled with a mirror of the edge. Premium color.</p>
+                <div class="fgrid">
+                    <div class="field"><label for="bcFront">Front cover image</label>
+                        <div class="ldrop ldrop--small" id="bcFrontDrop"><label class="btn btn--sm" for="bcFront">CHOOSE_FRONT</label><input id="bcFront" type="file" accept="image/*" hidden><span class="meta">or drop it here</span><span class="hint" id="bcFrontInfo"></span></div></div>
+                    <div class="field"><label for="bcBack">Back cover image</label>
+                        <div class="ldrop ldrop--small" id="bcBackDrop"><label class="btn btn--sm" for="bcBack">CHOOSE_BACK</label><input id="bcBack" type="file" accept="image/*" hidden><span class="meta">or drop it here</span><span class="hint" id="bcBackInfo"></span></div></div>
+                </div>
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="bcKind">Format</label><select id="bcKind"><option value="paperback">Paperback</option><option value="hardcover">Hardcover (case laminate)</option></select></div>
+                    <div class="field"><label for="bcTrim">Trim size</label><select id="bcTrim"></select></div>
+                    <div class="field"><label for="bcPages">Pages (the interior page count in KDP)</label><input id="bcPages" type="number" min="24" max="828" placeholder="e.g. 312"></div>
+                </div>
+                <div class="fgrid" id="bcPbBox">
+                    <div class="field"><label for="bcSpine">Spine width (inches)</label><input id="bcSpine" type="number" min="0" max="3" step="0.0001"></div>
+                    <p class="hint">Filled in from the pages (premium color: pages × 0.002347"). If the KDP cover calculator shows another number, type it here.</p>
+                </div>
+                <div class="stack" id="bcHcBox" hidden>
+                    <p class="hint"><b>Hardcover:</b> KDP does not publish a formula. Open the <a href="https://kdp.amazon.com/cover-calculator" target="_blank" rel="noopener noreferrer">KDP cover calculator</a> (Hardcover, Premium color, your trim and page count) and copy its three numbers in inches:</p>
+                    <div class="fgrid fgrid--3">
+                        <div class="field"><label for="bcHcW">Full cover width (")</label><input id="bcHcW" type="number" min="0" max="40" step="0.001"></div>
+                        <div class="field"><label for="bcHcH">Full cover height (")</label><input id="bcHcH" type="number" min="0" max="20" step="0.001"></div>
+                        <div class="field"><label for="bcHcSpine">Spine width (")</label><input id="bcHcSpine" type="number" min="0" max="5" step="0.001"></div>
+                    </div>
+                </div>
+                <div class="fgrid">
+                    <div class="field"><label for="bcSpineTitle">Spine text (optional, e.g. the title)</label><input id="bcSpineTitle" type="text" maxlength="80" autocomplete="off"></div>
+                    <div class="field"><label for="bcSpineSub">Spine small text (optional, e.g. the authors)</label><input id="bcSpineSub" type="text" maxlength="80" autocomplete="off"></div>
+                </div>
+                <div class="fgrid fgrid--3">
+                    <div class="field"><label for="bcSpineColor">Spine colour <a href="#" id="bcSpineAuto">[ AUTO ]</a></label><input id="bcSpineColor" type="color" value="#000000"></div>
+                    <div class="field"><label for="bcTextColor">Spine text colour</label><input id="bcTextColor" type="color" value="#d9cfb8"></div>
+                    <div class="field"><label for="bcFont">Spine font</label><select id="bcFont"><option value="Georgia, 'Times New Roman', serif">Serif (Georgia)</option><option value="Impact, 'Arial Black', sans-serif">Heavy (Impact)</option><option value="Arial, Helvetica, sans-serif">Clean (Arial)</option></select></div>
+                </div>
+                <div class="fgrid">
+                    <div class="field"><label for="bcTitle">File name</label><input id="bcTitle" type="text" maxlength="80" autocomplete="off" placeholder="Jade Seal of Leyre"></div>
+                    <div class="field"><label for="bcQuality">JPEG quality <span id="bcQualityOut">92</span></label><input id="bcQuality" type="range" min="80" max="100" step="1" value="92"></div>
+                </div>
+                <canvas id="bcCanvas" class="bccanvas" width="760" height="560" aria-label="Preview of the book cover"></canvas>
+                <ul class="lproblems" id="bcProblems"></ul>
+                <div class="row">
+                    <button type="button" class="btn btn--primary" id="bcGo">MAKE_COVER_PDF</button>
+                    <button type="button" class="btn" id="bcKindle">KINDLE_COVER_JPG</button>
+                </div>
+                <div class="lprogress" id="bcProgress" hidden><span class="meta" id="bcProgressText"></span></div>
+                <ol class="steps">
+                    <li>Orange dashed = where the book is cut / folded and the spine. Outside it: bleed (paperback) or wrap that folds around the board (hardcover).</li>
+                    <li>Blue dotted = safe area: keep text and logos inside it. Yellow strip (hardcover) = hinge: no text there.</li>
+                    <li>White box = barcode. KDP prints it there if you do not add your own, so nothing important under it.</li>
+                    <li>Spine text: paperback only from 80 pages (KDP rule). It reads top to bottom.</li>
+                    <li>Upload the PDF in KDP as the cover (“Upload a cover you already have”). KINDLE_COVER_JPG = the front image as a JPEG for the eBook.</li>
+                </ol>
+            </div>
+        </div>
+
         <div class="panel" data-label="QUICK_CONVERT // ANY_IMAGES">
             <div class="stack">
                 <p class="hint">Any images to WebP: portraits, hero pictures, covers. One image downloads as a .webp, several come in a zip.</p>
@@ -413,6 +469,7 @@
 <script src="/foundry/foundry.js?v=vd1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab3"></script>
 <script src="/foundry/foundry-lab.js?v=lab3"></script>
+<script src="/foundry/foundry-bookcover.js?v=bc1"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 <script src="/foundry/foundry-board.js?v=bd3"></script>
 <script src="/foundry/foundry-videos.js?v=vd1"></script>

@@ -133,3 +133,9 @@ button.chip.chip--active:hover { color: #000; }
     .vd-thumb { flex-basis: 100%; width: 100%; }
     .vd-acts { flex-wrap: wrap; }
 }
+
+/* BOOK_COVER panel */
+.bccanvas { width: 100%; max-width: 760px; height: auto; background: #000; border: 1px solid var(--line-3); }
+#bcPanel .ldrop .hint { overflow-wrap: anywhere; }
+#bcPanel input[type="color"] { height: 44px; padding: 4px; cursor: pointer; }
+#bcSpineAuto { color: var(--accent); text-decoration: none; margin-left: 6px; }
