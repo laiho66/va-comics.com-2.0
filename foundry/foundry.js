@@ -32,7 +32,7 @@
 
     /* ---------- tabs ---------- */
     function show(name) {
-        ['news', 'issues', 'videos', 'lab', 'codes', 'board', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+        ['dash', 'news', 'issues', 'videos', 'lab', 'codes', 'board', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
         Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (b) { b.classList.toggle('chip--active', b.getAttribute('data-tab') === name); });
     }
     $('tabs').addEventListener('click', function (e) {
@@ -62,7 +62,7 @@
         if (!/-2\.0$/.test(cfg.repo) && !confirm('The repository name does not end with "-2.0" (the one connected to Cloudflare). Continue anyway?')) { return; }
         saveCfg();
         var b = $('btnSave'); busy(b, true);
-        testConnection(false).then(function (ok) { busy(b, false); if (ok) { show('news'); loadNews(); } });
+        testConnection(false).then(function (ok) { busy(b, false); if (ok) { show('dash'); loadNews(); } });
     });
     $('btnForget').addEventListener('click', function () {
         cfg.token = ''; saveCfg(); gh = null; $('sToken').value = ''; conn('NOT CONNECTED', false); say('The token was removed from this browser.', 'info');

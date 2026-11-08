@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=bc3">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=db1">
 </head>
 
 <!-- ======================================================================
@@ -29,7 +29,8 @@
     </header>
 
     <div class="chips" id="tabs" role="tablist" aria-label="Sections">
-        <button type="button" class="chip chip--active" data-tab="news" role="tab">NEWS</button>
+        <button type="button" class="chip chip--active" data-tab="dash" role="tab">DASHBOARD <span id="dashBadge" class="bd-badge" hidden></span></button>
+        <button type="button" class="chip" data-tab="news" role="tab">NEWS</button>
         <button type="button" class="chip" data-tab="issues" role="tab">ISSUES</button>
         <button type="button" class="chip" data-tab="videos" role="tab">VIDEOS</button>
         <button type="button" class="chip" data-tab="lab" role="tab">PRINT LAB</button>
@@ -41,7 +42,18 @@
     <div class="fstatus" id="status" role="status" aria-live="polite" hidden></div>
 
     <!-- ================= NEWS ================= -->
-    <section class="ftab" id="tab-news">
+    <!-- ================= DASHBOARD (prima pagină: ce te așteaptă și ce s-a mișcat) ================= -->
+    <section class="ftab" id="tab-dash">
+        <div class="row dash-head"><span class="meta">// STATUS_REPORT</span><a href="#" id="dashReload">[ RELOAD ]</a></div>
+        <div class="dash-grid">
+            <div class="panel" data-label="BOARD // COMMENTS + Q&amp;A"><div class="stack" id="dbBoard"></div></div>
+            <div class="panel" data-label="READING_ROOM // CODES"><div class="stack" id="dbReader"></div></div>
+            <div class="panel" data-label="SITE // LAST_CHANGES"><div class="stack" id="dbSite"></div></div>
+            <div class="panel" data-label="UPLINK // GITHUB_TOKEN"><div class="stack" id="dbToken"></div></div>
+        </div>
+    </section>
+
+    <section class="ftab" id="tab-news" hidden>
         <div class="panel" data-label="AI_DRAFT // CLAUDE">
             <div class="stack">
                 <div class="fgrid fgrid--3">
@@ -124,14 +136,43 @@
                 <ol class="steps">
                     <li>First upload the pages to R2 (drag and drop the folder in the Cloudflare dashboard): <code>page1.webp … pageN.webp</code> in the folder above.</li>
                     <li>Then add the issue here. The reader shows it in 1-2 minutes.</li>
-                    <li>The card on the volume page (vol2.html, vol3.html) is still edited by hand for now.</li>
+                    <li>Then add its card on the volume page in VOLUME_CARDS below (cover, READ ONLINE, Amazon links, DISCUSS).</li>
                 </ol>
             </div>
         </div>
 
+        <div class="panel" data-label="VOLUME_CARDS // DEADDROP_PAGES" id="vcPanel">
+            <div class="stack">
+                <p class="hint">The issue cards on the Dead Drop volume pages. Add the card of a new issue (after ADD_ISSUE above) and set or change its Amazon links. Empty link = N/A button. "Issues 9-13" on the volume page and on the Dead Drop page is updated by itself.</p>
+                <div class="fgrid">
+                    <div class="field"><label for="vcVol">Volume page</label><select id="vcVol"><option value="1">Volume 1 (vol1.html)</option><option value="2" selected>Volume 2 (vol2.html)</option></select></div>
+                    <div class="field"><label>&nbsp;</label><button type="button" class="btn" id="vcLoad">LOAD_CARDS</button></div>
+                </div>
+                <span class="meta" id="vcRange"></span>
+                <div class="flist" id="vcList"><p class="hint">Open the ISSUES tab or press LOAD_CARDS.</p></div>
+                <div class="stack" id="vcAddBox" hidden>
+                    <p class="hint" id="vcAddEmpty">Every issue in the reader that comes after this volume's last card already has a card. Add the issue in NEW_ISSUE first.</p>
+                    <div class="stack" id="vcAddForm">
+                        <div class="fgrid fgrid--3">
+                            <div class="field"><label for="vcIssue">New card for</label><select id="vcIssue"></select></div>
+                            <div class="field"><label for="vcEbook">eBook link (Amazon)</label><input id="vcEbook" type="url" placeholder="empty = N/A"></div>
+                            <div class="field"><label for="vcPaper">Paperback link (Amazon)</label><input id="vcPaper" type="url" placeholder="empty = N/A"></div>
+                        </div>
+                        <div class="row"><button type="button" class="btn" id="vcAdd">ADD_CARD</button></div>
+                    </div>
+                </div>
+                <div class="row vd-saverow"><button type="button" class="btn btn--primary" id="vcSave">SAVE_CARDS</button><span class="meta vd-dirty" id="vcDirty" hidden>UNSAVED CHANGES</span></div>
+                <ol class="steps">
+                    <li>The cover comes from ADD_ISSUE (deaddrop/assets/coverN.webp); the title and the ISSUE #N label come from the reader list.</li>
+                    <li>Only the last card can be removed (so a card added by mistake can be taken back).</li>
+                    <li>A new volume page (Vol 3) is still made by hand once; after that it can be added here.</li>
+                </ol>
+            </div>
+
         <div class="stack">
             <h2 class="section-label"><span>Issues in the reader</span><a href="#" id="reloadIssues">[ RELOAD ]</a></h2>
             <div class="flist" id="issueList"><p class="hint">Connect in Settings first.</p></div>
+        </div>
         </div>
     </section>
 
@@ -479,5 +520,7 @@
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 <script src="/foundry/foundry-board.js?v=bd3"></script>
 <script src="/foundry/foundry-videos.js?v=vd1"></script>
+<script src="/foundry/foundry-cards.js?v=vc1"></script>
+<script src="/foundry/foundry-dash.js?v=db1"></script>
 </body>
 </html>

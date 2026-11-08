@@ -144,3 +144,28 @@ button.chip.chip--active:hover { color: #000; }
 .bc-table th, .bc-table td { padding: 6px 10px; border-bottom: 1px solid var(--line-3); text-align: right; }
 .bc-table th:nth-child(2), .bc-table td:nth-child(2) { text-align: left; }
 .bc-table th { color: var(--text-4); font-weight: 400; letter-spacing: 1px; }
+
+/* DASHBOARD */
+.dash-head { justify-content: space-between; align-items: center; }
+.dash-head a { color: var(--text-4); text-decoration: none; font-family: var(--mono); font-size: 12px; letter-spacing: 1px; }
+.dash-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; align-items: start; }
+.dash-stats { display: flex; flex-wrap: wrap; gap: 10px; }
+.dash-stat { flex: 1 1 90px; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid var(--line-3); background: #000; }
+.dash-stat b { font-size: 26px; line-height: 1.1; }
+.dash-stat.is-hot { border-color: var(--accent); } .dash-stat.is-hot b { color: var(--accent); }
+.dash-stat.is-warn { border-color: #ffb020; } .dash-stat.is-warn b { color: #ffb020; }
+.dash-line { font-size: 14px; line-height: 1.55; color: var(--text-3); }
+.dash-line.is-ok { color: #bff0d3; } .dash-line.is-warn { color: #ffe2b0; } .dash-line.is-err { color: #ffc9c9; }
+.dash-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; color: var(--text-3); }
+.dash-list li { padding: 8px 10px; border-left: 2px solid var(--line-3); background: var(--bg-2); overflow-wrap: anywhere; }
+.dash-list li.is-warn { border-left-color: #ffb020; }
+.dash-list b { color: var(--text); }
+.dash-list a { color: var(--text); }
+.dash-quote { display: block; color: var(--text-4); font-style: italic; margin-top: 2px; }
+.dash-date { padding: 8px 10px; background: #000; color: var(--text); border: 1px solid var(--line-3); font: inherit; }
+.dash-tokrow { gap: 10px; align-items: center; }
+.vc-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 6px; }
+.vc-links input { width: 100%; padding: 8px 10px; background: #000; color: var(--text); border: 1px solid var(--line-3); font: inherit; font-size: 13px; }
+.vc-item { align-items: flex-start; }
+.vc-item .fitem-main { flex: 1 1 auto; }
+@media (max-width: 760px) { .dash-grid, .vc-links { grid-template-columns: minmax(0, 1fr); } }
