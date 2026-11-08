@@ -63,6 +63,25 @@
         var s = Math.max(fw / iw, fh / ih), cw = fw / s, ch = fh / s;
         return { sx: (iw - cw) / 2, sy: (ih - ch) / 2, sw: cw, sh: ch, dpi: Math.round(1 / s), cropW: 1 - cw / iw, cropH: 1 - ch / ih };
     }
+    /* "safe frame" (like the old stitch.py): the WHOLE image, never cut, inside a black border of 115 px
+       (0.383") from the outer edges of the file, and away from the spine / hinge */
+    K.frame = 115 / 300;
+    function frameBox(L, side) {
+        var hc = L.kind === 'hardcover', out = Math.max(K.frame, L.edge + K.safe), inner = hc ? K.hinge + K.safe : K.safe;
+        var f = side === 'front' ? L.front : L.back, top = Math.max(K.frame, L.edge + K.safe);
+        if (side === 'front') { return { x: f.x + inner, y: top, w: L.W - out - (f.x + inner), h: L.H - 2 * top }; }
+        return { x: out, y: top, w: f.x + f.w - inner - out, h: L.H - 2 * top };
+    }
+    /* where the art goes: fit 'fill' = covers the face (centred crop), 'frame' = whole image inside frameBox */
+    function art(L, side, iw, ih, fit) {
+        var f = side === 'front' ? L.front : L.back;
+        if (fit === 'frame') {
+            var b = frameBox(L, side), s = Math.min(b.w / iw, b.h / ih), w = iw * s, h = ih * s;
+            return { frame: true, x: b.x + (b.w - w) / 2, y: b.y + (b.h - h) / 2, w: w, h: h, sx: 0, sy: 0, sw: iw, sh: ih, dpi: Math.round(1 / s), cropW: 0, cropH: 0 };
+        }
+        var c = fill(iw, ih, f.w, f.h);
+        return { frame: false, x: f.x, y: f.y, w: f.w, h: f.h, sx: c.sx, sy: c.sy, sw: c.sw, sh: c.sh, dpi: c.dpi, cropW: c.cropW, cropH: c.cropH };
+    }
     function check(o, L, front, back) {
         var out = [], hc = o.kind === 'hardcover';
         var lo = hc ? K.hcMin : K.pbMin, hi = hc ? K.hcMax : K.pbMax;
@@ -79,10 +98,11 @@
             var auto = spineAuto(o.pages);
             if (Math.abs(L.spineW - auto) > 0.0005) { out.push({ level: 'info', text: 'Spine set by hand: ' + L.spineW.toFixed(4) + '" (the formula gives ' + auto.toFixed(4) + '" for ' + o.pages + ' pages).' }); }
         }
-        [['Front', front, L.front], ['Back', back, L.back]].forEach(function (x) {
+        if (o.fit === 'frame') { out.push({ level: 'info', text: 'Safe frame (stitch.py style): each image is shown whole, at least 0.383" (115 px) from the outer edges, on black. Nothing of the art can be cut or folded.' }); }
+        [['Front', front, 'front'], ['Back', back, 'back']].forEach(function (x) {
             if (!x[1]) { out.push({ level: 'err', text: x[0] + ' image is missing.' }); return; }
             if (!x[1].w) { out.push({ level: 'err', text: x[0] + ' image could not be opened.' }); return; }
-            var f = fill(x[1].w, x[1].h, x[2].w, x[2].h), cut = Math.round(Math.max(f.cropW, f.cropH) * 100);
+            var f = art(L, x[2], x[1].w, x[1].h, o.fit), cut = Math.round(Math.max(f.cropW, f.cropH) * 100);
             var lvl = f.dpi < 200 ? 'err' : f.dpi < 280 ? 'warn' : 'ok';
             out.push({ level: lvl, text: x[0] + ': ' + x[1].w + 'x' + x[1].h + ' px → about ' + f.dpi + ' DPI in print' + (lvl === 'err' ? ' (too soft, 300 is the target: use a bigger image)' : lvl === 'warn' ? ' (300 is the target; usually still fine)' : '') + '.' +
                 (cut >= 1 ? ' About ' + cut + '% is cut from the ' + (f.cropW > f.cropH ? 'left and right' : 'top and bottom') + ' edges to fit the ' + (hc ? 'board' : 'trim') + ' shape.' : '') });
@@ -116,7 +136,7 @@
         var t = String(title || 'Book').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_') || 'Book';
         return t + '_' + kind.toUpperCase() + '_COVER_' + pages + 'p.pdf';
     }
-    return { K: K, TRIMS: TRIMS, spineAuto: spineAuto, layout: layout, fill: fill, check: check, fileName: fileName, hcAuto: hcAuto, table: table };
+    return { K: K, TRIMS: TRIMS, spineAuto: spineAuto, layout: layout, fill: fill, art: art, frameBox: frameBox, check: check, fileName: fileName, hcAuto: hcAuto, table: table };
 });
 
 /* ============================== the panel (browser only) ============================== */
@@ -170,7 +190,7 @@
             spine: kind === 'hardcover' ? parseFloat($('bcHcSpine').value) : parseFloat($('bcSpine').value),
             W: parseFloat($('bcHcW').value), H: parseFloat($('bcHcH').value), hcTyped: !!($('bcHcW').getAttribute('data-touched') || $('bcHcH').getAttribute('data-touched')),
             spineText: $('bcSpineTitle').value.trim(), spineSub: $('bcSpineSub').value.trim(),
-            spineColor: $('bcSpineColor').value, textColor: $('bcTextColor').value, font: $('bcFont').value, edge: $('bcEdge').value
+            spineColor: $('bcSpineColor').value, textColor: $('bcTextColor').value, font: $('bcFont').value, edge: $('bcEdge').value, fit: $('bcFit').value
         };
     }
     function fillTrims() {
@@ -198,6 +218,11 @@
             var im = img[x[0]], f = x[1];
             var fx = Math.round(f.x * k), fy = Math.round(f.y * k), fw = Math.round((f.x + f.w) * k) - fx, fh = Math.round((f.y + f.h) * k) - fy;
             if (!im || !im.bmp) { return; }
+            if (o.fit === 'frame') {
+                var a = B.art(L, x[0], im.w, im.h, 'frame');
+                ctx.drawImage(im.bmp, Math.round(a.x * k), Math.round(a.y * k), Math.round(a.w * k), Math.round(a.h * k));
+                return;
+            }
             var src = B.fill(im.w, im.h, f.w, f.h);
             var face = document.createElement('canvas'); face.width = fw; face.height = fh;
             var fc = face.getContext('2d'); fc.imageSmoothingEnabled = true; fc.imageSmoothingQuality = 'high';
@@ -323,7 +348,13 @@
                 var name = B.fileName($('bcTitle').value, o.kind, o.pages);
                 var blob = new Blob(pdf.finish(($('bcTitle').value || 'Book') + ' - ' + o.kind + ' cover'), { type: 'application/pdf' });
                 download(blob, name);
-                done(null, 'Done in ' + Math.round((Date.now() - t0) / 1000) + ' s: ' + L.Wpx + ' x ' + L.Hpx + ' px, ' + L.W.toFixed(3) + '" x ' + L.H.toFixed(3) + '", ' + kb(blob.size) + '. File: ' + name);
+                var msg = 'Done in ' + Math.round((Date.now() - t0) / 1000) + ' s: ' + L.Wpx + ' x ' + L.Hpx + ' px, ' + L.W.toFixed(3) + '" x ' + L.H.toFixed(3) + '", ' + kb(blob.size) + '. File: ' + name;
+                if (!$('bcPng').checked) { done(null, msg); return; }
+                say(msg + ' Making the PNG copy...');
+                cv.toBlob(function (png) {
+                    if (png) { download(png, name.replace(/\.pdf$/, '.png')); msg += ' + PNG copy (' + kb(png.size) + ').'; }
+                    done(null, msg);
+                }, 'image/png');
             }, 'image/jpeg', parseInt($('bcQuality').value, 10) / 100);
         }, 30);
         function done(err, msg) { cv.width = 0; running = false; $('bcGo').disabled = false; say(err ? 'Stopped: ' + err.message : msg); }
@@ -348,7 +379,7 @@
         zone.addEventListener('drop', function (e) { e.preventDefault(); var f = e.dataTransfer.files[0]; if (f) { setImage(id === 'bcFront' ? 'front' : 'back', f); } });
     });
     $('bcKind').addEventListener('change', function () { fillTrims(); render(); });
-    ['bcTrim', 'bcPages', 'bcSpine', 'bcHcW', 'bcHcH', 'bcHcSpine', 'bcSpineTitle', 'bcSpineSub', 'bcTextColor', 'bcFont', 'bcEdge'].forEach(function (id) {
+    ['bcTrim', 'bcPages', 'bcSpine', 'bcHcW', 'bcHcH', 'bcHcSpine', 'bcSpineTitle', 'bcSpineSub', 'bcTextColor', 'bcFont', 'bcEdge', 'bcFit'].forEach(function (id) {
         $(id).addEventListener('input', render); $(id).addEventListener('change', render);
     });
     $('bcSpineColor').addEventListener('input', function () { this.setAttribute('data-touched', '1'); render(); });

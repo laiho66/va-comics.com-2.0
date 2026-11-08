@@ -339,9 +339,10 @@
                     <div class="field"><label for="bcFont">Spine font</label><select id="bcFont"><option value="Georgia, 'Times New Roman', serif">Serif (Georgia)</option><option value="Impact, 'Arial Black', sans-serif">Heavy (Impact)</option><option value="Arial, Helvetica, sans-serif">Clean (Arial)</option></select></div>
                 </div>
                 <div class="fgrid">
+                    <div class="field"><label for="bcFit">Art on the cover</label><select id="bcFit"><option value="fill">Fill the cover (edge to edge)</option><option value="frame">Safe frame (like stitch.py: whole image, black border)</option></select></div>
                     <div class="field"><label for="bcEdge">Edges (bleed / wrap around the art)</label><select id="bcEdge"><option value="stretch">Stretched edge colours (recommended)</option><option value="mirror">Mirror of the art</option><option value="black">Black</option></select></div>
-                    <p class="hint">This part is cut off (paperback) or folded around the board (hardcover). Stretched colours keep it seamless without any readable text there.</p>
                 </div>
+                <p class="hint">Fill: the art goes edge to edge; the strip that is cut off (paperback) or folded around the board (hardcover) is filled as chosen in Edges. Safe frame: the old stitch.py way, the whole image is kept with a black border of at least 115 px, so nothing can ever be cut (Edges is then not used).</p>
                 <div class="fgrid">
                     <div class="field"><label for="bcTitle">File name</label><input id="bcTitle" type="text" maxlength="80" autocomplete="off" placeholder="Jade Seal of Leyre"></div>
                     <div class="field"><label for="bcQuality">JPEG quality <span id="bcQualityOut">92</span></label><input id="bcQuality" type="range" min="80" max="100" step="1" value="92"></div>
@@ -353,6 +354,7 @@
                 <div class="row">
                     <button type="button" class="btn btn--primary" id="bcGo">MAKE_COVER_PDF</button>
                     <button type="button" class="btn" id="bcKindle">KINDLE_COVER_JPG</button>
+                    <label class="lcheck"><input type="checkbox" id="bcPng"> Also save a PNG copy (like stitch.py)</label>
                 </div>
                 <div class="lprogress" id="bcProgress" hidden><span class="meta" id="bcProgressText"></span></div>
                 <ol class="steps">
@@ -556,7 +558,7 @@
 <script src="/foundry/foundry.js?v=vd1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab3"></script>
 <script src="/foundry/foundry-lab.js?v=lab3"></script>
-<script src="/foundry/foundry-bookcover.js?v=bc4"></script>
+<script src="/foundry/foundry-bookcover.js?v=bc5"></script>
 <script src="/foundry/foundry-pdf.js?v=ip1"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 <script src="/foundry/foundry-board.js?v=bd3"></script>
