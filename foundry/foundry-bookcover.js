@@ -170,7 +170,7 @@
             spine: kind === 'hardcover' ? parseFloat($('bcHcSpine').value) : parseFloat($('bcSpine').value),
             W: parseFloat($('bcHcW').value), H: parseFloat($('bcHcH').value), hcTyped: !!($('bcHcW').getAttribute('data-touched') || $('bcHcH').getAttribute('data-touched')),
             spineText: $('bcSpineTitle').value.trim(), spineSub: $('bcSpineSub').value.trim(),
-            spineColor: $('bcSpineColor').value, textColor: $('bcTextColor').value, font: $('bcFont').value
+            spineColor: $('bcSpineColor').value, textColor: $('bcTextColor').value, font: $('bcFont').value, edge: $('bcEdge').value
         };
     }
     function fillTrims() {
@@ -203,21 +203,40 @@
             var fc = face.getContext('2d'); fc.imageSmoothingEnabled = true; fc.imageSmoothingQuality = 'high';
             fc.drawImage(im.bmp, src.sx, src.sy, src.sw, src.sh, 0, 0, fw, fh);
             ctx.drawImage(face, fx, fy);
-            /* mirror the edges into the bleed / wrap (outer side, top, bottom); the spine side stays clean */
-            var m = fy;            /* edge size in px (same on top, bottom and the outer side) */
-            ctx.save();
-            if (x[2] === 'left') { ctx.translate(fx, 0); ctx.scale(-1, 1); ctx.drawImage(face, 0, 0, Math.min(m, fw), fh, 0, fy, Math.min(m, fw), fh); }
-            else { ctx.translate(fx + fw, 0); ctx.scale(-1, 1); ctx.drawImage(face, fw - Math.min(m, fw), 0, Math.min(m, fw), fh, -Math.min(m, fw), fy, Math.min(m, fw), fh); }
-            ctx.restore();
-            var x0 = x[2] === 'left' ? 0 : fx, x1 = x[2] === 'left' ? fx + fw : W;     /* columns of this side incl. the mirrored strip */
-            var strip = document.createElement('canvas'); strip.width = x1 - x0; strip.height = Math.min(m, fh);
-            var sc = strip.getContext('2d');
-            sc.drawImage(ctx.canvas, x0, fy, x1 - x0, strip.height, 0, 0, x1 - x0, strip.height);
-            ctx.save(); ctx.translate(0, fy); ctx.scale(1, -1); ctx.drawImage(strip, x0, 0); ctx.restore();
-            sc.clearRect(0, 0, strip.width, strip.height);
-            sc.drawImage(ctx.canvas, x0, fy + fh - strip.height, x1 - x0, strip.height, 0, 0, x1 - x0, strip.height);
-            ctx.save(); ctx.translate(0, fy + fh); ctx.scale(1, -1); ctx.drawImage(strip, x0, -strip.height); ctx.restore();
-            face.width = 0; strip.width = 0;
+            /* fill the bleed / wrap around the face (outer side, top, bottom); the spine side stays clean */
+            var m = fy, mode = o.edge || 'stretch';
+            var x0 = x[2] === 'left' ? 0 : fx, x1 = x[2] === 'left' ? fx + fw : W;     /* columns of this side incl. the outer strip */
+            if (mode === 'mirror') {
+                ctx.save();
+                if (x[2] === 'left') { ctx.translate(fx, 0); ctx.scale(-1, 1); ctx.drawImage(face, 0, 0, Math.min(m, fw), fh, 0, fy, Math.min(m, fw), fh); }
+                else { ctx.translate(fx + fw, 0); ctx.scale(-1, 1); ctx.drawImage(face, fw - Math.min(m, fw), 0, Math.min(m, fw), fh, -Math.min(m, fw), fy, Math.min(m, fw), fh); }
+                ctx.restore();
+                var strip = document.createElement('canvas'); strip.width = x1 - x0; strip.height = Math.min(m, fh);
+                var sc = strip.getContext('2d');
+                sc.drawImage(ctx.canvas, x0, fy, x1 - x0, strip.height, 0, 0, x1 - x0, strip.height);
+                ctx.save(); ctx.translate(0, fy); ctx.scale(1, -1); ctx.drawImage(strip, x0, 0); ctx.restore();
+                sc.clearRect(0, 0, strip.width, strip.height);
+                sc.drawImage(ctx.canvas, x0, fy + fh - strip.height, x1 - x0, strip.height, 0, 0, x1 - x0, strip.height);
+                ctx.save(); ctx.translate(0, fy + fh); ctx.scale(1, -1); ctx.drawImage(strip, x0, -strip.height); ctx.restore();
+                strip.width = 0;
+            } else if (mode === 'stretch') {
+                /* the outermost colours, softened and stretched outwards: no readable text ends up in the bleed / wrap */
+                var sm = document.createElement('canvas'); sm.width = Math.max(2, Math.ceil(fw / 24)); sm.height = Math.max(2, Math.ceil(fh / 24));
+                var smc = sm.getContext('2d'); smc.imageSmoothingEnabled = true; smc.imageSmoothingQuality = 'high'; smc.drawImage(face, 0, 0, sm.width, sm.height);
+                if (x[2] === 'left') { ctx.drawImage(sm, 0, 0, 1, sm.height, fx - m, fy, m, fh); }
+                else { ctx.drawImage(sm, sm.width - 1, 0, 1, sm.height, fx + fw, fy, m, fh); }
+                var band = document.createElement('canvas'); band.width = Math.max(2, Math.ceil((x1 - x0) / 24)); band.height = sm.height;
+                var bc = band.getContext('2d'); bc.imageSmoothingEnabled = true; bc.imageSmoothingQuality = 'high';
+                bc.drawImage(ctx.canvas, x0, fy, x1 - x0, fh, 0, 0, band.width, band.height);
+                ctx.drawImage(band, 0, 0, band.width, 1, x0, fy - m, x1 - x0, m);
+                ctx.drawImage(band, 0, band.height - 1, band.width, 1, x0, fy + fh, x1 - x0, m);
+                sm.width = 0; band.width = 0;
+            } else {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(x0, 0, x1 - x0, fy); ctx.fillRect(x0, fy + fh, x1 - x0, H - fy - fh);
+                if (x[2] === 'left') { ctx.fillRect(0, fy, fx, fh); } else { ctx.fillRect(fx + fw, fy, W - fx - fw, fh); }
+            }
+            face.width = 0;
         });
         /* spine */
         var sx = Math.round(L.spine.x * k), sw = Math.round((L.spine.x + L.spine.w) * k) - sx;
@@ -329,7 +348,7 @@
         zone.addEventListener('drop', function (e) { e.preventDefault(); var f = e.dataTransfer.files[0]; if (f) { setImage(id === 'bcFront' ? 'front' : 'back', f); } });
     });
     $('bcKind').addEventListener('change', function () { fillTrims(); render(); });
-    ['bcTrim', 'bcPages', 'bcSpine', 'bcHcW', 'bcHcH', 'bcHcSpine', 'bcSpineTitle', 'bcSpineSub', 'bcTextColor', 'bcFont'].forEach(function (id) {
+    ['bcTrim', 'bcPages', 'bcSpine', 'bcHcW', 'bcHcH', 'bcHcSpine', 'bcSpineTitle', 'bcSpineSub', 'bcTextColor', 'bcFont', 'bcEdge'].forEach(function (id) {
         $(id).addEventListener('input', render); $(id).addEventListener('change', render);
     });
     $('bcSpineColor').addEventListener('input', function () { this.setAttribute('data-touched', '1'); render(); });

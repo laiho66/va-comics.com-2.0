@@ -258,7 +258,7 @@
 
         <div class="panel" data-label="BOOK_COVER // PAPERBACK + HARDCOVER" id="bcPanel">
             <div class="stack">
-                <p class="hint">Full cover for a book (Vanguard and any other): back + spine + front in one PDF for KDP, made from two images. Any image the browser opens works (JPG, PNG, WebP, AVIF...). The art fills each cover face; the bleed / wrap around it is filled with a mirror of the edge. Premium color.</p>
+                <p class="hint">Full cover for a book (Vanguard and any other): back + spine + front in one PDF for KDP, made from two images. Any image the browser opens works (JPG, PNG, WebP, AVIF...). The art fills each cover face; the bleed / wrap around it is filled from the edge of the art. Premium color.</p>
                 <div class="fgrid">
                     <div class="field"><label for="bcFront">Front cover image</label>
                         <div class="ldrop ldrop--small" id="bcFrontDrop"><label class="btn btn--sm" for="bcFront">CHOOSE_FRONT</label><input id="bcFront" type="file" accept="image/*" hidden><span class="meta">or drop it here</span><span class="hint" id="bcFrontInfo"></span></div></div>
@@ -290,6 +290,10 @@
                     <div class="field"><label for="bcSpineColor">Spine colour <a href="#" id="bcSpineAuto">[ AUTO ]</a></label><input id="bcSpineColor" type="color" value="#000000"></div>
                     <div class="field"><label for="bcTextColor">Spine text colour</label><input id="bcTextColor" type="color" value="#d9cfb8"></div>
                     <div class="field"><label for="bcFont">Spine font</label><select id="bcFont"><option value="Georgia, 'Times New Roman', serif">Serif (Georgia)</option><option value="Impact, 'Arial Black', sans-serif">Heavy (Impact)</option><option value="Arial, Helvetica, sans-serif">Clean (Arial)</option></select></div>
+                </div>
+                <div class="fgrid">
+                    <div class="field"><label for="bcEdge">Edges (bleed / wrap around the art)</label><select id="bcEdge"><option value="stretch">Stretched edge colours (recommended)</option><option value="mirror">Mirror of the art</option><option value="black">Black</option></select></div>
+                    <p class="hint">This part is cut off (paperback) or folded around the board (hardcover). Stretched colours keep it seamless without any readable text there.</p>
                 </div>
                 <div class="fgrid">
                     <div class="field"><label for="bcTitle">File name</label><input id="bcTitle" type="text" maxlength="80" autocomplete="off" placeholder="Jade Seal of Leyre"></div>
@@ -471,7 +475,7 @@
 <script src="/foundry/foundry.js?v=vd1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab3"></script>
 <script src="/foundry/foundry-lab.js?v=lab3"></script>
-<script src="/foundry/foundry-bookcover.js?v=bc3"></script>
+<script src="/foundry/foundry-bookcover.js?v=bc4"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 <script src="/foundry/foundry-board.js?v=bd3"></script>
 <script src="/foundry/foundry-videos.js?v=vd1"></script>
