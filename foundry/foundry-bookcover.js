@@ -5,19 +5,21 @@
    with a mirror of the edge, so nothing important ends up folded under the board.
    Part 1 (FoundryBookCover): pure geometry + checks, tested in Node. Part 2: the panel (browser only).
    KDP figures (Nov 2026): paperback bleed 0.125", premium colour spine = pages x 0.002347", spine text from 80 pages;
-   hardcover: wrap 0.51", hinge 0.4", text 0.635" from the book edge, barcode 2" x 1.2" (>= 0.76" from the bottom,
-   >= 0.25" from the hinge), 75-550 pages; KDP gives NO hardcover formula -> the sizes come from its cover calculator. */
+   hardcover (KDP cover calculator, 6x9): board = trim + 0.197" x 0.236", wrap 0.591" (15 mm), hinge 0.394" (10 mm),
+   margin 0.125", barcode 2" x 1.2" at 0.25" from the hinge and 0.375" from the board bottom, 75-550 pages.
+   KDP gives NO hardcover spine formula -> the spine comes from its calculator. */
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) { module.exports = factory(); }
     else { root.FoundryBookCover = factory(); }
 })(typeof self !== 'undefined' ? self : this, function () {
     'use strict';
     var K = {
-        dpi: 300, perPage: 0.002347, bleed: 0.125, wrap: 0.51, hinge: 0.4, safe: 0.125, spineClear: 0.0625,
+        dpi: 300, perPage: 0.002347, bleed: 0.125, wrap: 0.5906, hinge: 0.3937, safe: 0.125, spineClear: 0.0625,
+        boardW: 0.197, boardH: 0.236, hcBarBottom: 0.375,     /* hardcover board = trim + 0.197" x 0.236"; wrap 15 mm, hinge 10 mm (KDP calculator, 6x9, Nov 2026) */
         barW: 2, barH: 1.2, pbMin: 24, pbMax: 828, hcMin: 75, hcMax: 550, spineTextMin: 80
     };
     var TRIMS = {
-        paperback: [[5, 8], [5.5, 8.5], [6, 9], [6.14, 9.21], [7, 10], [8.25, 11], [8.5, 11]],
+        paperback: [[5, 8], [5.06, 7.81], [5.25, 8], [5.5, 8.5], [6, 9], [6.14, 9.21], [6.69, 9.61], [7, 10], [7.44, 9.69], [7.5, 9.25], [8, 10], [8.25, 6], [8.25, 8.25], [8.5, 8.5], [8.5, 11], [8.27, 11.69], [8.25, 11]],
         hardcover: [[5.5, 8.5], [6, 9], [6.14, 9.21], [7, 10], [8.25, 11]]
     };
     function r4(x) { return Math.round(x * 10000) / 10000; }
@@ -41,13 +43,13 @@
         L.back = { x: m, y: m, w: faceW, h: faceH };
         L.spine = { x: m + faceW, y: 0, w: s, h: L.H };
         L.front = { x: m + faceW + s, y: m, w: faceW, h: faceH };
-        var hz = o.kind === 'hardcover' ? K.hinge : K.safe;     /* the no-text strip next to the spine */
+        var hz = o.kind === 'hardcover' ? K.hinge : 0;     /* no-text strip next to the spine: hinge on hardcover; paperback = none (as in the KDP calculator: safe area = trim - 0.125") */
         L.hinge = o.kind === 'hardcover' ? [{ x: L.back.x + faceW - K.hinge, y: m, w: K.hinge, h: faceH }, { x: L.front.x, y: m, w: K.hinge, h: faceH }] : [];
         L.safeBack = { x: L.back.x + K.safe, y: m + K.safe, w: faceW - K.safe - hz, h: faceH - 2 * K.safe };
         L.safeFront = { x: L.front.x + hz, y: m + K.safe, w: faceW - K.safe - hz, h: faceH - 2 * K.safe };
         if (o.kind === 'hardcover') {
             var right = L.back.x + faceW - K.hinge - 0.25;
-            L.barcode = { x: right - K.barW, y: L.H - 0.76 - K.barH, w: K.barW, h: K.barH };
+            L.barcode = { x: right - K.barW, y: m + faceH - K.hcBarBottom - K.barH, w: K.barW, h: K.barH };
         } else {
             L.barcode = { x: L.back.x + faceW - 0.25 - K.barW, y: m + faceH - 0.25 - K.barH, w: K.barW, h: K.barH };
         }
@@ -68,10 +70,11 @@
         var okTrim = TRIMS[o.kind].some(function (t) { return t[0] === o.trimW && t[1] === o.trimH; });
         if (!okTrim) { out.push({ level: 'warn', text: 'Trim ' + o.trimW + '" x ' + o.trimH + '" is not in the usual KDP ' + o.kind + ' list.' }); }
         if (hc) {
-            if (!(L.W > 0 && L.H > 0 && L.spineW > 0)) { out.push({ level: 'err', text: 'Type the three hardcover sizes from the KDP cover calculator (total width, total height, spine).' }); return out; }
+            if (!(L.W > 0 && L.H > 0 && L.spineW > 0)) { out.push({ level: 'err', text: 'Type the spine width from the KDP cover calculator (Hardcover, your trim and page count).' }); return out; }
+            if (!o.hcTyped) { out.push({ level: 'info', text: 'Full width and height are worked out from the spine (as the KDP calculator does for 6" x 9"). For another trim size, compare them once with the calculator.' }); }
             if (L.front.w < o.trimW - 0.01 || L.front.h < o.trimH - 0.01) { out.push({ level: 'err', text: 'These sizes leave a cover face of ' + L.front.w.toFixed(3) + '" x ' + L.front.h.toFixed(3) + '", smaller than the ' + o.trimW + '" x ' + o.trimH + '" trim. Check the numbers from the KDP calculator.' }); }
             else if (L.front.w > o.trimW + 1 || L.front.h > o.trimH + 1) { out.push({ level: 'warn', text: 'The cover face comes out ' + L.front.w.toFixed(3) + '" x ' + L.front.h.toFixed(3) + '": much bigger than the trim. Check the numbers.' }); }
-            else { out.push({ level: 'ok', text: 'Hardcover face ' + L.front.w.toFixed(3) + '" x ' + L.front.h.toFixed(3) + '" + wrap 0.51" all round + hinge 0.4" next to the spine.' }); }
+            else { out.push({ level: 'ok', text: 'Hardcover face ' + L.front.w.toFixed(3) + '" x ' + L.front.h.toFixed(3) + '" + wrap ' + K.wrap.toFixed(3) + '" all round + hinge ' + K.hinge.toFixed(3) + '" next to the spine.' }); }
         } else {
             var auto = spineAuto(o.pages);
             if (Math.abs(L.spineW - auto) > 0.0005) { out.push({ level: 'info', text: 'Spine set by hand: ' + L.spineW.toFixed(4) + '" (the formula gives ' + auto.toFixed(4) + '" for ' + o.pages + ' pages).' }); }
@@ -92,11 +95,28 @@
         out.push({ level: 'info', text: 'White box = where KDP puts the barcode if you do not add your own. Keep logos and text out of it.' });
         return out;
     }
+    function r3(x) { return Math.round(x * 1000 + 1e-6) / 1000; }
+    /* hardcover full size from the spine (same numbers as the KDP calculator) */
+    function hcAuto(trimW, trimH, spine) {
+        return { W: r3(2 * K.wrap + 2 * (trimW + K.boardW) + spine), H: r3(2 * K.wrap + trimH + K.boardH) };
+    }
+    /* the same table the KDP cover calculator shows: [name, width, height] in inches, 3 decimals */
+    function table(L) {
+        var f = L.front, s = L.spineW, rows;
+        if (L.kind === 'hardcover') {
+            rows = [['Full Cover', L.W, L.H], ['Front Cover', f.w, f.h], ['Margin', K.safe, K.safe], ['Wrap', K.wrap, K.wrap], ['Hinge', K.hinge, L.H],
+                    ['Spine', s, f.h], ['Spine Safe Area', s - 2 * K.spineClear, f.h - 2 * K.safe], ['Spine Margin', 0.062, 0.062], ['Barcode Margin', 0.25, K.hcBarBottom]];
+        } else {
+            rows = [['Full Cover', L.W, L.H], ['Front Cover', f.w, f.h], ['Safe Area', f.w - K.safe, f.h - 2 * K.safe], ['Bleed', K.bleed, K.bleed], ['Margin', K.safe, K.safe],
+                    ['Spine', s, f.h], ['Spine Safe Area', s - 2 * K.spineClear, f.h - 2 * K.safe], ['Spine Margin', 0.062, 0.062], ['Barcode Margin', 0.25, 0.25]];
+        }
+        return rows.map(function (r) { return [r[0], r3(r[1]).toFixed(3), r3(r[2]).toFixed(3)]; });
+    }
     function fileName(title, kind, pages) {
         var t = String(title || 'Book').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_') || 'Book';
         return t + '_' + kind.toUpperCase() + '_COVER_' + pages + 'p.pdf';
     }
-    return { K: K, TRIMS: TRIMS, spineAuto: spineAuto, layout: layout, fill: fill, check: check, fileName: fileName };
+    return { K: K, TRIMS: TRIMS, spineAuto: spineAuto, layout: layout, fill: fill, check: check, fileName: fileName, hcAuto: hcAuto, table: table };
 });
 
 /* ============================== the panel (browser only) ============================== */
@@ -148,7 +168,7 @@
         return {
             kind: kind, trimW: +t[0], trimH: +t[1], pages: parseInt($('bcPages').value, 10) || 0,
             spine: kind === 'hardcover' ? parseFloat($('bcHcSpine').value) : parseFloat($('bcSpine').value),
-            W: parseFloat($('bcHcW').value), H: parseFloat($('bcHcH').value),
+            W: parseFloat($('bcHcW').value), H: parseFloat($('bcHcH').value), hcTyped: !!($('bcHcW').getAttribute('data-touched') || $('bcHcH').getAttribute('data-touched')),
             spineText: $('bcSpineTitle').value.trim(), spineSub: $('bcSpineSub').value.trim(),
             spineColor: $('bcSpineColor').value, textColor: $('bcTextColor').value, font: $('bcFont').value
         };
@@ -241,11 +261,24 @@
             var auto = B.spineAuto(o.pages || 0);
             if (!$('bcSpine').value || +$('bcSpine').value === autoSpine) { $('bcSpine').value = auto ? auto : ''; autoSpine = auto; o.spine = auto; }
         }
+        if (o.kind === 'hardcover' && o.spine > 0) {
+            var a = B.hcAuto(o.trimW, o.trimH, o.spine);
+            if (!$('bcHcW').getAttribute('data-touched')) { $('bcHcW').value = a.W; o.W = a.W; }
+            if (!$('bcHcH').getAttribute('data-touched')) { $('bcHcH').value = a.H; o.H = a.H; }
+        }
         if (img.front && img.front.bmp && (!$('bcSpineColor').getAttribute('data-touched'))) {
             var c = edgeColor(img.front.bmp); if (c !== autoColor) { autoColor = c; $('bcSpineColor').value = c; o.spineColor = c; }
         }
         var L = B.layout(o), probs = B.check(o, L, img.front, img.back);
         list($('bcProblems'), probs);
+        var tb = $('bcTable'); tb.innerHTML = '';
+        if (isFinite(L.W) && L.W > 0) {
+            B.table(L).forEach(function (r, i) {
+                var tr = document.createElement('tr');
+                [String(i + 1), r[0], r[1], r[2]].forEach(function (v) { tr.appendChild(el('td', '', v)); });
+                tb.appendChild(tr);
+            });
+        }
         var cv = $('bcCanvas'), ok = [L.W, L.H, L.spineW, L.front.w, L.front.h].every(function (v) { return isFinite(v) && v >= 0; }) && L.front.w > 0 && L.front.h > 0;
         if (!ok) { cv.hidden = true; return; }
         cv.hidden = false;
@@ -300,6 +333,7 @@
         $(id).addEventListener('input', render); $(id).addEventListener('change', render);
     });
     $('bcSpineColor').addEventListener('input', function () { this.setAttribute('data-touched', '1'); render(); });
+    ['bcHcW', 'bcHcH'].forEach(function (id) { $(id).addEventListener('input', function () { if (this.value) { this.setAttribute('data-touched', '1'); } else { this.removeAttribute('data-touched'); } }); });
     $('bcSpineAuto').addEventListener('click', function () { $('bcSpineColor').removeAttribute('data-touched'); autoColor = ''; render(); });
     $('bcQuality').addEventListener('input', function () { $('bcQualityOut').textContent = this.value; });
     $('bcGo').addEventListener('click', make);
