@@ -695,3 +695,6 @@ body.reader-full .reader-top { display: none; }
     .grid-3 .card-body, .grid-4 .card-body { padding: 16px 12px; }
     .card-body .btn-stack .btn { min-width: 0; padding: 10px 6px; font-size: 11px; letter-spacing: 1px; gap: 0.4em; }
 }
+
+/* DISCUSS [3]: message count on the volume pages (assets/counts.js) */
+.vb-cnt { display: inline-block; min-width: 20px; margin-left: 8px; padding: 0 6px; background: var(--accent); color: #000; font-weight: 700; font-size: 11px; line-height: 18px; letter-spacing: 0; text-align: center; }

@@ -91,6 +91,7 @@
             top.appendChild(el('span', 'bd-st is-' + m.status, m.status.toUpperCase()));
             main.appendChild(top);
             if (m.parent) { main.appendChild(el('span', 'bd-parent', '↳ reply to ' + (m.parent_text || 'a deleted message'))); }
+            if (m.pinned) { main.appendChild(el('span', 'tag', '📌 PINNED (stays on top of its page)')); }
             if (m.staff) { main.appendChild(el('span', 'tag', 'VA COMICS (you)')); } else { main.appendChild(el('b', '', m.nick)); }
             main.appendChild(el('p', 'bd-body', m.body));
             if (m.status !== 'approved' && m.reason) { main.appendChild(el('span', 'bd-why', 'Why: ' + m.reason + (m.reports ? ' (' + m.reports + ' report' + (m.reports > 1 ? 's' : '') + ')' : ''))); }
@@ -127,6 +128,15 @@
                     openBox('Empty = remove this answer.', m.reply, 'messages/' + m.id + '/reply', function (t) { return { text: t }; }, function (t) { return t ? 'Answer updated.' : 'Answer removed.'; });
                 });
                 act.appendChild(ed);
+            }
+            if (m.status === 'approved' && !m.parent) {      /* pin a conversation: it stays first on its page (Q&A mini FAQ) */
+                var pin = el('button', 'btn btn--sm', m.pinned ? 'UNPIN' : 'PIN'); pin.type = 'button';
+                pin.title = m.pinned ? 'Back to the normal order' : 'Keep this conversation on top of its page';
+                pin.addEventListener('click', function () {
+                    act_(pin, 'messages/' + m.id + '/pin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ pinned: !m.pinned }) },
+                        m.pinned ? 'Unpinned.' : 'Pinned: it stays on top of its page (the site updates within a minute).');
+                });
+                act.appendChild(pin);
             }
             var del = el('button', 'btn btn--sm btn--danger', 'DELETE'); del.type = 'button';
             del.addEventListener('click', function () {

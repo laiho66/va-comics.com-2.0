@@ -57,3 +57,11 @@
 .vb-quote:disabled { cursor: default; }
 @keyframes vbFlash { 0% { box-shadow: 0 0 0 2px var(--accent); } 100% { box-shadow: 0 0 0 2px transparent; } }
 .is-flash { animation: vbFlash 1.6s ease-out; }
+
+/* pinned conversations (Q&A and comments) + Home "From the board" */
+.vb-item.is-pinned { border-left-color: var(--accent); }
+.vb-pin { display: inline-block; margin-bottom: 6px; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--accent); }
+.vb-where { margin: 6px 0 0; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--text-4); }
+.vb-where a { color: var(--accent); text-decoration: none; }
+.vb-where a:hover { text-decoration: underline; }
+.vb-latest { display: flex; flex-direction: column; gap: 10px; }

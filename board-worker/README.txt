@@ -6,3 +6,8 @@ VA COMICS // Comments + Q&A // va-board (the guard Worker for comments)
   plus a daily summary from the nightly cron. Needs Email Routing on va-comics.com with Aris's address verified,
   and the Secret NOTIFY_TO (his address) set in the dashboard, never in this repo. Without them the board works, just silently.
 - D1 also has a tiny table notify (hour, n) for the hourly mail cap.
+
+PINNED CONVERSATIONS (Nov 2026)
+Run ONCE in Cloudflare > Storage & databases > D1 > va-board > Console:
+  ALTER TABLE messages ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0;
+Without it everything works as before; only PIN in Foundry says it is not switched on yet.

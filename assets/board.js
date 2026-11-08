@@ -177,7 +177,8 @@
             return p;
         }
         function thread(m) {
-            var it = el('article', 'vb-item'), form = null, nodes = {};
+            var it = el('article', 'vb-item' + (m.pinned ? ' is-pinned' : '')), form = null, nodes = {};
+            if (m.pinned) { it.appendChild(el('span', 'vb-pin', '📌 PINNED')); }
             var count = el('span', 'meta vb-n');
             function setCount() { var n = (m.replies || []).length; count.textContent = n ? n + (n === 1 ? ' reply' : ' replies') : ''; }
             function names() { return ['VA Comics', m.nick].concat((m.replies || []).map(function (x) { return x.nick; })); }

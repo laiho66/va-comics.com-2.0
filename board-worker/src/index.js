@@ -158,19 +158,42 @@ async function verifyAccess(req, env) {
 }
 
 /* ------------------------------------------------------------------ public */
-const PUBLIC_COLS = 'id, nick, body, created, reply, reply_at, staff, parent, reply_to';
+const PUBLIC_COLS = 'id, nick, body, created, reply, reply_at, staff, parent, reply_to, pinned';
 
 async function list(env, url) {
     const target = url.searchParams.get('target') || '';
     if (!TARGET.test(target)) { return err(400, 'bad_target', 'Unknown page.'); }
-    const rows = await env.DB.prepare('SELECT ' + PUBLIC_COLS + " FROM messages WHERE target = ? AND status = 'approved' AND parent = 0 ORDER BY created DESC, id DESC LIMIT 200").bind(target).all();
+    /* the "pinned" column is added by hand once (see README); until then the board works exactly as before */
+    let cols = PUBLIC_COLS, order = 'pinned DESC, created DESC, id DESC', rows;
+    try { rows = await env.DB.prepare('SELECT ' + cols + " FROM messages WHERE target = ? AND status = 'approved' AND parent = 0 ORDER BY " + order + ' LIMIT 200').bind(target).all(); }
+    catch (e) {
+        if (!/pinned/.test(String(e && e.message))) { throw e; }
+        cols = PUBLIC_COLS.replace(', pinned', ''); order = 'created DESC, id DESC';
+        rows = await env.DB.prepare('SELECT ' + cols + " FROM messages WHERE target = ? AND status = 'approved' AND parent = 0 ORDER BY " + order + ' LIMIT 200').bind(target).all();
+    }
     const tops = rows.results || [];
-    const reps = tops.length ? ((await env.DB.prepare('SELECT ' + PUBLIC_COLS + " FROM messages WHERE target = ? AND status = 'approved' AND parent > 0 ORDER BY created ASC, id ASC LIMIT 2000").bind(target).all()).results || []) : [];
+    const reps = tops.length ? ((await env.DB.prepare('SELECT ' + cols + " FROM messages WHERE target = ? AND status = 'approved' AND parent > 0 ORDER BY created ASC, id ASC LIMIT 2000").bind(target).all()).results || []) : [];
     const byId = {}; tops.forEach(m => { m.replies = []; byId[m.id] = m; });
     reps.forEach(r => { if (byId[r.parent]) { byId[r.parent].replies.push(r); } });
     return new Response(JSON.stringify({ target, messages: tops }), {
         headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=20', 'x-robots-tag': 'noindex' }
     });
+}
+
+/* how many published messages each page has (DISCUSS (3) on the volume pages); prefix = issue | book | qa */
+async function counts(env, url) {
+    const prefix = url.searchParams.get('prefix') || 'issue';
+    if (!['issue', 'book', 'qa'].includes(prefix)) { return err(400, 'bad_prefix', 'Bad prefix.'); }
+    const like = prefix === 'qa' ? 'qa' : prefix + ':%';
+    const rows = await env.DB.prepare("SELECT target, COUNT(*) AS n FROM messages WHERE status = 'approved' AND target LIKE ? GROUP BY target").bind(like).all();
+    const out = {}; (rows.results || []).forEach(r => { out[r.target] = r.n; });
+    return new Response(JSON.stringify({ counts: out }), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=60', 'x-robots-tag': 'noindex' } });
+}
+/* the last published messages from readers (Home: "From the board") */
+async function latest(env, url) {
+    const n = Math.max(1, Math.min(5, parseInt(url.searchParams.get('n'), 10) || 3));
+    const rows = await env.DB.prepare("SELECT id, target, nick, substr(body, 1, 220) AS body, length(body) AS len, created FROM messages WHERE status = 'approved' AND staff = 0 ORDER BY created DESC, id DESC LIMIT ?").bind(n).all();
+    return new Response(JSON.stringify({ messages: rows.results || [] }), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=60', 'x-robots-tag': 'noindex' } });
 }
 
 async function post(req, env, ctx) {
@@ -345,18 +368,28 @@ async function admin(req, env, path, url) {
     if (path === 'messages' && req.method === 'GET') {
         const st = url.searchParams.get('status') || 'pending', target = url.searchParams.get('target') || '';
         if (!['pending', 'approved', 'rejected', 'all'].includes(st)) { return err(400, 'bad_status', 'Bad status.'); }
-        let sql = 'SELECT m.id, m.target, m.nick, m.body, m.status, m.reason, m.created, m.reply, m.reply_at, m.reports, m.staff, m.parent, m.reply_to, ' +
+        let sql = 'SELECT m.id, m.target, m.nick, m.body, m.status, m.reason, m.created, m.reply, m.reply_at, m.reports, m.staff, m.parent, m.reply_to, m.pinned, ' +
             "(SELECT p.nick || ': ' || substr(p.body, 1, 140) FROM messages p WHERE p.id = CASE WHEN m.reply_to > 0 THEN m.reply_to ELSE m.parent END) AS parent_text, " +
             "(SELECT COUNT(*) FROM messages c WHERE c.parent = m.id) AS n_replies FROM messages m WHERE 1=1", args = [];
         if (st !== 'all') { sql += ' AND m.status = ?'; args.push(st); }
         if (target) { if (!TARGET.test(target)) { return err(400, 'bad_target', 'Bad target.'); } sql += ' AND m.target = ?'; args.push(target); }
         sql += ' ORDER BY m.created DESC, m.id DESC LIMIT 300';
-        const rows = await env.DB.prepare(sql).bind(...args).all();
+        let rows;
+        try { rows = await env.DB.prepare(sql).bind(...args).all(); }
+        catch (e) { if (!/pinned/.test(String(e && e.message))) { throw e; } rows = await env.DB.prepare(sql.replace('m.pinned, ', '')).bind(...args).all(); }
         return json({ messages: rows.results || [] });
     }
-    const m = path.match(/^messages\/(\d+)(?:\/(approve|reply|answer))?$/);
+    const m = path.match(/^messages\/(\d+)(?:\/(approve|reply|answer|pin))?$/);
     if (m) {
         const id = parseInt(m[1], 10);
+        if (m[2] === 'pin' && req.method === 'POST') {          /* pin / unpin a conversation: it stays on top of its page */
+            let b = {}; try { b = await req.json(); } catch (e) { /* empty */ }
+            let r;
+            try { r = await env.DB.prepare("UPDATE messages SET pinned = ? WHERE id = ? AND parent = 0 AND status = 'approved'").bind(b.pinned ? 1 : 0, id).run(); }
+            catch (e) { return err(400, 'no_pinned_column', 'Pinning is not switched on yet: run the one-line SQL from board-worker/README.txt in the D1 console first.'); }
+            if (!(r.meta && r.meta.changes)) { return err(400, 'not_pinnable', 'Only a published first message of a conversation can be pinned.'); }
+            return json({ ok: true, pinned: b.pinned ? 1 : 0 });
+        }
         if (m[2] === 'approve' && req.method === 'POST') {
             await env.DB.prepare("UPDATE messages SET status = 'approved', reason = 'approved by VA Comics', reports = 0 WHERE id = ?").bind(id).run();
             return json({ ok: true });
@@ -401,6 +434,8 @@ export default {
             if (!p.startsWith('/api/board/')) { return err(404, 'not_found', 'Not here.'); }
             const r = p.slice('/api/board/'.length);
             if (r === 'list' && req.method === 'GET') { return await list(env, url); }
+            if (r === 'counts' && req.method === 'GET') { return await counts(env, url); }
+            if (r === 'latest' && req.method === 'GET') { return await latest(env, url); }
             if ((r === 'post' || r === 'report') && req.method === 'POST') {
                 const origin = req.headers.get('origin');
                 if (origin && origin !== url.origin) { return err(403, 'bad_origin', 'Wrong origin.'); }

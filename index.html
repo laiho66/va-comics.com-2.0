@@ -40,6 +40,7 @@
     <link rel="preload" as="image" href="/assets/hero-mobile.webp" media="(max-width: 640px)" fetchpriority="high">
     <link rel="preload" as="image" href="/assets/hero-desktop.webp" media="(min-width: 641px)" fetchpriority="high">
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/assets/board.css?v=5">
 </head>
 
 <!-- ======================================================================
@@ -127,6 +128,12 @@
             </div>
         </section>
 
+        <!-- ===== FROM THE BOARD (ultimele 3 mesaje publicate; apare singur, ascuns dacă nu e nimic) ===== -->
+        <section class="stack" id="boardLatestSec" hidden>
+            <h2 class="section-label"><span>From the board</span><a href="/qa.html">[ Q&amp;A ]</a></h2>
+            <div class="vb-latest" id="boardLatest"></div>
+        </section>
+
         <!-- ===== ABOUT + FOLLOW ===== -->
         <section class="grid grid-2">
             <div class="panel" data-label="STUDIO_FILE // ABOUT">
@@ -152,5 +159,6 @@
 
 <footer class="site-footer" id="siteFooter"></footer>
 <script src="/assets/news.js" defer></script>
+<script src="/assets/latest.js" defer></script>
 </body>
 </html>
