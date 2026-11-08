@@ -169,3 +169,13 @@ button.chip.chip--active:hover { color: #000; }
 .vc-item { align-items: flex-start; }
 .vc-item .fitem-main { flex: 1 1 auto; }
 @media (max-width: 760px) { .dash-grid, .vc-links { grid-template-columns: minmax(0, 1fr); } }
+
+/* PRINT LAB sub-tabs + IMAGES_TO_PDF */
+.lab-subs { display: flex; flex-wrap: wrap; gap: 8px; }
+.ip-tools { align-items: center; gap: 10px; flex-wrap: wrap; }
+.ip-item { align-items: center; }
+.ip-item .fitem-main { flex: 1 1 auto; }
+.ip-item.is-bad b { color: #ffc9c9; }
+.ip-thumb { flex: 0 0 56px; width: 56px; height: 72px; background: #000; border: 1px solid var(--line-3); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.ip-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+#ipList { max-height: 520px; overflow-y: auto; }

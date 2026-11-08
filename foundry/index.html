@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=db1">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=ip1">
 </head>
 
 <!-- ======================================================================
@@ -204,7 +204,13 @@
 
     <!-- ================= PRINT LAB (Faza 1: convertor WebP) ================= -->
     <section class="ftab" id="tab-lab" hidden>
-        <div class="panel" data-label="ISSUE_CONVERTER // R2_PAGES">
+        <div class="chips lab-subs" id="labSubs" role="tablist" aria-label="Print Lab">
+            <button type="button" class="chip" data-sub="issue">DEAD DROP ISSUE</button>
+            <button type="button" class="chip" data-sub="book">BOOK COVER</button>
+            <button type="button" class="chip" data-sub="convert">CONVERT</button>
+            <button type="button" class="chip" data-sub="pdf">IMAGES → PDF</button>
+        </div>
+        <div class="panel" data-label="ISSUE_CONVERTER // R2_PAGES" data-labsub="issue">
             <div class="stack">
                 <p class="hint">Pick the folder with the original pages (<code>#14_frontcover.png</code>, <code>#14_p1.png</code> … <code>#14_backcover.png</code>, or the old way with <code>#14_p0</code> as the front cover). Everything happens in this browser: nothing is uploaded.</p>
                 <div class="ldrop" id="labDrop" tabindex="0">
@@ -245,7 +251,7 @@
             </div>
         </div>
 
-        <div class="panel" data-label="PAPERBACK_INTERIOR // KDP_PDF" id="prPanel">
+        <div class="panel" data-label="PAPERBACK_INTERIOR // KDP_PDF" id="prPanel" data-labsub="issue">
             <div class="stack">
                 <p class="hint" id="prEmpty"><b>Load an issue folder in ISSUE_CONVERTER above first.</b> This panel uses the same pages.</p>
                 <div class="stack" id="prBody" hidden>
@@ -270,7 +276,7 @@
             </div>
         </div>
 
-        <div class="panel" data-label="PAPERBACK_COVER // KDP_PDF" id="pcPanel">
+        <div class="panel" data-label="PAPERBACK_COVER // KDP_PDF" id="pcPanel" data-labsub="issue">
             <div class="stack">
                 <p class="hint" id="pcEmpty"><b>Load an issue folder in ISSUE_CONVERTER above first.</b> The cover uses <code>_frontcover</code> / <code>_backcover</code> (or <code>_p0</code> and the last page in the old naming).</p>
                 <div class="stack" id="pcBody" hidden>
@@ -297,7 +303,7 @@
             </div>
         </div>
 
-        <div class="panel" data-label="BOOK_COVER // PAPERBACK + HARDCOVER" id="bcPanel">
+        <div class="panel" data-label="BOOK_COVER // PAPERBACK + HARDCOVER" id="bcPanel" data-labsub="book">
             <div class="stack">
                 <p class="hint">Full cover for a book (Vanguard and any other): back + spine + front in one PDF for KDP, made from two images. Any image the browser opens works (JPG, PNG, WebP, AVIF...). The art fills each cover face; the bleed / wrap around it is filled from the edge of the art. Premium color.</p>
                 <div class="fgrid">
@@ -359,7 +365,41 @@
             </div>
         </div>
 
-        <div class="panel" data-label="QUICK_CONVERT // ANY_IMAGES">
+        <div class="panel" data-label="IMAGES_TO_PDF // ONE_FILE" id="ipPanel" data-labsub="pdf">
+            <div class="stack">
+                <p class="hint">Many images into one PDF, one image per page: JPG, JFIF, PNG, WebP, AVIF, GIF, BMP… (anything the browser opens). Nothing is uploaded: it all happens in this browser.</p>
+                <div class="ldrop" id="ipDrop">
+                    <label class="btn btn--primary" for="ipFiles">CHOOSE_IMAGES</label>
+                    <input id="ipFiles" type="file" accept="image/*,.jfif,.pjpeg,.pjp" multiple hidden>
+                    <span class="meta">or drop them here (several at once)</span>
+                </div>
+                <p class="hint" id="ipEmpty">No images yet.</p>
+                <div class="stack" id="ipBody" hidden>
+                    <div class="row ip-tools"><button type="button" class="btn btn--sm" id="ipSort">SORT_BY_NAME</button><button type="button" class="btn btn--sm btn--danger" id="ipClear">CLEAR</button><span class="meta" id="ipCount"></span></div>
+                    <div class="flist" id="ipList"></div>
+                    <div class="fgrid fgrid--3">
+                        <div class="field"><label for="ipPage">Page size</label><select id="ipPage"><option value="image">Same as each image</option><option value="a4">A4</option><option value="letter">US Letter</option><option value="6x9">6 x 9 in</option></select></div>
+                        <div class="field"><label for="ipMargin">Margin</label><select id="ipMargin"><option value="0">None</option><option value="0.25">Small (0.25 in)</option><option value="0.5">Medium (0.5 in)</option><option value="1">Big (1 in)</option></select></div>
+                        <div class="field"><label for="ipBg">Page colour (behind the image)</label><select id="ipBg"><option value="#ffffff">White</option><option value="#000000">Black</option></select></div>
+                    </div>
+                    <div class="fgrid fgrid--3">
+                        <div class="field"><label for="ipMax">Image size in the PDF</label><select id="ipMax"><option value="0">Original (best, biggest file)</option><option value="3000">Max 3000 px</option><option value="2000" selected>Max 2000 px (good for screens)</option><option value="1400">Max 1400 px (small file, email)</option></select></div>
+                        <div class="field"><label for="ipQuality">JPEG quality <span id="ipQualityOut">88</span></label><input id="ipQuality" type="range" min="60" max="100" step="1" value="88"></div>
+                        <div class="field"><label for="ipName">File name</label><input id="ipName" type="text" maxlength="80" autocomplete="off"></div>
+                    </div>
+                    <label class="lcheck" id="ipAutoBox" hidden><input type="checkbox" id="ipAuto" checked> Wide images get a landscape page</label>
+                    <div class="row"><button type="button" class="btn btn--primary" id="ipGo">MAKE_PDF</button></div>
+                    <div class="lprogress" id="ipProgress" hidden><span class="meta" id="ipProgressText"></span></div>
+                    <ol class="steps">
+                        <li>The order of the list = the order of the pages. SORT_BY_NAME puts page2 before page10.</li>
+                        <li>"Same as each image": every page is the size of its picture (300 DPI). A4 / Letter / 6x9: the whole image is fitted on the page, never cut.</li>
+                        <li>For the KDP paperback interior of an issue, use DEAD DROP ISSUE (bleed, 6x9, 24-page minimum). This one is for everything else.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" data-label="QUICK_CONVERT // ANY_IMAGES" data-labsub="convert">
             <div class="stack">
                 <p class="hint">Any images to WebP: portraits, hero pictures, covers. One image downloads as a .webp, several come in a zip.</p>
                 <div class="fgrid fgrid--3">
@@ -517,6 +557,7 @@
 <script src="/foundry/foundry-lab-core.js?v=lab3"></script>
 <script src="/foundry/foundry-lab.js?v=lab3"></script>
 <script src="/foundry/foundry-bookcover.js?v=bc4"></script>
+<script src="/foundry/foundry-pdf.js?v=ip1"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 <script src="/foundry/foundry-board.js?v=bd3"></script>
 <script src="/foundry/foundry-videos.js?v=vd1"></script>
