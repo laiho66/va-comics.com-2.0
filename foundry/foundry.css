@@ -113,3 +113,23 @@ button.chip.chip--active:hover { color: #000; }
 .bd-st.is-pending { color: #ffc98a; border-color: #ff9a3c; } .bd-st.is-approved { color: #bff0d3; border-color: #35a867; } .bd-st.is-rejected { color: #ffc9c9; border-color: #ff5a5a; }
 @media (max-width: 700px) { #bdList .fitem-actions .btn { flex: 1 1 auto; padding: 6px 8px; font-size: 11px; } }
 .bd-parent { font-family: var(--mono); font-size: 11px; color: var(--text-4); overflow-wrap: anywhere; }
+
+/* VIDEOS tab */
+.vd-item { align-items: center; }
+.vd-thumb { flex: 0 0 128px; width: 128px; aspect-ratio: 16 / 9; background: #000; border: 1px solid var(--line-3); display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--text-4); overflow: hidden; }
+.vd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vd-item .fitem-main { flex: 1 1 auto; }
+.vd-link { color: var(--accent); text-decoration: none; }
+.vd-in { width: 100%; padding: 8px 10px; background: #000; color: var(--text); border: 1px solid var(--line-3); font: inherit; font-size: 14px; }
+.vd-in:focus { outline: none; border-color: var(--accent); }
+.vd-acts .btn { min-width: 0; padding: 6px 10px; }
+.vd-prev { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px; border: 1px solid var(--line-3); background: #000; }
+.vd-prev img { width: 200px; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid var(--line-3); }
+.vd-saverow { align-items: center; gap: 14px; }
+.vd-dirty { color: #ffb020; }
+@media (max-width: 640px) {
+    .vd-item { flex-wrap: wrap; }
+    .vd-thumb { flex-basis: 100%; width: 100%; }
+    .vd-acts { flex-wrap: wrap; }
+}

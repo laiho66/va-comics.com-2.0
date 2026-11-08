@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=bd3">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=vd1">
 </head>
 
 <!-- ======================================================================
@@ -31,6 +31,7 @@
     <div class="chips" id="tabs" role="tablist" aria-label="Sections">
         <button type="button" class="chip chip--active" data-tab="news" role="tab">NEWS</button>
         <button type="button" class="chip" data-tab="issues" role="tab">ISSUES</button>
+        <button type="button" class="chip" data-tab="videos" role="tab">VIDEOS</button>
         <button type="button" class="chip" data-tab="lab" role="tab">PRINT LAB</button>
         <button type="button" class="chip" data-tab="codes" role="tab">READER CODES</button>
         <button type="button" class="chip" data-tab="board" role="tab">BOARD <span id="bdBadge" class="bd-badge" hidden></span></button>
@@ -131,6 +132,32 @@
         <div class="stack">
             <h2 class="section-label"><span>Issues in the reader</span><a href="#" id="reloadIssues">[ RELOAD ]</a></h2>
             <div class="flist" id="issueList"><p class="hint">Connect in Settings first.</p></div>
+        </div>
+    </section>
+
+    <!-- ================= VIDEOS (lista de clipuri de pe /media/video) ================= -->
+    <section class="ftab" id="tab-videos" hidden>
+        <div class="panel" data-label="NEW_CLIP // YOUTUBE">
+            <div class="stack">
+                <div class="field"><label for="vdLink">YouTube link (from Share or the address bar; a playlist link works too)</label><input id="vdLink" type="url" autocomplete="off" placeholder="https://youtu.be/..."></div>
+                <div class="vd-prev" id="vdPrev" hidden></div>
+                <div class="fgrid">
+                    <div class="field"><label for="vdTitle">Title on the site</label><input id="vdTitle" type="text" maxlength="120" autocomplete="off" placeholder="Official Music Video // Terminus City"></div>
+                    <div class="field"><label for="vdMeta">Small line under the title</label><input id="vdMeta" type="text" maxlength="120" autocomplete="off" list="vdMetas" placeholder="PROTOCOL: TRACK_RELEASE // ..."></div>
+                </div>
+                <datalist id="vdMetas"></datalist>
+                <div class="row"><button type="button" class="btn btn--primary" id="vdAdd">ADD_TO_TOP</button></div>
+                <ol class="steps">
+                    <li>Paste the link, write the title (English) and pick or write the small line. ADD_TO_TOP puts it first in the list below.</li>
+                    <li>In the list you can move clips (↑ ↓), EDIT the text or REMOVE a clip. The first clip is the one the page opens with.</li>
+                    <li>Nothing is public until you press <b>SAVE_TO_SITE</b>. The video page updates in 1-2 minutes.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="stack">
+            <h2 class="section-label"><span>Clips on the video page</span><a href="#" id="vdReload">[ RELOAD ]</a></h2>
+            <div class="flist" id="vdList"><p class="hint">Open this tab to load the clips.</p></div>
+            <div class="row vd-saverow"><button type="button" class="btn btn--primary" id="vdSave" disabled>SAVE_TO_SITE</button><span class="meta vd-dirty" id="vdDirty" hidden>UNSAVED CHANGES</span></div>
         </div>
     </section>
 
@@ -383,10 +410,11 @@
 <script src="/foundry/foundry-core.js"></script>
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
-<script src="/foundry/foundry.js?v=bd1"></script>
+<script src="/foundry/foundry.js?v=vd1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab3"></script>
 <script src="/foundry/foundry-lab.js?v=lab3"></script>
 <script src="/foundry/foundry-codes.js?v=rc3"></script>
 <script src="/foundry/foundry-board.js?v=bd3"></script>
+<script src="/foundry/foundry-videos.js?v=vd1"></script>
 </body>
 </html>
