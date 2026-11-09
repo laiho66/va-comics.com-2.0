@@ -5,27 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page not found // VA Comics</title>
 
-    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <!-- 404: fără canonical și fără og:url (pagina apare la orice adresă greșită, nu are o adresă a ei) -->
     <meta name="description" content="This page does not exist.">
-    <link rel="canonical" href="https://va-comics.com/404">
+    <meta name="robots" content="noindex">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VA Comics">
     <meta property="og:title" content="Page not found // VA Comics">
-    <meta property="og:description" content="This page does not exist.">
-    <meta property="og:url" content="https://va-comics.com/404">
     <meta property="og:image" content="https://va-comics.com/assets/og-home.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="en_US">
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <meta name="robots" content="noindex">
     <link rel="stylesheet" href="/style.css">
+
+    <!-- Stiluri doar pentru pagina asta (nu ating style.css) -->
+    <style>
+        .trace { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 22px; font-family: var(--mono); font-size: 14px; letter-spacing: 1px; }
+        .trace dt { color: var(--text-4); }
+        .trace dd { color: var(--text-2); overflow-wrap: anywhere; }
+        .trace .is-bad { color: var(--accent); }
+        .trace a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(var(--accent-rgb), 0.4); }
+        .trace a:hover { border-bottom-color: var(--accent); }
+        .cursor { display: inline-block; width: 0.6em; height: 1em; margin-left: 4px; vertical-align: -2px; background: var(--accent); animation: pulse 1.2s steps(2, start) infinite; }
+        @media (max-width: 640px) {
+            .trace { grid-template-columns: minmax(0, 1fr); gap: 2px; font-size: 13px; }
+            .trace dd { margin-bottom: 12px; }
+        }
+    </style>
 </head>
 
 <!-- ======================================================================
-     404 (Etapa 6). Se activează de Cloudflare doar dacă setăm not_found_handling (o facem la publicare).
+     404 // SIGNAL LOST
+     Cloudflare o arată la ORICE adresă care nu există (setarea e în wrangler.jsonc: not_found_handling).
+     De aceea toate linkurile încep cu "/" (merg și la /deaddrop/ceva/gresit).
+     Butonul portocaliu duce în secțiunea cea mai apropiată de adresa greșită (vezi NEAREST mai jos).
      ====================================================================== -->
 <body data-bg="wall">
 
@@ -39,14 +51,63 @@
         <div class="page-head">
             <nav class="crumbs" id="crumbs"></nav>
             <div class="title-row"><h1 class="h1">404 // Signal lost</h1></div>
-            <p class="lead">The page you are looking for does not exist or has moved.</p>
+            <p class="lead">There is nothing at this address. The link may be broken, or the page has moved.</p>
         </div>
 
-        <div class="row"><a class="btn btn--primary" href="/index.html">BACK_TO_BASE</a><a class="btn" href="/projects.html">PROJECTS</a></div>
+        <div class="panel" data-label="TRACE_LOG">
+            <dl class="trace">
+                <dt>REQUESTED</dt><dd id="nfPath">this address</dd>
+                <dt>STATUS</dt><dd class="is-bad">404 NOT FOUND<span class="cursor" aria-hidden="true"></span></dd>
+                <dt>NEAREST</dt><dd><a id="nfNearestLink" href="/index.html">Home</a></dd>
+            </dl>
+        </div>
 
+        <div class="row">
+            <a class="btn btn--primary" id="nfNearestBtn" href="/index.html">BACK_TO_BASE</a>
+            <a class="btn" href="/projects.html">PROJECTS</a>
+            <a class="btn" href="/chronicles.html">NEWS</a>
+        </div>
     </main>
 </div>
 
 <footer class="site-footer" id="siteFooter"></footer>
+
+<script>
+(function () {
+    'use strict';
+    /* NEAREST: adresa greșită începe cu ... -> butonul trimite aici. Prima potrivire câștigă. */
+    var NEAREST = [
+        { start: '/deaddrop',  href: '/deaddrop/',            label: 'Dead Drop',            btn: 'DEAD_DROP' },
+        { start: '/vanguard',  href: '/vanguard/',            label: 'Vanguard Chronicles',  btn: 'VANGUARD' },
+        { start: '/media/reader', href: '/media/reader.html', label: 'Reading Room',         btn: 'READING_ROOM' },
+        { start: '/media',     href: '/media.html',           label: 'Media',                btn: 'MEDIA' },
+        { start: '/chronicles', href: '/chronicles.html',     label: 'News',                 btn: 'NEWS' },
+        { start: '/qa',        href: '/qa.html',              label: 'Q&A',                  btn: 'Q&A' }
+    ];
+
+    var raw = location.pathname || '/';
+    var shown;
+    try { shown = decodeURIComponent(raw); } catch (e) { shown = raw; }
+    if (shown.length > 120) { shown = shown.slice(0, 117) + '...'; }
+    document.getElementById('nfPath').textContent = shown;   /* textContent: nimic din adresă nu devine cod */
+
+    var lower = raw.toLowerCase();
+    for (var i = 0; i < NEAREST.length; i++) {
+        var n = NEAREST[i];
+        if (lower === n.start || lower.indexOf(n.start + '/') === 0 || lower.indexOf(n.start + '.') === 0) {
+            var link = document.getElementById('nfNearestLink');
+            var btn = document.getElementById('nfNearestBtn');
+            link.href = n.href; link.textContent = n.label;
+            btn.href = n.href; btn.textContent = 'BACK_TO_' + n.btn;
+            /* NEWS e deja buton: nu-l arătăm de două ori */
+            if (n.href === '/chronicles.html') {
+                var extra = document.querySelector('.row a[href="/chronicles.html"]:not(#nfNearestBtn)');
+                if (extra) { extra.href = '/index.html'; extra.textContent = 'HOME'; }
+            }
+            break;
+        }
+    }
+})();
+</script>
 </body>
 </html>

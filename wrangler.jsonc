@@ -1,0 +1,15 @@
+// VA COMICS // Worker-ul SITE-ULUI (icy-sun-9f9e): doar fișiere statice, fără cod.
+// Singurul motiv pentru care există fișierul: pagina 404 ("Signal lost").
+// Fără el, Cloudflare răspunde la adresele greșite cu o pagină goală "404 Not Found".
+//
+// NU schimba "name": trebuie să fie exact numele Worker-ului din Cloudflare, altfel build-ul pică.
+// Workerii board și reader au fișierele lor (board-worker/, reader-worker/); pe ei nu-i atinge.
+// Fișierul nu ajunge pe site: e trecut în .assetsignore.
+{
+  "name": "icy-sun-9f9e",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": ".",
+    "not_found_handling": "404-page"
+  }
+}
