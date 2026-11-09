@@ -102,6 +102,52 @@
         return html.slice(0, f.start) + html.slice(f.end);
     }
 
+    /* ---------------------------- RSS (feed.xml) ----------------------------
+       feed.xml is built ONLY from chronicles.html: same posts, same order (newest first).
+       Foundry rewrites it after every Publish / Save / Delete in NEWS (and with REBUILD_FEED).
+       Deterministic: the same posts always give the same file (no "now" date inside),
+       so an unchanged News page never makes a new commit. */
+    var SITE_URL = 'https://va-comics.com';
+    var FEED_MAX = 20;
+    function xml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function cdata(s) { return '<![CDATA[' + String(s).replace(/\]\]>/g, ']]]]><![CDATA[>') + ']]>'; }
+    function rfc822(ymd) {
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd).trim());
+        var d = m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12, 0, 0)) : new Date(Date.UTC(2026, 0, 1, 12, 0, 0));
+        return d.toUTCString().replace('GMT', '+0000');
+    }
+    function buildFeed(newsHtml) {
+        var posts = listPosts(newsHtml).slice(0, FEED_MAX);
+        var newest = posts.length ? posts[0].date : '2026-01-01';
+        var items = posts.map(function (p) {
+            var link = SITE_URL + '/chronicles#' + p.id;
+            var paras = String(p.body).split(/\n\s*\n/).map(function (t) { return t.trim(); }).filter(Boolean);
+            var html = paras.map(function (t) { return '<p>' + esc(t).replace(/\n/g, '<br>') + '</p>'; }).join('');
+            return '    <item>\n' +
+                '      <title>' + xml(p.title) + '</title>\n' +
+                '      <link>' + xml(link) + '</link>\n' +
+                '      <guid isPermaLink="false">va-comics-' + xml(p.id) + '</guid>\n' +
+                '      <pubDate>' + rfc822(p.date) + '</pubDate>\n' +
+                (p.author ? '      <dc:creator>' + xml(p.author) + '</dc:creator>\n' : '') +
+                '      <description>' + cdata(html) + '</description>\n' +
+                '    </item>\n';
+        }).join('');
+        return '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<!-- VA COMICS // feed.xml: made by Foundry from chronicles.html. Do not edit by hand (it gets overwritten). -->\n' +
+            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">\n' +
+            '  <channel>\n' +
+            '    <title>VA Comics // News</title>\n' +
+            '    <link>' + SITE_URL + '/chronicles</link>\n' +
+            '    <atom:link href="' + SITE_URL + '/feed.xml" rel="self" type="application/rss+xml"/>\n' +
+            '    <description>News, updates and behind-the-scenes field reports from VA Comics: Dead Drop and Vanguard Chronicles.</description>\n' +
+            '    <language>en</language>\n' +
+            '    <lastBuildDate>' + rfc822(newest) + '</lastBuildDate>\n' +
+            '    <image><url>' + SITE_URL + '/apple-touch-icon.png</url><title>VA Comics // News</title><link>' + SITE_URL + '/chronicles</link></image>\n' +
+            items +
+            '  </channel>\n' +
+            '</rss>\n';
+    }
+
     /* ---------------------------- ISSUES (viewer.html) ---------------------------- */
     var DB_ROW = /^[ \t]*"([\w]+)"\s*:\s*\{\s*title:\s*("(?:[^"\\]|\\.)*")\s*,\s*badge:\s*("(?:[^"\\]|\\.)*")\s*,\s*pages:\s*buildPages\(\s*"([^"]+)"\s*,\s*(\d+)\s*\)\s*\}\s*,?\s*$/gm;
 
@@ -176,7 +222,7 @@
     return {
         guardNews: guardNews, guardViewer: guardViewer,
         today: today, newId: newId,
-        buildPost: buildPost, listPosts: listPosts, insertPost: insertPost, replacePost: replacePost, deletePost: deletePost,
+        buildPost: buildPost, listPosts: listPosts, buildFeed: buildFeed, insertPost: insertPost, replacePost: replacePost, deletePost: deletePost,
         parseIssues: parseIssues, addIssue: addIssue, suggestBadge: suggestBadge, suggestFolder: suggestFolder, coverFile: coverFile
     };
 });

@@ -180,7 +180,8 @@
         f.innerHTML = '<span><span class="status-dot"></span>SYS_STATUS: OPERATIONAL // &copy; ' + SITE.year + ' ' + SITE.name + '</span>' +
             '<nav aria-label="Footer"><a href="/legal.html">// LEGAL</a>' +
             '<a href="' + SITE.facebook + '" target="_blank" rel="noopener noreferrer">// FACEBOOK</a>' +
-            '<a href="' + SITE.x + '" target="_blank" rel="noopener noreferrer">// X</a></nav>';
+            '<a href="' + SITE.x + '" target="_blank" rel="noopener noreferrer">// X</a>' +
+            '<a href="/feed.xml" type="application/rss+xml">// RSS</a></nav>';
     }
 
     /* ---------- menu behaviour ---------- */

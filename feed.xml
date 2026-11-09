@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- VA COMICS // feed.xml: made by Foundry from chronicles.html. Do not edit by hand (it gets overwritten). -->
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>VA Comics // News</title>
+    <link>https://va-comics.com/chronicles</link>
+    <atom:link href="https://va-comics.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>News, updates and behind-the-scenes field reports from VA Comics: Dead Drop and Vanguard Chronicles.</description>
+    <language>en</language>
+    <lastBuildDate>Tue, 06 Oct 2026 12:00:00 +0000</lastBuildDate>
+    <image><url>https://va-comics.com/apple-touch-icon.png</url><title>VA Comics // News</title><link>https://va-comics.com/chronicles</link></image>
+    <item>
+      <title>The Bunker Got a Makeover</title>
+      <link>https://va-comics.com/chronicles#post-1791293621291</link>
+      <guid isPermaLink="false">va-comics-post-1791293621291</guid>
+      <pubDate>Tue, 06 Oct 2026 12:00:00 +0000</pubDate>
+      <dc:creator>Aris</dc:creator>
+      <description><![CDATA[<p>We rebuilt the site from the ground up. Same orange glow, same bunker feel, but easier to walk around in, on your phone or on a big screen.</p><p>If you read Dead Drop here, the new reader is much smoother. Pick an issue, read it page by page, and the site remembers where you stopped, so you can jump back in later. Every issue is one tap away, and the Amazon links are right there if you want your own copy.</p><p>The characters finally got a proper place too. Jaxen, Mia, Leo Cruz, Mace, Volkov and the rest now have their own files, with a portrait and a short bio each.</p><p>And Vanguard Chronicles has a home. Book 1, The Sunken Pharaoh, is out now on Amazon as an eBook, paperback and hardcover. Come meet Marcus, Kira and MALAKH, the AI who never keeps his opinions to himself.</p><p>Something looks off on your screen? Tell us on Facebook or X. We read everything.</p>]]></description>
+    </item>
+    <item>
+      <title>Dead Drop Is Now Live in the Reader</title>
+      <link>https://va-comics.com/chronicles#post-1785604251245</link>
+      <guid isPermaLink="false">va-comics-post-1785604251245</guid>
+      <pubDate>Sat, 01 Aug 2026 12:00:00 +0000</pubDate>
+      <dc:creator>Aris</dc:creator>
+      <description><![CDATA[<p>Big update for everyone following the project. From now on, you can read all the available issues of Dead Drop directly on the site. If you want to jump straight into the pages, head over to the reader at va-comics.com/media/viewer and check it out.</p><p>For those of you who want to support what we are building here and help VA Comics grow, here is where things stand across the board:</p><p>Digital / eBook: Issues 1 through 13 are fully available on Amazon.</p><p>Paperback: Issues 1 through 9 are out in physical format on Amazon if you prefer holding the print in your hands.</p><p>We would really appreciate your feedback over on our Facebook page, or if you grab the books on Amazon, leaving us a review helps immensely—whether it's a good review or a bad one.</p><p>Every single review and bit of honest feedback goes a long way in helping us improve and grow.</p><p>We will be posting news, updates, and behind-the-scenes stuff right here in the Chronicles section and over on our Facebook page, so keep an eye out. Feel free to hit us up on Facebook if you want to reach out or talk about the issues.</p><p>Building this independent comic universe has been a massive ride, and every bit of support—whether you're reading right here on the site or picking up a copy on Amazon—keeps the engine running.</p><p>Take a look at the new viewer and let's keep pushing forward.</p>]]></description>
+    </item>
+  </channel>
+</rss>

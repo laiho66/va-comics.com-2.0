@@ -3,7 +3,7 @@
     'use strict';
     var C = FoundryCore, G = FoundryGH;
     var LS = 'foundry_v2_cfg';
-    var NEWS_FILE = 'chronicles.html', VIEWER_FILE = 'media/viewer.html';
+    var NEWS_FILE = 'chronicles.html', VIEWER_FILE = 'media/viewer.html', FEED_FILE = 'feed.xml';
     var cfg = loadCfg(), gh = null, editingId = null;
 
     var $ = function (id) { return document.getElementById(id); };
@@ -122,8 +122,9 @@
         gh.update(NEWS_FILE, function (text) { return editing ? C.replacePost(text, editing, p) : C.insertPost(text, p); },
             'Foundry: ' + (editing ? 'edit post - ' : 'new post - ') + p.title, C.guardNews)
             .then(function () {
-                say((editing ? 'Saved.' : 'Published.') + ' It is live in about 1-2 minutes at https://va-comics.com/chronicles', 'ok');
+                say('Working on the RSS feed...', 'info');
                 resetForm(); loadNews();
+                return feedAfter((editing ? 'Saved.' : 'Published.') + ' It is live in about 1-2 minutes at https://va-comics.com/chronicles.', (editing ? 'edit - ' : 'new - ') + p.title);
             }).catch(fail).then(function () { busy(b, false); });
     });
     function removePost(p, btn) {
@@ -131,10 +132,34 @@
         if (!confirm('Delete "' + p.title + '" from the live site? (It stays in the GitHub history.)')) { return; }
         busy(btn, true); say('Working...', 'info');
         gh.update(NEWS_FILE, function (text) { return C.deletePost(text, p.id); }, 'Foundry: delete post - ' + p.title, C.guardNews)
-            .then(function () { say('Deleted. The site updates in about 1-2 minutes.', 'ok'); if (editingId === p.id) { resetForm(); } loadNews(); })
+            .then(function () { if (editingId === p.id) { resetForm(); } loadNews(); return feedAfter('Deleted. The site updates in about 1-2 minutes.', 'delete - ' + p.title); })
             .catch(fail).then(function () { busy(btn, false); });
     }
     $('reloadNews').addEventListener('click', function (e) { e.preventDefault(); loadNews(); });
+    /* RSS: rebuild feed.xml from the CURRENT chronicles.html on GitHub.
+       Runs after Publish / Save / Delete. If it fails, the post is still live: only the feed is late,
+       and REBUILD_FEED (next to RELOAD) fixes it. No change = no commit. */
+    function syncFeed(reason) {
+        return gh.getFile(NEWS_FILE).then(function (news) {
+            var next = C.buildFeed(news.text);
+            return gh.getFile(FEED_FILE).then(function (f) { return f; }, function (e) { if (e && e.status === 404) { return null; } throw e; })
+                .then(function (cur) {
+                    if (cur && cur.text === next) { return 'same'; }
+                    return gh.putFile(FEED_FILE, next, cur ? cur.sha : undefined, 'Foundry: RSS feed - ' + reason).then(function () { return 'saved'; });
+                });
+        });
+    }
+    function feedAfter(msg, reason) {
+        return syncFeed(reason).then(function () { say(msg + ' RSS feed updated too.', 'ok'); },
+            function (e) { say(msg + ' But the RSS feed was NOT updated (' + (e && e.message ? e.message : e) + '). Press REBUILD_FEED next to RELOAD.', 'err'); });
+    }
+    $('rebuildFeed').addEventListener('click', function (e) {
+        e.preventDefault(); if (!needGh()) { return; }
+        say('Rebuilding the RSS feed...', 'info');
+        syncFeed('rebuild').then(function (r) { say(r === 'same' ? 'The RSS feed is already up to date.' : 'RSS feed rebuilt. Live in about 1-2 minutes at https://va-comics.com/feed.xml', 'ok'); }).catch(fail);
+    });
+
+
 
     /* ======================== ISSUES ======================== */
     function loadIssues() {
