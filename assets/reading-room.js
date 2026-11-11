@@ -75,9 +75,27 @@
             .catch(function (err) { gate(err.message); })
             .then(function () { b.disabled = false; b.textContent = 'OPEN_BOOK'; });
     });
+    /* Code field: capitals + dashes added on their own (VNG-1111-2222), also when pasted without dashes.
+       The cursor stays where you were typing. The server accepts the code with or without dashes anyway. */
+    function fmtCode(raw) {
+        var s = String(raw).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
+        return s.length > 7 ? s.slice(0, 3) + '-' + s.slice(3, 7) + '-' + s.slice(7) : s.length > 3 ? s.slice(0, 3) + '-' + s.slice(3) : s;
+    }
+    $('rrCode').addEventListener('keydown', function (e) {
+        /* Backspace right after a dash: jump over the dash so the character before it is deleted */
+        var p = this.selectionStart;
+        if (e.key === 'Backspace' && p === this.selectionEnd && p > 0 && this.value.charAt(p - 1) === '-') { this.setSelectionRange(p - 1, p - 1); }
+    });
     $('rrCode').addEventListener('input', function () {
-        var p = this.selectionStart, v = this.value.toUpperCase();
-        if (v !== this.value) { this.value = v; try { this.setSelectionRange(p, p); } catch (e) { /* ignore */ } }
+        var p = this.selectionStart, before = this.value.slice(0, p).replace(/[^A-Za-z0-9]/g, '').length;
+        var v = fmtCode(this.value);
+        if (v !== this.value) {
+            this.value = v;
+            var i = 0, seen = 0;
+            while (i < v.length && seen < before) { if (v.charAt(i) !== '-') { seen++; } i++; }
+            if (v.charAt(i) === '-' && seen === before && before > 0) { i++; }
+            try { this.setSelectionRange(i, i); } catch (e) { /* ignore */ }
+        }
     });
 
     /* ---------- shelf ---------- */
