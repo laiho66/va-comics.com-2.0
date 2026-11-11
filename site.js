@@ -88,7 +88,8 @@
 
     /* ---------- menu ---------- */
     function buildNav() {
-        var html = '<div class="nav-brand">VA_COMICS // SYS</div><ul class="nav-list">';
+        var html = '<div class="nav-brand">VA_COMICS // SYS</div>' +
+            '<button type="button" class="nav-search" data-va-search aria-label="Search the site (shortcut: /)">[ / ] SEARCH</button><ul class="nav-list">';
         MENU.forEach(function (it) {
             var cur = isCurrentTop(it);
             var hasSub = !!it.groups;
@@ -134,8 +135,32 @@
     var bar = document.createElement('header');
     bar.className = 'topbar';
     bar.innerHTML = '<a class="topbar-brand" href="/index.html">' + SITE.name + '</a>' +
-        '<button type="button" class="topbar-btn" aria-expanded="false" aria-controls="siteNav">[ &equiv; MENU ]</button>';
+        '<span class="topbar-actions"><button type="button" class="topbar-search" data-va-search aria-label="Search the site"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="square"/></svg></button>' +
+        '<button type="button" class="topbar-btn" aria-expanded="false" aria-controls="siteNav">[ &equiv; MENU ]</button></span>';
     document.body.insertBefore(bar, layer.nextSibling);
+
+    /* ---------- search: the code (/assets/search.js) loads only when someone opens it ---------- */
+    function openSearch() {
+        if (window.VASearch) { window.VASearch.open(); return; }
+        if (document.getElementById('vaSearchScript')) { return; }
+        var sc = document.createElement('script');
+        sc.id = 'vaSearchScript'; sc.src = '/assets/search.js?v=1';
+        sc.onload = function () { if (window.VASearch) { window.VASearch.open(); } };
+        document.head.appendChild(sc);
+    }
+    document.addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('[data-va-search]') : null;
+        if (!b) { return; }
+        e.preventDefault();
+        if (document.body.classList.contains('menu-open')) { var mb = document.querySelector('.topbar-btn'); if (mb) { mb.click(); } }
+        openSearch();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) { return; }
+        var t = e.target, tag = (t && t.tagName) || '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) { return; }
+        e.preventDefault(); openSearch();
+    });
 
     /* ---------- breadcrumb: trail built from the menu ---------- */
     function trail() {

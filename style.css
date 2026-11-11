@@ -698,3 +698,58 @@ body.reader-full .reader-top { display: none; }
 
 /* DISCUSS [3]: message count on the volume pages (assets/counts.js) */
 .vb-cnt { display: inline-block; min-width: 20px; margin-left: 8px; padding: 0 6px; background: var(--accent); color: #000; font-weight: 700; font-size: 11px; line-height: 18px; letter-spacing: 0; text-align: center; }
+
+/* ===================== SEARCH (assets/search.js, nov 2026) ===================== */
+.nav-search {
+    margin: 0 0 10px; padding: 11px 16px; min-height: 44px; text-align: left; cursor: pointer;
+    background: #000; border: 1px solid var(--line-3); color: var(--text-4);
+    font-family: var(--mono); font-size: 12px; letter-spacing: 2px;
+    transition: color var(--t-fast), border-color var(--t-fast);
+}
+.nav-search:hover, .nav-search:focus-visible { color: var(--accent); border-color: var(--accent); }
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+.topbar-search { display: none; }
+.search-overlay {
+    position: fixed; inset: 0; z-index: 400; background: rgba(0, 0, 0, 0.78);
+    display: flex; justify-content: center; align-items: flex-start; padding: 8vh 16px 16px;
+}
+.search-overlay[hidden] { display: none; }
+.search-box {
+    width: 100%; max-width: 680px; max-height: 84vh; display: flex; flex-direction: column;
+    background: var(--bg-2); border: 1px solid var(--accent); box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+}
+.search-head {
+    display: flex; justify-content: space-between; align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid var(--line-2); font-family: var(--mono); font-size: 12px; letter-spacing: 2px; color: var(--text-4);
+}
+.search-close { min-width: 40px; min-height: 40px; background: #000; border: 1px solid var(--accent); color: var(--accent); font-family: var(--mono); font-weight: 700; cursor: pointer; }
+#vaSearchInput {
+    margin: 14px; padding: 14px 16px; background: #000; border: 1px solid var(--line-3); color: var(--text);
+    font-family: var(--mono); font-size: 16px; letter-spacing: 1px;
+}
+#vaSearchInput:focus { outline: none; border-color: var(--accent); }
+#vaSearchInput::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.search-status { margin: 0 14px 8px; font-family: var(--mono); font-size: 12px; color: var(--text-4); min-height: 1.2em; }
+.search-results { list-style: none; margin: 0; padding: 0 14px 14px; overflow-y: auto; }
+.search-results li + li { margin-top: 8px; }
+.search-results a {
+    display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; text-decoration: none;
+    background: #000; border: 1px solid var(--line-2); transition: border-color var(--t-fast);
+}
+.search-results a:hover, .search-results a:focus-visible { border-color: var(--accent); outline: none; }
+.search-title { font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.search-title .chip { font-size: 10px; padding: 2px 6px; }
+.search-where { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--accent); text-transform: uppercase; }
+.search-snip { font-size: 13px; color: var(--text-3); line-height: 1.5; }
+.search-snip mark { background: rgba(var(--accent-rgb), 0.25); color: var(--text); }
+@media (max-width: 1023px) {
+    .nav-search { display: none; }
+    .topbar-search {
+        display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0;
+        border: 1px solid var(--line-3); background: #000; cursor: pointer; color: var(--text);
+    }
+    .topbar-search:hover, .topbar-search:focus-visible { color: var(--accent); border-color: var(--accent); }
+    .topbar-brand, .topbar-btn { white-space: nowrap; }
+    .search-overlay { padding: calc(var(--topbar-h) + 8px) 10px 10px; }
+    .search-box { max-height: calc(100vh - var(--topbar-h) - 20px); }
+}
