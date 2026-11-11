@@ -1,0 +1,72 @@
+/* VA COMICS // malakh.css: the MALAKH channel panel (loaded with assets/malakh.js).
+   The launcher button itself lives in style.css (it is on every page). Cyan = MALAKH, orange = the site. */
+.malakh-panel {
+    --mk: #22d3ee; --mk-rgb: 34, 211, 238;
+    position: fixed; right: 24px; bottom: 96px; z-index: 460;
+    width: min(420px, calc(100vw - 32px)); height: min(620px, calc(100vh - 140px));
+    display: flex; flex-direction: column;
+    background: #050708; border: 1px solid rgba(var(--mk-rgb), 0.55);
+    box-shadow: 0 0 0 1px #000, 0 0 36px rgba(var(--mk-rgb), 0.12), 0 20px 60px rgba(0, 0, 0, 0.85);
+    animation: mk-in 0.18s ease-out;
+}
+.malakh-panel[hidden] { display: none; }
+@keyframes mk-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.mk-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px 10px 14px; border-bottom: 1px solid rgba(var(--mk-rgb), 0.25); }
+.mk-title { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; letter-spacing: 3px; color: var(--mk); font-size: 13px; }
+.mk-sub { color: var(--text-4); font-weight: 400; letter-spacing: 2px; font-size: 11px; }
+.mk-wave { width: 22px; height: 12px; background: linear-gradient(90deg, transparent, var(--mk), transparent); mask: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 4px); -webkit-mask: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 4px); animation: mk-pulse 1.6s ease-in-out infinite; }
+@keyframes mk-pulse { 0%, 100% { opacity: 0.45; transform: scaleY(0.5); } 50% { opacity: 1; transform: scaleY(1); } }
+.mk-actions { display: flex; gap: 6px; }
+.mk-actions button { min-width: 36px; min-height: 36px; background: #000; border: 1px solid var(--line-3); color: var(--text-3); font-family: var(--mono); font-weight: 700; cursor: pointer; }
+.mk-actions button:hover, .mk-actions button:focus-visible { color: var(--mk); border-color: var(--mk); outline: none; }
+
+.mk-body { flex: 1 1 auto; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; }
+.mk-sys { margin: 0; text-align: center; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--text-4); }
+.mk-msg { max-width: 88%; padding: 10px 12px; font-size: 14px; line-height: 1.55; border: 1px solid var(--line-2); background: #000; }
+.mk-msg a { color: var(--mk); }
+.mk-ai { align-self: flex-start; border-left: 2px solid var(--mk); }
+.mk-user { align-self: flex-end; border-right: 2px solid var(--accent); color: var(--text-2); }
+.mk-who { display: block; margin-bottom: 4px; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--mk); }
+.mk-k-refusal, .mk-k-limit, .mk-k-clearance, .mk-k-offline, .mk-k-error { border-left-color: var(--accent); }
+.mk-k-refusal .mk-who, .mk-k-limit .mk-who, .mk-k-clearance .mk-who, .mk-k-offline .mk-who, .mk-k-error .mk-who { color: var(--accent); }
+.mk-k-crisis { border-left-color: #e8e8e8; background: #0b0b0b; }
+.mk-k-crisis .mk-who { color: #e8e8e8; }
+.mk-clearbtn { margin-top: 10px; font-size: 11px; }
+.mk-dots i { font-style: normal; animation: mk-blink 1.2s infinite; }
+.mk-dots i:nth-child(2) { animation-delay: 0.2s; } .mk-dots i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes mk-blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+.mk-opener { display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.6; color: var(--text-2); }
+.mk-opener p { margin: 0; }
+.mk-kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--mk); }
+.mk-opener b { color: var(--text); }
+.mk-rules { margin: 0; padding: 0; list-style: none; color: var(--text-3); font-size: 13px; }
+.mk-rules li { position: relative; padding-left: 18px; }
+.mk-rules li::before { content: '>'; position: absolute; left: 0; color: var(--mk); font-family: var(--mono); }
+.mk-rules li + li { margin-top: 4px; }
+.mk-check, .mk-clear { display: flex; gap: 10px; align-items: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--text); }
+.mk-clear span { color: var(--text-4); }
+.mk-check { cursor: pointer; }
+.mk-check-text { display: flex; flex-direction: column; gap: 2px; }
+.mk-check-text small { font-size: 11px; letter-spacing: 0; color: var(--text-4); font-family: var(--sans); }
+.mk-check input { width: 18px; height: 18px; accent-color: var(--accent); margin-top: 1px; }
+.mk-clear { color: var(--mk); }
+.mk-note { min-height: 1.2em; font-family: var(--mono); font-size: 12px; color: var(--text-4); }
+.mk-open { width: 100%; }
+.mk-open:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.mk-form { border-top: 1px solid rgba(var(--mk-rgb), 0.25); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.mk-form[hidden] { display: none; }
+.mk-form textarea { width: 100%; resize: none; padding: 10px 12px; background: #000; color: var(--text); border: 1px solid var(--line-3); font: 14px/1.5 var(--sans); }
+.mk-form textarea:focus { outline: none; border-color: var(--mk); }
+.mk-row { display: flex; justify-content: space-between; align-items: center; }
+.mk-count { font-family: var(--mono); font-size: 11px; color: var(--text-4); }
+.mk-send { min-height: 40px; padding: 0 14px; background: #000; border: 1px solid var(--mk); color: var(--mk); font-family: var(--mono); font-weight: 700; letter-spacing: 1px; cursor: pointer; }
+.mk-send:disabled { opacity: 0.4; cursor: wait; }
+.mk-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 640px) {
+    .malakh-panel { right: 0; left: 0; bottom: 0; top: var(--topbar-h); width: auto; height: auto; border-left: 0; border-right: 0; border-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .malakh-panel, .mk-wave, .mk-dots i { animation: none; } }
