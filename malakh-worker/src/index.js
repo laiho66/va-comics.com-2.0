@@ -123,7 +123,7 @@ const CRISIS_OUT = /(helpline|lifeline|suicid(e|al)(?!\s+(mission|run|squad|jump
 const JAILBREAK_RE = /(ignore\s+(all\s+|any\s+|the\s+|your\s+|previous\s+|prior\s+|above\s+)*(instructions?|rules?|prompts?|guidelines)|disregard\s+(your|the|all|previous)|forget\s+(your|all|the|previous)\s+(instructions?|rules?|prompt)|system\s*prompt|developer\s*mode|jail\s*break|\bdan\b|do\s+anything\s+now|you\s+are\s+(now|no\s+longer)|pretend\s+(to\s+be|you\s+are)|act\s+as\s+(an?\s+)?(unfiltered|unrestricted|different|evil)|role\s*-?play\s+as|new\s+persona|reveal\s+(your|the)\s+(prompt|instructions|rules)|print\s+(your|the)\s+(prompt|instructions)|what\s+(are|were)\s+your\s+(instructions|rules)|repeat\s+(the\s+)?(text|words)\s+above|(told|given)\s+(to\s+)?you\s+before|you\s+were\s+(told|given|instructed|programmed)|before\s+this\s+(chat|conversation|session)\s+start|hidden\s+(rules|instructions|prompt)|your\s+(rules|instructions|guidelines|prompt)\b|spells?\s+(out\s+)?your|\[\s*system\s*\]|<\s*\/?\s*system|###\s*(system|instruction)|sudo\b|override\s+(your|safety|the))/i;
 const ENCODED_RE = /\b(decode|encode|base\s*64|rot\s*13|hex\s*(to|decode)|binary\s*to)\b|([A-Za-z0-9+/]{40,}={0,2})|((?:[01]{8}\s*){6,})|((?:\\x[0-9a-f]{2}){6,})|((?:%[0-9a-f]{2}){8,})/i;
 /* common words of other languages (RO, HU, ES, IT, DE, FR) that are not English words */
-const FOREIGN_WORDS = /\b(este|sunt|care|pentru|cine|cum|unde|vreau|rog|spune|spui|mie|despre|poti|poți|hogy|nem|igen|vagyok|mert|és|que|porque|quien|quién|como|cómo|donde|dónde|eres|sono|chi|perché|cosa|ist|nicht|und|wer|warum|ich|pourquoi|qui|avec|pour|est-ce)\b/gi;
+const FOREIGN_WORDS = /\b(este|sunt|care|pentru|cine|cum|unde|vreau|rog|spune|spui|mie|despre|poti|poți|nu|să|și|în|deoarece|limba|limbă|regulile|răspunde\w*|raspunde\w*|pot|trebuie|această|acest|română|romana|engleză|engleza|foarte|poate|vrei|doar|acum|mele|hogy|nem|igen|vagyok|mert|és|que|porque|quien|quién|como|cómo|donde|dónde|eres|sono|chi|perché|cosa|ist|nicht|und|wer|warum|ich|pourquoi|qui|avec|pour|est-ce)\b/gi;
 function nonEnglish(s) {
     const letters = s.match(/\p{L}/gu) || [];
     if (letters.length < 4) { return false; }
@@ -133,6 +133,8 @@ function nonEnglish(s) {
     return hits.size >= 2;
 }
 /* undo the usual spelling tricks before the keyword checks (b.o.m.b, b0mb, b o m b) */
+/* "respond only in Romanian", "speak Hungarian", "translate to ..." */
+const LANG_SWITCH_RE = /\b(respond|answer|reply|speak|write|talk|switch|translate|say\s+it|from\s+now\s+on)\b[^.?!]{0,40}\b(romanian|hungarian|magyar|german|deutsch|french|spanish|italian|russian|portuguese|polish|dutch|chinese|japanese|arabic|turkish|romana|română)\b/i;
 const LEET = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '@': 'a', '$': 's', '|': 'i' };
 function untrick(s) {
     const t = String(s).toLowerCase().replace(/[013457@$|]/g, c => LEET[c]);
@@ -229,7 +231,7 @@ async function pipeline(env, message, history, adult) {
     if (CRISIS_RE.test(msg) || CRISIS_RE.test(plain)) { return { kind: 'crisis', reply: FIXED.crisis, cat: 'crisis', neurons }; }
     if (JAILBREAK_RE.test(msg) || JAILBREAK_RE.test(plain)) { return { kind: 'refusal', reply: FIXED.jailbreak, cat: 'jailbreak', neurons }; }
     if (ENCODED_RE.test(msg)) { return { kind: 'refusal', reply: FIXED.encoded, cat: 'encoded', neurons }; }
-    if (nonEnglish(msg)) { return { kind: 'refusal', reply: FIXED.english, cat: 'english', neurons }; }
+    if (nonEnglish(msg) || LANG_SWITCH_RE.test(msg)) { return { kind: 'refusal', reply: FIXED.english, cat: 'english', neurons }; }
     if (((HARD_RE.test(msg) || HARD_RE.test(plain)) && (HOWTO_RE.test(msg) || HOWTO_RE.test(plain))) || squashedHarm(msg)) { return { kind: 'refusal', reply: FIXED.refuse, cat: 'harmful', neurons }; }
 
     history = sanitizeHistory(history);
