@@ -1,7 +1,8 @@
 /* VA COMICS // characters.js
    Characters page: filters by faction + the dossier (side panel on desktop, bottom sheet on phone).
    Works with the markup in deaddrop/characters.html (and the Vanguard page).
-   Each character is an <article class="card char" id="..." data-faction="..."> with a hidden .char-bio. */
+   Each character is a <div class="card char" id="..." data-faction="..." role="button"> with a hidden .char-bio.
+   The faction counts are also written in the HTML (so the page does not jump on phones); this script re-checks them. */
 (function () {
     'use strict';
     var grid = document.getElementById('charGrid');
