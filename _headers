@@ -25,3 +25,16 @@
 
 /foundry/*
   X-Robots-Tag: noindex, nofollow
+
+# PARTEA 3 (nov 2026, Lighthouse): imaginile din folderele de mai jos stau în browser 7 zile.
+#   Vizitatorii care revin nu le mai descarcă (pagini mai rapide).
+#   ATENȚIE: dacă ÎNLOCUIEȘTI o imagine păstrând ACELAȘI nume, unii vizitatori o pot vedea pe cea veche
+#   până la 7 zile. Imaginile noi (cover14.webp etc.) nu au problema asta. Dacă trebuie înlocuită
+#   o imagine existentă, dă-i un nume nou (ex. mace-v2.webp) și schimbă linkul din pagină.
+#   HTML, CSS și JS NU sunt aici: rămân pe verificarea normală, ca orice schimbare să apară imediat.
+
+/deaddrop/assets/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/vanguard/assets/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
