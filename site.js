@@ -37,8 +37,9 @@
 
     var MENU = [
         { n: '01', label: 'HOME', href: '/index.html' },
+        { n: '02', label: 'START HERE', href: '/start.html' },
         {
-            n: '02', label: 'PROJECTS', href: '/projects.html', base: ['/deaddrop', '/vanguard'],
+            n: '03', label: 'PROJECTS', href: '/projects.html', base: ['/deaddrop', '/vanguard'],
             groups: [
                 { label: 'DEAD DROP', href: '/deaddrop/index.html',
                   items: DEADDROP_VOLUMES.concat([{ label: 'CHARACTERS', href: '/deaddrop/characters.html' }]) }
@@ -47,9 +48,9 @@
                   items: VANGUARD_BOOKS.concat([{ label: 'CHARACTERS', href: '/vanguard/characters.html' }]) }
             ] : [])
         },
-        { n: '03', label: 'NEWS', href: '/chronicles.html' },
+        { n: '04', label: 'NEWS', href: '/chronicles.html' },
         {
-            n: '04', label: 'MEDIA', href: '/media.html', base: ['/media'],
+            n: '05', label: 'MEDIA', href: '/media.html', base: ['/media'],
             groups: [{ label: null, items: [
                 { label: 'VIDEO', href: '/media/video.html' },
                 { label: 'VIEWER', href: '/media/viewer.html' },
@@ -57,13 +58,13 @@
             ] }]
         },
         {
-            n: '05', label: 'ABOUT US', href: '/about.html', base: ['/about', '/qa'],
+            n: '06', label: 'ABOUT US', href: '/about.html', base: ['/about', '/qa'],
             groups: [{ label: null, items: [
                 { label: 'ABOUT US', href: '/about.html' },
                 { label: 'Q&A', href: '/qa.html' }
             ] }]
         },
-        { n: '06', label: 'CONTACT', href: '/contact.html' }
+        { n: '07', label: 'CONTACT', href: '/contact.html' }
     ];
 
     /* ---------- helpers ---------- */
