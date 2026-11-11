@@ -753,3 +753,38 @@ body.reader-full .reader-top { display: none; }
     .search-overlay { padding: calc(var(--topbar-h) + 8px) 10px 10px; }
     .search-box { max-height: calc(100vh - var(--topbar-h) - 20px); }
 }
+
+/* ===================== MALAKH launcher (every page; the panel is in assets/malakh.css) ===================== */
+.malakh-launcher {
+    --mk: #22d3ee; --mk-rgb: 34, 211, 238;
+    position: fixed; right: 24px; bottom: 24px; z-index: 450;
+    width: 58px; height: 58px; display: grid; place-items: center; cursor: pointer;
+    background: #000; border: 1px solid rgba(var(--mk-rgb), 0.6); color: var(--mk);
+    box-shadow: 0 0 0 1px #000, 0 0 22px rgba(var(--mk-rgb), 0.18);
+    transition: border-color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+}
+.malakh-launcher:hover, .malakh-launcher:focus-visible { border-color: var(--mk); box-shadow: 0 0 0 1px #000, 0 0 30px rgba(var(--mk-rgb), 0.35); outline: none; transform: translateY(-1px); }
+.malakh-launcher svg { width: 30px; height: 30px; }
+.malakh-launcher .mk-l-wave { animation: mk-l-pulse 2.4s ease-in-out infinite; transform-origin: center; }
+@keyframes mk-l-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.malakh-launcher::after {           /* green dot = a channel is open in this tab */
+    content: ''; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--mk); opacity: 0; transition: opacity var(--t-fast);
+}
+.malakh-launcher.is-live::after { opacity: 1; }
+.malakh-launcher-tip {
+    position: absolute; right: 68px; top: 50%; transform: translateY(-50%); white-space: nowrap; pointer-events: none;
+    padding: 6px 10px; background: #000; border: 1px solid rgba(var(--mk-rgb), 0.4); color: var(--mk);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px; opacity: 0; transition: opacity var(--t-fast);
+}
+.malakh-launcher:hover .malakh-launcher-tip, .malakh-launcher:focus-visible .malakh-launcher-tip { opacity: 1; }
+body.malakh-open .malakh-launcher { border-color: var(--mk); }
+/* reading pages: smaller and out of the way */
+.malakh-launcher.is-mini { width: 42px; height: 42px; right: 14px; bottom: 14px; opacity: 0.7; }
+.malakh-launcher.is-mini:hover, .malakh-launcher.is-mini:focus-visible { opacity: 1; }
+.malakh-launcher.is-mini svg { width: 22px; height: 22px; }
+@media (max-width: 640px) {
+    .malakh-launcher { right: 14px; bottom: 14px; width: 52px; height: 52px; }
+    body.malakh-open .malakh-launcher { display: none; }
+    .malakh-launcher-tip { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .malakh-launcher .mk-l-wave { animation: none; } }

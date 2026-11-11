@@ -162,6 +162,43 @@
         e.preventDefault(); openSearch();
     });
 
+    /* ---------- MALAKH: the cyan launcher on every page (except Foundry) ----------
+       The chat itself (/assets/malakh.js + malakh.css) loads only on the first click,
+       or right away if a channel was left open on the previous page (it follows the reader). */
+    function loadMalakh(then) {
+        if (window.VAMalakh) { then(); return; }
+        if (!document.getElementById('vaMalakhCss')) {
+            var css = document.createElement('link'); css.id = 'vaMalakhCss'; css.rel = 'stylesheet'; css.href = '/assets/malakh.css?v=1';
+            document.head.appendChild(css);
+        }
+        loadMalakh.wait = then;                       /* only the last click counts while it loads */
+        if (!document.getElementById('vaMalakhScript')) {
+            var sc = document.createElement('script'); sc.id = 'vaMalakhScript'; sc.src = '/assets/malakh.js?v=1';
+            sc.onload = function () { if (window.VAMalakh && loadMalakh.wait) { var f = loadMalakh.wait; loadMalakh.wait = null; f(); } };
+            document.head.appendChild(sc);
+        }
+    }
+    function initMalakh() {
+        if (path.indexOf('/foundry') === 0) { return; }
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'malakh-launcher';
+        if (path.indexOf('/media/viewer') === 0 || path.indexOf('/media/reader') === 0) { b.classList.add('is-mini'); }
+        b.setAttribute('aria-label', 'Talk to MALAKH, the VA Comics AI');
+        b.setAttribute('aria-expanded', 'false');
+        b.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">' +
+            '<rect x="3" y="3" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+            '<path class="mk-l-wave" d="M6 16h4l2-6 3 12 3-9 2 5 2-2h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="miter" stroke-linecap="square"/></svg>' +
+            '<span class="malakh-launcher-tip">MALAKH // ASK</span>';
+        document.body.appendChild(b);
+        b.addEventListener('click', function () { loadMalakh(function () { window.VAMalakh.toggle(); }); });
+        var st = null;
+        try { st = JSON.parse(sessionStorage.getItem('malakh_v1') || 'null'); } catch (e) { /* ignore */ }
+        if (st && st.token && st.expires * 1000 > Date.now()) {
+            b.classList.add('is-live');
+            if (st.open) { loadMalakh(function () { window.VAMalakh.open(); }); }
+        }
+    }
+
     /* ---------- breadcrumb: trail built from the menu ---------- */
     function trail() {
         var t = null;
@@ -292,6 +329,7 @@
         initMenu();
         initFade();
         initAgeGate();
+        initMalakh();
     }
 
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
