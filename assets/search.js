@@ -10,11 +10,13 @@
     var PAGES = [
         '/index.html', '/projects.html', '/chronicles.html', '/about.html', '/qa.html', '/contact.html',
         '/deaddrop/index.html', '/deaddrop/vol1.html', '/deaddrop/vol2.html', '/deaddrop/characters.html',
+        '/deaddrop/issue-1.html', '/deaddrop/issue-2.html', '/deaddrop/issue-3.html', '/deaddrop/issue-4.html', '/deaddrop/issue-5.html', '/deaddrop/issue-6.html', '/deaddrop/issue-7.html',
+        '/deaddrop/issue-8.html', '/deaddrop/issue-9.html', '/deaddrop/issue-10.html', '/deaddrop/issue-11-1.html', '/deaddrop/issue-11-2.html', '/deaddrop/issue-12.html', '/deaddrop/issue-13.html',
         '/vanguard/index.html', '/vanguard/book1.html', '/vanguard/book2.html', '/vanguard/characters.html',
         '/media.html', '/media/viewer.html', '/media/video.html', '/media/reader.html', '/legal.html'
     ];
     var ADULT = ['/deaddrop', '/media/viewer', '/media/video'];
-    var CACHE_KEY = 'va_search_v1';
+    var CACHE_KEY = 'va_search_v2';
     var MAX = 12;
 
     var index = null, building = null, ui = null, lastFocus = null;
@@ -52,7 +54,10 @@
         });
         /* the page itself (text without the parts already indexed above) */
         var copy = main.cloneNode(true);
-        Array.prototype.forEach.call(copy.querySelectorAll('.char, .chronicle-post, .card--static, script, style, nav'), function (n) { n.remove(); });
+        Array.prototype.forEach.call(copy.querySelectorAll('.char, .chronicle-post, .card--static, script, style, nav'), function (n) {
+            if (n.classList.contains('card--static') && !n.querySelector('h2, h3')) { return; }   /* a card without a title (issue pages) was not indexed above: its text stays in the page */
+            n.remove();
+        });
         Array.prototype.forEach.call(copy.querySelectorAll('*'), function (n) { n.appendChild(doc.createTextNode(' ')); });   /* "Characters" + "18+" -> "Characters 18+" */
         var heads = Array.prototype.map.call(copy.querySelectorAll('h1, h2, h3'), function (h) { return clean(h.textContent); }).join(' · ');
         out.push({ u: url, t: title, k: heads, x: clean(desc + ' ' + copy.textContent).slice(0, 4000), p: '' });

@@ -200,8 +200,9 @@
     }
 
     /* ---------- breadcrumb: trail built from the menu ---------- */
-    function trail() {
+    function trail(as) {
         var t = null;
+        var same = function (href) { return norm(href) === (as ? norm(as) : path); };   /* "as" = build the trail of another page */
         MENU.forEach(function (it) {
             if (t) { return; }
             if (same(it.href) && it.href !== '/index.html') { t = [{ l: it.label, h: null }]; return; }
@@ -225,6 +226,13 @@
         var el = document.getElementById('crumbs');
         if (!el) { return; }
         var t = trail();
+        /* a page that is not in the menu (issue pages): <nav id="crumbs" data-parent="/deaddrop/vol1.html" data-label="ISSUE #01">
+           = the trail of the parent page + this label */
+        var par = el.getAttribute('data-parent'), lab = el.getAttribute('data-label');
+        if (!t && par && lab) {
+            t = trail(par);
+            if (t) { t[t.length - 1].h = par; t.push({ l: lab, h: null }); }
+        }
         if (!t) { el.hidden = true; return; }
         var html = '<ol><li><a href="/index.html">' + SITE.name + '</a></li>';
         t.forEach(function (c, i) {

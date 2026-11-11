@@ -16,3 +16,29 @@
         });
     }).catch(function () { /* the buttons stay plain */ });
 })();
+
+/* Volume pages: the cover and the title of each card open the issue page (/deaddrop/issue-N.html).
+   Done here, not in the HTML, so the cards keep the exact shape Foundry VOLUME_CARDS expects.
+   New issue page? Add its key to ISSUE_PAGES (same key as in viewer.html?issue=KEY; 11_1 -> issue-11-1.html). */
+(function () {
+    'use strict';
+    var ISSUE_PAGES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11_1', '11_2', '12', '13'];
+    var cards = document.querySelectorAll('#issues .card');
+    Array.prototype.forEach.call(cards, function (card) {
+        var read = card.querySelector('a[href^="/media/viewer.html?issue="]');
+        var key = read ? (read.getAttribute('href').split('issue=')[1] || '').split('&')[0] : '';
+        if (ISSUE_PAGES.indexOf(key) < 0) { return; }
+        var href = '/deaddrop/issue-' + key.replace('_', '-') + '.html';
+        var h = card.querySelector('h3'), media = card.querySelector('.media');
+        if (h && !h.querySelector('a')) {
+            var a = document.createElement('a'); a.href = href; a.style.textDecoration = 'none';
+            while (h.firstChild) { a.appendChild(h.firstChild); }
+            h.appendChild(a);
+        }
+        if (media && !media.querySelector('a')) {
+            var cover = document.createElement('a'); cover.href = href; cover.setAttribute('aria-label', 'About this issue');
+            cover.style.cssText = 'position:absolute;inset:0;z-index:1;';
+            media.appendChild(cover);
+        }
+    });
+})();
