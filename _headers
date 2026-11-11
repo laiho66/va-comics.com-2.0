@@ -21,10 +21,14 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://assets.va-comics.com https://i.ytimg.com; font-src 'self'; connect-src 'self' https://api.github.com https://api.anthropic.com https://cloudflareinsights.com; frame-src 'self' https://www.youtube-nocookie.com https://challenges.cloudflare.com; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://assets.va-comics.com https://i.ytimg.com; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; frame-src 'self' https://www.youtube-nocookie.com https://challenges.cloudflare.com; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
 
 /foundry/*
   X-Robots-Tag: noindex, nofollow
+  # Foundry are CSP-ul lui: are nevoie de api.github.com (scrieri în repo) și api.anthropic.com (AI drafts, adormit).
+  # Paginile publice NU mai au voie spre ele (regula /* de mai sus). Linia cu "!" scoate CSP-ul public, apoi îl punem pe cel de Foundry.
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://assets.va-comics.com https://i.ytimg.com; font-src 'self'; connect-src 'self' https://api.github.com https://api.anthropic.com https://cloudflareinsights.com; frame-src 'self' https://www.youtube-nocookie.com https://challenges.cloudflare.com; media-src 'self'; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
 
 # PARTEA 3 (nov 2026, Lighthouse): imaginile din folderele de mai jos stau în browser 7 zile.
 #   Vizitatorii care revin nu le mai descarcă (pagini mai rapide).
