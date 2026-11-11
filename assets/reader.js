@@ -24,6 +24,9 @@
         { title: 'VOLUME 2 // ISSUES 9-13', max: 13, page: '/deaddrop/vol2.html' }
     ];
     var OTHER_VOLUME = { title: 'NEW ISSUES', page: '/deaddrop/index.html' };   /* issues past the last volume */
+    /* Issues that have their own page (/deaddrop/issue-N.html; 11_1 -> issue-11-1.html). The end screen links to it.
+       An issue that is not listed here links to its volume page instead. */
+    var ISSUE_PAGES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11_1', '11_2', '12', '13'];
     var STORE = 'vc_reader_v1';
     var IDLE_MS = 3000;
     /* -------------------------------- */
@@ -59,8 +62,12 @@
     function load() { try { return JSON.parse(localStorage.getItem(STORE)) || { last: null, p: {} }; } catch (e) { return { last: null, p: {} }; } }
     function save(s) { try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) { /* ignore */ } }
     var store = load();
+    function nextKey(k) { var keys = sortedKeys(), i = keys.indexOf(k); return i >= 0 && i < keys.length - 1 ? keys[i + 1] : null; }
+    function issuePage(k) { return ISSUE_PAGES.indexOf(k) >= 0 ? '/deaddrop/issue-' + k.replace('_', '-') + '.html' : volumeOf(k).page; }
+    /* t / n / nt (title, next issue, its title) are for "Continue reading" on Home (assets/continue.js) */
     function remember(k, page) {
-        store.last = k; store.p[k] = { page: page, total: pagesOf(k).length }; save(store);
+        var nx = nextKey(k);
+        store.last = k; store.p[k] = { page: page, total: pagesOf(k).length, t: titleOf(k), n: nx, nt: nx ? titleOf(nx) : '' }; save(store);
     }
 
     /* ======================== LIBRARY ======================== */
@@ -211,15 +218,20 @@
 
     /* ---------- end of issue ---------- */
     function openEnd() {
-        var keys = sortedKeys(), i = keys.indexOf(cur.k), next = i >= 0 && i < keys.length - 1 ? keys[i + 1] : null;
+        var next = nextKey(cur.k);
         rEnd.innerHTML = '';
         var box = el('div', 'notice'); box.setAttribute('data-label', 'END_OF_TRANSMISSION // ' + label(cur.k));
         if (next) {
-            var b = el('button', 'btn btn--primary btn--block', 'NEXT: ' + label(next)); b.type = 'button';
+            var b = el('button', 'btn btn--primary btn--block'), bt = el('span', '', 'NEXT: ' + label(next)); b.type = 'button';
+            if (titleOf(next)) {                                  /* second line: the title of the next issue */
+                var nt = el('span', '', titleOf(next)); nt.style.cssText = 'display: block; margin-top: 4px; font-size: 11px; letter-spacing: 1px; font-weight: 400;';
+                bt.appendChild(nt);
+            }
+            b.appendChild(bt);
             b.addEventListener('click', function () { rEnd.hidden = true; openReader(next, 1, false); });
             box.appendChild(b);
         } else { box.appendChild(el('p', 'meta', 'END OF AVAILABLE ISSUES')); }
-        var a = el('a', 'btn btn--block', 'GET THIS ISSUE // AMAZON'); a.href = volumeOf(cur.k).page; box.appendChild(a);
+        var a = el('a', 'btn btn--block', 'GET THIS ISSUE // AMAZON'); a.href = issuePage(cur.k); box.appendChild(a);
         var l = el('button', 'btn btn--block', 'BACK TO LIBRARY'); l.type = 'button';
         l.addEventListener('click', function () { rEnd.hidden = true; goLibrary(); }); box.appendChild(l);
         var c = el('button', 'btn btn--block', 'BACK TO THE LAST PAGE'); c.type = 'button';

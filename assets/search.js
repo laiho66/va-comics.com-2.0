@@ -8,7 +8,7 @@
     if (window.VASearch) { return; }
 
     var PAGES = [
-        '/index.html', '/start.html', '/projects.html', '/chronicles.html', '/about.html', '/qa.html', '/contact.html',
+        '/index.html', '/start.html', '/projects.html', '/chronicles.html', '/about.html', '/qa.html', '/press.html', '/contact.html',
         '/deaddrop/index.html', '/deaddrop/vol1.html', '/deaddrop/vol2.html', '/deaddrop/characters.html',
         '/deaddrop/issue-1.html', '/deaddrop/issue-2.html', '/deaddrop/issue-3.html', '/deaddrop/issue-4.html', '/deaddrop/issue-5.html', '/deaddrop/issue-6.html', '/deaddrop/issue-7.html',
         '/deaddrop/issue-8.html', '/deaddrop/issue-9.html', '/deaddrop/issue-10.html', '/deaddrop/issue-11-1.html', '/deaddrop/issue-11-2.html', '/deaddrop/issue-12.html', '/deaddrop/issue-13.html',

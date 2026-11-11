@@ -58,10 +58,11 @@
             ] }]
         },
         {
-            n: '06', label: 'ABOUT US', href: '/about.html', base: ['/about', '/qa'],
+            n: '06', label: 'ABOUT US', href: '/about.html', base: ['/about', '/qa', '/press'],
             groups: [{ label: null, items: [
                 { label: 'ABOUT US', href: '/about.html' },
-                { label: 'Q&A', href: '/qa.html' }
+                { label: 'Q&A', href: '/qa.html' },
+                { label: 'PRESS KIT', href: '/press.html' }
             ] }]
         },
         { n: '07', label: 'CONTACT', href: '/contact.html' }
@@ -249,7 +250,7 @@
         var f = document.getElementById('siteFooter');
         if (!f) { return; }
         f.innerHTML = '<span><span class="status-dot"></span>SYS_STATUS: OPERATIONAL // &copy; ' + SITE.year + ' ' + SITE.name + '</span>' +
-            '<nav aria-label="Footer"><a href="/legal.html">// LEGAL</a>' +
+            '<nav aria-label="Footer"><a href="/legal.html">// LEGAL</a><a href="/press.html">// PRESS</a>' +
             '<a href="' + SITE.facebook + '" target="_blank" rel="noopener noreferrer">// FACEBOOK</a>' +
             '<a href="' + SITE.x + '" target="_blank" rel="noopener noreferrer">// X</a>' +
             '<a href="/feed.xml" type="application/rss+xml">// RSS</a></nav>';
