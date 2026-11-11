@@ -32,7 +32,7 @@
 
     /* ---------- tabs ---------- */
     function show(name) {
-        ['dash', 'news', 'issues', 'videos', 'lab', 'codes', 'board', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+        ['dash', 'news', 'issues', 'videos', 'lab', 'codes', 'board', 'malakh', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
         Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (b) { b.classList.toggle('chip--active', b.getAttribute('data-tab') === name); });
     }
     $('tabs').addEventListener('click', function (e) {

@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#050505">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/foundry/foundry.css?v=ip1">
+    <link rel="stylesheet" href="/foundry/foundry.css?v=mk1">
 </head>
 
 <!-- ======================================================================
@@ -36,6 +36,7 @@
         <button type="button" class="chip" data-tab="lab" role="tab">PRINT LAB</button>
         <button type="button" class="chip" data-tab="codes" role="tab">READER CODES</button>
         <button type="button" class="chip" data-tab="board" role="tab">BOARD <span id="bdBadge" class="bd-badge" hidden></span></button>
+        <button type="button" class="chip" data-tab="malakh" role="tab">MALAKH</button>
         <button type="button" class="chip" data-tab="settings" role="tab">SETTINGS</button>
     </div>
 
@@ -507,6 +508,68 @@
     </section>
 
     <!-- ================= SETTINGS ================= -->
+    <section class="ftab" id="tab-malakh" hidden>
+        <p class="hint" id="mkLocal" hidden><b>MALAKH works only on va-comics.com/foundry</b> (it needs your Cloudflare Access login).</p>
+        <div class="panel" data-label="MALAKH // STATUS">
+            <div class="stack">
+                <div class="row mk-top"><p class="mk-state" id="mkState">Open this tab to load.</p>
+                    <button type="button" class="btn" id="mkSwitch">…</button><a href="#" class="hint" id="mkRefresh">[ RELOAD ]</a></div>
+                <p class="mk-stop" id="mkStop" hidden></p>
+                <div class="mk-sum" id="mkSum"></div>
+                <div class="mk-bar"><span id="mkBar"></span></div>
+                <p class="hint" id="mkBarText"></p>
+            </div>
+        </div>
+        <div class="panel" data-label="LIMITS // PER DAY RESET 01:00 BUDAPEST">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="mk_daily_cap">AI answers per day (everyone)</label><input id="mk_daily_cap" type="number" min="0" max="999999"></div>
+                    <div class="field"><label for="mk_neuron_cap">Neurons per day for MALAKH</label><input id="mk_neuron_cap" type="number" min="0" max="999999"></div>
+                    <div class="field"><label for="mk_per_hour">Questions per visitor per hour</label><input id="mk_per_hour" type="number" min="0" max="999999"></div>
+                    <div class="field"><label for="mk_per_day_visitor">Questions per visitor per day</label><input id="mk_per_day_visitor" type="number" min="0" max="999999"></div>
+                </div>
+                <div class="row"><button type="button" class="btn btn--primary" id="mkSaveLimits">SAVE_LIMITS</button></div>
+                <ol class="steps">
+                    <li>When a daily limit is reached, readers get "quota exhausted" and MALAKH starts again by himself at 01:00 Budapest time. To let him continue today, raise the limit and save.</li>
+                    <li>Blocked questions (tricks, dangerous asks, not English) cost nothing and do not count.</li>
+                    <li>Cloudflare gives 10,000 free neurons per day for the whole account, and the board's moderation uses them too. Keep MALAKH's limit around 6,500.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="panel" data-label="BLOCKED // LAST 7 DAYS">
+            <div class="mk-cats" id="mkCats"><span class="hint">Open this tab to load.</span></div>
+        </div>
+        <div class="panel" data-label="ARCHIVE // WHAT MALAKH KNOWS">
+            <div class="stack">
+                <div class="fgrid">
+                    <div class="field"><label for="mkKbPart">Part</label>
+                        <select id="mkKbPart">
+                            <option value="core">CORE (sent with every question: who he is, the site, reading order)</option>
+                            <option value="vanguard">VANGUARD (questions about Vanguard)</option>
+                            <option value="deaddrop">DEAD DROP (only for 18+ channels)</option>
+                            <option value="spoilers">SPOILER WORDS (never allowed in an answer, one per line)</option>
+                        </select></div>
+                    <div class="field"><label>&nbsp;</label><p class="hint" id="mkKbInfo"></p></div>
+                </div>
+                <div class="field"><label for="mkKb">Text (English)</label><textarea id="mkKb" spellcheck="false"></textarea></div>
+                <div class="row"><button type="button" class="btn btn--primary" id="mkKbSave">SAVE_PART</button><button type="button" class="btn btn--sm" id="mkKbLoad">RELOAD_PART</button><span class="hint" id="mkKbWhen"></span></div>
+                <ol class="steps">
+                    <li>New issue or book out? Add one line with its premise (like the Amazon description) to DEAD DROP or VANGUARD. Never write endings here.</li>
+                    <li>Something must stay secret? Add the name or word to SPOILER WORDS. If an answer contains it, MALAKH says the file is classified.</li>
+                    <li>Shorter is cheaper: every question sends CORE plus one part.</li>
+                </ol>
+            </div>
+        </div>
+        <div class="panel" data-label="TEST // ASK WITHOUT OPENING A CHANNEL">
+            <div class="stack">
+                <div class="field"><label for="mkTestQ">Question</label><input id="mkTestQ" type="text" maxlength="300" placeholder="Who is Kira Mercer?"></div>
+                <div class="row"><label class="hint"><input type="checkbox" id="mkTestAdult"> as an 18+ reader</label><button type="button" class="btn btn--sm" id="mkTestGo">ASK_MALAKH</button></div>
+                <pre class="mk-test" id="mkTestOut" hidden></pre>
+                <p class="hint">Works even when MALAKH is off. Uses real neurons, but not the readers' limits.</p>
+            </div>
+        </div>
+    </section>
+
     <section class="ftab" id="tab-settings" hidden>
         <div class="panel" data-label="UPLINK_CONFIG // GITHUB">
             <div class="stack">
@@ -556,7 +619,7 @@
 <script src="/foundry/foundry-core.js?v=rss1"></script>
 <script src="/foundry/foundry-gh.js"></script>
 <script src="/foundry/foundry-ai.js"></script>
-<script src="/foundry/foundry.js?v=rss1"></script>
+<script src="/foundry/foundry.js?v=mk1"></script>
 <script src="/foundry/foundry-lab-core.js?v=lab4"></script>
 <script src="/foundry/foundry-lab.js?v=lab4"></script>
 <script src="/foundry/foundry-bookcover.js?v=bc5"></script>
@@ -566,5 +629,6 @@
 <script src="/foundry/foundry-videos.js?v=vd1"></script>
 <script src="/foundry/foundry-cards.js?v=vc1"></script>
 <script src="/foundry/foundry-dash.js?v=db1"></script>
+<script src="/foundry/foundry-malakh.js?v=mk1"></script>
 </body>
 </html>
