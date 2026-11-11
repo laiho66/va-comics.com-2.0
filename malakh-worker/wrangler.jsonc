@@ -1,0 +1,24 @@
+// VA COMICS // MALAKH chatbot Worker. Separate from the site Worker (icy-sun-9f9e), va-board and va-reader.
+// Cloudflare Workers Builds: connect the repo, Root directory = malakh-worker, deploy command: npx wrangler deploy
+// The knowledge base, the spoiler list and the settings are NOT here (the repo is public): they live in the D1
+// database "va-malakh" and are edited from Foundry (tab MALAKH).
+// The Turnstile SECRET is NOT here either: Secret named TURNSTILE_SECRET in the dashboard (same widget as the board).
+{
+  "name": "va-malakh",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "va-comics.com/api/malakh/*", "zone_name": "va-comics.com" },
+    { "pattern": "va-comics.com/foundry/api/malakh/*", "zone_name": "va-comics.com" }
+  ],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "va-malakh", "database_id": "13d721c1-91b0-4584-9ec4-d7f305bc6a42" }
+  ],
+  "ai": { "binding": "AI" },
+  "triggers": { "crons": ["41 3 * * *"] },
+  "vars": {
+    "ACCESS_TEAM": "vacomics.cloudflareaccess.com",
+    "ACCESS_AUD": "f8b63cf1cbe6f7b660dd19c69ddf0670745ce268cc3ad9cdc1c27a79401ac38f"
+  }
+}
