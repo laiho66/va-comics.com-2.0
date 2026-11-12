@@ -101,6 +101,16 @@
         <priority>0.7</priority>
     </url>
     <url>
+        <loc>https://va-comics.com/deaddrop/map</loc>
+        <lastmod>2026-11-12</lastmod>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://va-comics.com/deaddrop/quiz</loc>
+        <lastmod>2026-11-12</lastmod>
+        <priority>0.7</priority>
+    </url>
+    <url>
         <loc>https://va-comics.com/deaddrop/characters</loc>
         <lastmod>2026-10-05</lastmod>
         <priority>0.5</priority>

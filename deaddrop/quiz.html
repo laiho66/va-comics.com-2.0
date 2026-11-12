@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Character Are You? // Dead Drop // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="Which Terminus City character are you? Eight questions, eleven possible files. The Dead Drop quiz. Mature readers, 18+.">
+    <link rel="canonical" href="https://va-comics.com/deaddrop/quiz">
+    <meta name="rating" content="adult">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="Which Character Are You? // Dead Drop // VA Comics">
+    <meta property="og:description" content="Which Terminus City character are you? Eight questions, eleven possible files. The Dead Drop quiz. Mature readers, 18+.">
+    <meta property="og:url" content="https://va-comics.com/deaddrop/quiz">
+    <meta property="og:image" content="https://va-comics.com/deaddrop/assets/og-deaddrop.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* page-only styles: the quiz */
+        #quiz { outline: none; display: flex; flex-direction: column; gap: 20px; }
+        .quiz-opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .quiz-opt {
+            display: block; width: 100%; padding: 16px 18px; text-align: left; cursor: pointer;
+            font-family: var(--sans); font-size: 16px; line-height: 1.45; color: var(--text-2);
+            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--line-3); border-left: 3px solid var(--line-3);
+            transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+        }
+        .quiz-opt:hover, .quiz-opt:focus-visible { color: var(--text); border-color: var(--accent); background: rgba(var(--accent-rgb), 0.08); }
+    </style>
+</head>
+
+<!-- ======================================================================
+     DEAD DROP // QUIZ "Which character are you?"  (nov 2026)
+     Tot quiz-ul (întrebări, răspunsuri, rezultate) e în assets/quiz.js, în EDIT ZONE.
+     Personaj nou pe pagina Characters? Îl adaugi în CHARS și îi dai puncte la câteva răspunsuri.
+     ====================================================================== -->
+<body data-bg="deaddrop">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
+    <script src="/site.js"></script>
+
+    <main class="main" id="main">
+
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">Which character are you?</h1><span class="chip">18+</span></div>
+            <p class="lead">Terminus City has a file on everyone. Eight questions to find out which one is yours.</p>
+        </div>
+
+        <div id="quiz">
+            <noscript><p class="small">The quiz needs JavaScript. You can still meet everyone on the <a href="/deaddrop/characters.html">Characters</a> page.</p></noscript>
+        </div>
+
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+<script src="/assets/quiz.js" defer></script>
+</body>
+</html>

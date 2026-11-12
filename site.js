@@ -42,7 +42,11 @@
             n: '03', label: 'PROJECTS', href: '/projects.html', base: ['/deaddrop', '/vanguard'],
             groups: [
                 { label: 'DEAD DROP', href: '/deaddrop/index.html',
-                  items: DEADDROP_VOLUMES.concat([{ label: 'CHARACTERS', href: '/deaddrop/characters.html' }]) }
+                  items: DEADDROP_VOLUMES.concat([
+                      { label: 'CHARACTERS', href: '/deaddrop/characters.html' },
+                      { label: 'CITY MAP', href: '/deaddrop/map.html' },
+                      { label: 'QUIZ', href: '/deaddrop/quiz.html' }
+                  ]) }
             ].concat(SHOW_VANGUARD ? [
                 { label: 'VANGUARD CHRONICLES', href: '/vanguard/index.html',
                   items: VANGUARD_BOOKS.concat([{ label: 'CHARACTERS', href: '/vanguard/characters.html' }]) }
