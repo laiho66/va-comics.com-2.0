@@ -21,13 +21,14 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/style.css">
-    <style>.legal ul { list-style: square; padding-left: 22px; margin: 0 0 12px; display: flex; flex-direction: column; gap: 6px; } .legal li { font-size: 15px; line-height: 1.6; color: var(--text-3); } .legal li::marker { color: var(--accent); }</style>
+    <style>.legal ul { list-style: square; padding-left: 22px; margin: 0 0 12px; display: flex; flex-direction: column; gap: 6px; } .legal li { font-size: 15px; line-height: 1.6; color: var(--text-3); } .legal li::marker { color: var(--accent); } .legal-table { overflow-x: auto; margin: 0 0 14px; } .legal table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; line-height: 1.5; } .legal th, .legal td { text-align: left; vertical-align: top; padding: 8px 10px; border: 1px solid rgba(255,255,255,0.10); color: var(--text-3); } .legal th { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--accent); background: rgba(var(--accent-rgb),0.06); } .legal a { color: var(--accent); }</style>
 </head>
 
 <!-- ======================================================================
      LEGAL (Etapa 6): TOT într-o singură pagină (Terms, Privacy, Cookies), cu ancore: /legal.html#terms, #privacy, #cookies.
      Paginile vechi terms.html, privacy.html și cookies.html redirecționează aici.
-     Textele nu sunt sfat juridic; actualizează-le dacă adaugi analytics, newsletter, reclame sau un formular.
+     Textele nu sunt sfat juridic; actualizează-le dacă adaugi analytics, newsletter, reclame, un formular sau un player extern nou.
+     Versiunea mare (Terms 11 secțiuni, Privacy cu tabele: temei legal + retenție, drepturi + NAIH) e din 2026-11-15.
      ====================================================================== -->
 <body data-bg="wall">
 
@@ -51,66 +52,148 @@
 
         <section class="panel legal" id="terms" data-label="LEGAL_BINDINGS // TERMS">
             <h2 class="h2">Terms and Conditions of Use</h2>
-            <p class="updated">© 2026 VA COMICS STUDIO™ // ALL RIGHTS RESERVED</p>
-            <h3>1. Intellectual Property and Copyright</h3>
-            <p>All narrative elements, characters, comic books, novels, illustrations, graphic materials, and multimedia content featured on this website are the exclusive property of VA Comics and are protected by national and international copyright and intellectual property laws. Any unauthorized reproduction, distribution, modification, republication, or use of these materials for commercial or public purposes without prior written consent from the author is strictly prohibited.</p>
-            <h3>2. Age Restriction (Mature Content)</h3>
-            <p>The Dead Drop section of this website (its comic reader, volumes and related media) and the Dead Drop publications contain materials intended exclusively for adult audiences (R-rated / 18+ classification), including graphic violence, explicit language, and mature themes. By continuing to navigate these pages or by purchasing the featured works, the user declares under their own responsibility that they are at least 18 years of age. A confirmation notice is displayed on your first visit to these pages. Other VA Comics projects, such as Vanguard Chronicles, have different audiences and content ratings, which are stated on their own pages.</p>
-            <h3>3. Distribution and Purchase Policy</h3>
-            <p>Official publications (available in digital eBook format, physical Paperback format and, for some titles, Hardcover) are sold and distributed exclusively through the authorized platform Amazon. VA Comics does not store data, process financial transactions directly on this site, or accept liability for issues related to shipping, payments, or returns occurring on the Amazon platform. Any other source of download or distribution of our materials is illegal.</p>
-            <h3>4. Disclaimer</h3>
-            <p>The storylines, characters, and events presented in the comic books and novels are entirely works of fiction. Any resemblance to real persons (living or deceased), institutions, organizations, or actual events is purely coincidental. Where real places or historical events appear, they are used as a backdrop for fiction. The author assumes no responsibility for personal interpretations by readers or for the misuse of any information provided on this website.</p>
-            <h3>5. Comments and Q&amp;A</h3>
-            <p>Readers can post comments on issue and book pages and questions on the Q&amp;A page, with a nickname and no account. Messages must be in English and must not contain swearing, sexual content, religious topics, hate, insults, harassment, advertising or personal data. Every message is checked automatically: clean messages appear at once, doubtful ones wait for a review and are not published until approved, and messages that break these rules are refused. You can also reply to other messages; replies follow the same rules. Nicknames that imitate VA Comics or its authors are not allowed. VA Comics may hide, refuse or delete any message at any time and without notice. By posting, you confirm the message is your own and you allow it to be shown publicly on this website.</p>
-            <h3>6. Changes to Terms</h3>
-            <p>VA Comics reserves the right to update or modify these terms at any time without prior notice. Users are advised to review this page periodically to remain informed of the latest regulations.</p>
+            <p class="updated">Last updated: 2026-11-15 // © 2026 VA COMICS STUDIO™ // ALL RIGHTS RESERVED</p>
+            <p>These terms apply to everyone who visits or uses va-comics.com. By using the website you agree to them. If you do not agree, please do not use the site.</p>
+
+            <h3>1. About VA Comics</h3>
+            <p>VA Comics is an independent, non-commercial creative project, run by a private individual based in Hungary. It is not a registered company. The website presents our work (the Dead Drop comic series and the Vanguard Chronicles novels) and does not sell anything directly. You can reach us through our official <a href="https://www.facebook.com/vacomics66" rel="noopener" target="_blank">Facebook page</a> or our <a href="https://x.com/VAComics" rel="noopener" target="_blank">X account</a>.</p>
+
+            <h3>2. Intellectual Property and Copyright</h3>
+            <p>All stories, characters, worlds, comic books, novels, illustrations, maps, music, soundtrack lyrics, texts, logos and other content on this website belong to VA Comics, unless stated otherwise. You may read, watch and listen to them here for your own personal use, and share links to our pages. You may not copy, download in bulk, republish, sell, modify or use our content for commercial or public purposes without our prior written permission.</p>
+            <p><strong>Use of AI tools.</strong> We are open about how we work: our artwork, music and parts of our texts are created with the help of artificial intelligence tools, under the creative direction of the author. The ideas, stories, characters, world-building, selection, arrangement and editing are our own. Where the law gives limited protection to AI-assisted material, VA Comics keeps all the rights it does have in its works, including in their selection, arrangement, text and characters.</p>
+
+            <h3>3. Age Restriction (Mature Content)</h3>
+            <p>Dead Drop and the pages that belong to it (its hub, issue pages, comic reader, videos, city map, quiz and soundtrack) contain material intended only for adults (18+), including graphic violence, explicit language and mature themes. A confirmation notice is shown on your first visit to these pages. By confirming, you declare that you are at least 18 years old. Vanguard Chronicles is aimed at a wider audience (PG-13). Each project states its rating on its own pages.</p>
+
+            <h3>4. Purchases</h3>
+            <p>Our books are sold only through Amazon (eBook, Paperback and, for some titles, Hardcover). We do not take payments, orders or personal details on this website. Any purchase is a contract between you and Amazon, under Amazon's terms, and Amazon handles payments, delivery, refunds and returns. Copies of our works offered anywhere else, for sale or for free download, are not authorized.</p>
+
+            <h3>5. Reading Room (Access Codes)</h3>
+            <p>The Reading Room lets you read selected books online with a free personal access code that we give on request. Each code is personal: do not share it, publish it or sell it. A code works on at most two devices and only until its expiry date. Pages show a faint watermark with the code's name. You may not download, copy, screenshot in bulk or redistribute the books. We may suspend or revoke a code at any time, especially if it is shared or misused. The Reading Room is offered free of charge and without any guarantee that it will stay available.</p>
+
+            <h3>6. Comments and Q&amp;A</h3>
+            <p>Readers can post comments on issue and book pages and questions on the Q&amp;A page, with a nickname and no account. You must be at least 16 years old to post, and at least 18 to post on Dead Drop pages. Messages must be in English and must not contain swearing, sexual content, religious topics, hate, insults, harassment, threats, advertising, spoilers presented as facts, or personal data (yours or anyone else's). Nicknames that imitate VA Comics or its authors are not allowed.</p>
+            <p>Every message is checked automatically: clean messages appear at once, doubtful ones wait for a review, and messages that break these rules are refused. Replies follow the same rules. VA Comics may hide, edit for safety, refuse or delete any message at any time and without notice.</p>
+            <p>You keep ownership of what you write. By posting, you confirm that the message is your own and give VA Comics a free, non-exclusive, worldwide permission to show it on this website, to moderate it and to remove it. You are responsible for what you post.</p>
+
+            <h3>7. MALAKH (AI Assistant)</h3>
+            <p>MALAKH is an automated AI character that answers questions about VA Comics. It is sarcastic on purpose, it can make mistakes and its answers are entertainment, not professional, legal, medical or financial advice. Do not share personal information in the chat. Trying to make MALAKH produce harmful, illegal or abusive content, or to bypass its safety rules, is not allowed and may block your access. We may limit, change or switch off MALAKH at any time.</p>
+
+            <h3>8. Third-Party Services and Links</h3>
+            <p>The website links to or embeds services run by other companies, mainly Amazon, YouTube, Suno, Facebook and X. They have their own terms and privacy policies, and VA Comics is not responsible for their content, availability or practices.</p>
+
+            <h3>9. Disclaimer and Limitation of Liability</h3>
+            <p>All stories, characters and events in our comics, novels and songs are fiction. Any resemblance to real persons (living or dead), organizations or events is coincidental. Where real places or historical events appear, they are only a backdrop for the story.</p>
+            <p>The website and all its free features are provided "as is", without any guarantee that they will always be available, error-free or up to date. To the extent permitted by law, VA Comics is not liable for any indirect or consequential loss arising from the use of the website, the Reading Room, the comments or MALAKH. Nothing in these terms limits liability that cannot be limited by law.</p>
+
+            <h3>10. Governing Law</h3>
+            <p>These terms are governed by the laws of Hungary. If you live in another country, you also keep any protection that the mandatory consumer laws of your country give you.</p>
+
+            <h3>11. Changes</h3>
+            <p>We may update these terms when the website changes. The date at the top shows the latest version. Continuing to use the website after a change means you accept the updated terms.</p>
         </section>
 
         <section class="panel legal" id="privacy" data-label="DATA_ENCRYPTION_POLICY // PRIVACY">
             <h2 class="h2">Privacy Policy</h2>
-            <p class="updated">Last updated: 2026-11-11</p>
-            <p>VA Comics respects the privacy of its visitors. This section explains, in plain terms, what happens with information when you browse va-comics.com.</p>
-            <h3>1. Data Collection</h3>
-            <p>This website is mainly a showcase. We DO NOT collect accounts, passwords, payment cards or billing addresses, and we do not run advertising trackers or behavioral profiling. All purchases are made externally on Amazon, which is solely responsible for the security of your transaction and billing details. The only places where a small amount of data is kept are the Reading Room (section 5) and the comments and Q&amp;A (section 6).</p>
-            <h3>2. Hosting</h3>
-            <p>The site is hosted on Cloudflare. As with any web host, Cloudflare processes basic technical data (such as your IP address and request logs) in order to deliver the pages, keep the site fast and protect it against abuse. We do not use this information to identify visitors.</p>
-            <h3>3. Visitor Statistics</h3>
-            <p>We use Cloudflare Web Analytics to see how many people visit the site and which pages they open. It is a privacy-first service: it does not use cookies, does not track you across other websites and does not build a profile of you. We only see totals, such as page views and countries.</p>
-            <h3>4. Contact</h3>
-            <p>There is no contact form or public email address on this website. Our contact channels are our official Facebook page and our X account. Any message you send there is handled under the privacy policy of that platform, and we use it only to reply to you.</p>
-            <h3>5. Reading Room (Access Codes)</h3>
-            <p>The Reading Room lets you read a book online with a personal access code that we send you on request. To make this work, we keep only what is strictly needed:</p>
+            <p class="updated">Last updated: 2026-11-15</p>
+            <p>VA Comics respects your privacy. This policy explains, in plain terms, what data the website handles, why, for how long and what your rights are. The short version: we do not run accounts, ads or tracking, and we keep only what a few features strictly need.</p>
+
+            <h3>1. Who Is Responsible</h3>
+            <p>The data controller for this website is VA Comics, an independent, non-commercial project run by a private individual based in Hungary. You can contact us about privacy, or about any of your rights below, through our official <a href="https://www.facebook.com/vacomics66" rel="noopener" target="_blank">Facebook page</a> or our <a href="https://x.com/VAComics" rel="noopener" target="_blank">X account</a>. There is no public email address or contact form.</p>
+
+            <h3>2. What We Process, Why, and on What Legal Basis</h3>
+            <div class="legal-table"><table>
+                <thead><tr><th scope="col">Feature</th><th scope="col">Data</th><th scope="col">Purpose</th><th scope="col">Legal basis (GDPR)</th></tr></thead>
+                <tbody>
+                    <tr><td>Hosting and security</td><td>IP address, browser type, requested pages, time (technical logs)</td><td>Deliver the pages, keep the site fast, block attacks</td><td>Legitimate interest, Art. 6(1)(f)</td></tr>
+                    <tr><td>Visitor statistics</td><td>Anonymous page views and country, no cookies, no profile</td><td>Know which pages people read</td><td>Legitimate interest, Art. 6(1)(f)</td></tr>
+                    <tr><td>Reading Room</td><td>Access code, its expiry date, the name or handle you gave us, a random device number, a session cookie; your IP address only after a wrong code</td><td>Give you access to the book you asked for, limit each code to two devices, stop code guessing</td><td>Providing the service you requested, Art. 6(1)(b); security, Art. 6(1)(f)</td></tr>
+                    <tr><td>Comments and Q&amp;A</td><td>Nickname, message, page and time; an anonymous daily code made from connection data</td><td>Publish your message, moderate it, prevent spam and flooding</td><td>Providing the service you requested, Art. 6(1)(b); spam prevention, Art. 6(1)(f)</td></tr>
+                    <tr><td>MALAKH</td><td>Your question and your last few messages (processed, not stored); an anonymous daily code; daily counters</td><td>Answer you, keep the chat safe, limit abuse</td><td>Providing the service you requested, Art. 6(1)(b); abuse prevention, Art. 6(1)(f)</td></tr>
+                    <tr><td>Messages on Facebook or X</td><td>Whatever you send us there</td><td>Reply to you, send a Reading Room code</td><td>Your request, Art. 6(1)(b)</td></tr>
+                </tbody>
+            </table></div>
+            <p>We do not sell data, we do not use it for advertising, and we do not make automated decisions with legal or similarly significant effects about you. The automatic moderation of comments and MALAKH messages only decides whether a message is published or answered.</p>
+
+            <h3>3. Details by Feature</h3>
+            <p><strong>Hosting.</strong> The site runs on Cloudflare, which processes basic technical data, as every web host does, to deliver the pages and protect them. We do not use this data to identify visitors.</p>
+            <p><strong>Visitor statistics.</strong> We use Cloudflare Web Analytics. It does not use cookies, does not follow you across other websites and gives us only totals, such as page views and countries.</p>
+            <p><strong>Reading Room.</strong> The name or handle you gave us is shown faintly on the pages you read, so that a shared screenshot can be traced back to its code. The random device number is created by your browser and lets one code work on at most two devices.</p>
+            <p><strong>Comments and Q&amp;A.</strong> We do not ask for an email address or an account and we do not store your IP address. Messages are checked automatically by an AI model running on Cloudflare, and the form uses Cloudflare Turnstile, a privacy-friendly anti-bot check. Messages waiting for review or reported by a reader, and a short daily summary of new messages, are sent by email to the site owner only.</p>
+            <p><strong>MALAKH.</strong> When you open a channel, Cloudflare Turnstile checks that you are human. Each question, with your last few messages, is processed by AI models running on Cloudflare (Workers AI), first to check that it is safe and then to write the answer. The models do not keep your messages, and we do not store your conversations, your name or your IP address. If a message suggests you may be in danger, MALAKH stops joking and points you to free help lines.</p>
+
+            <h3>4. How Long We Keep It</h3>
+            <div class="legal-table"><table>
+                <thead><tr><th scope="col">Data</th><th scope="col">Kept for</th></tr></thead>
+                <tbody>
+                    <tr><td>Reading Room code, name or handle, devices</td><td>Until about one day after the code expires, or until we delete the code</td></tr>
+                    <tr><td>IP address after a wrong Reading Room code</td><td>15 minutes</td></tr>
+                    <tr><td>Published comments and questions</td><td>Until you ask us to remove them, or until we delete them</td></tr>
+                    <tr><td>Refused comments</td><td>30 days</td></tr>
+                    <tr><td>Anonymous daily codes (comments and MALAKH)</td><td>2 days</td></tr>
+                    <tr><td>MALAKH conversations</td><td>Not stored</td></tr>
+                    <tr><td>MALAKH daily counters (no personal data)</td><td>60 days</td></tr>
+                    <tr><td>Visitor statistics</td><td>Totals only, kept by Cloudflare under its own policy</td></tr>
+                </tbody>
+            </table></div>
+
+            <h3>5. Who Else Handles Data</h3>
             <ul>
-                <li>the code, its expiry date and the name or handle you gave us (for example your X username), which is also shown faintly on the pages you read, so a shared screenshot can be traced back to its code;</li>
-                <li>a random device number created by your browser, so one code works on at most two devices;</li>
-                <li>a session cookie that keeps the book open while your code is valid (see the Cookie Policy);</li>
-                <li>your IP address, kept for 15 minutes only and only after a wrong code, to block attempts to guess codes.</li>
+                <li><strong>Cloudflare, Inc.</strong> hosts the website and provides the storage, statistics, Turnstile, AI models and email delivery we use. It acts on our behalf (as a processor). Cloudflare is a U.S. company and may process data outside the EU, using the safeguards described in its own privacy policy, such as the EU-U.S. Data Privacy Framework and Standard Contractual Clauses.</li>
+                <li><strong>YouTube (Google)</strong> and <strong>Suno</strong> provide the video and music players. They are independent services, not our processors. Their players load only after you press play (see section 7).</li>
+                <li><strong>Amazon, Facebook and X</strong> are only linked. When you open them, their own privacy policies apply.</li>
             </ul>
-            <p>This data is stored on Cloudflare, is used only to run the Reading Room and is deleted automatically about one day after your code expires (or earlier, if we delete the code). We do not sell or share it. You can ask us on Facebook or X to delete your code at any time.</p>
-            <h3>6. Comments and Q&amp;A</h3>
-            <p>When you post a comment or a question, we store the nickname you chose, your message, the page it belongs to and the time. They are shown publicly once the message is approved. We do not ask for an email address or an account and we do not store your IP address. To stop flooding, we keep an anonymous code that changes every day (a one-way scrambled value made from technical connection data); it is erased after two days. Messages are checked automatically by an AI model running on Cloudflare, and the form uses Cloudflare Turnstile, a privacy-friendly anti-bot check. Messages that wait for a review or are reported by a reader, and a short daily summary of new messages, are sent by email to the site owner only, so they can be checked quickly. Refused messages are deleted after 30 days. If you want a message of yours removed, ask us on Facebook or X.</p>
-            <h3>7. Browser Storage</h3>
-            <p>The website keeps a few small items in your browser (local storage): a flag that remembers you confirmed the 18+ notice; in the comic reader, the issue and page where you stopped; in the Reading Room, the random device number, the chapter where you stopped and your text size; and on the comment forms, the nickname you used last, so you do not have to type it again. While a MALAKH channel is open, its access number and your last messages are kept in the browser tab only (session storage), so the conversation can follow you from page to page; they disappear when you close the tab or end the channel. None of this contains personal information. You can clear it at any time from your browser settings.</p>
-            <h3>8. MALAKH (the site's AI assistant)</h3>
-            <p>MALAKH answers questions about VA Comics in a chat window available on every page. It is an AI: it can be wrong, it is sarcastic on purpose and it only knows a prepared summary of our books and website. When you open a channel, the form uses Cloudflare Turnstile, a privacy-friendly anti-bot check. Each question you send, together with your last few messages, is processed by AI models running on Cloudflare (Workers AI), first to check that it is safe and then to write the answer; the models do not keep your messages. We do not store your conversations, your name or your IP address. We only keep daily counters (how many questions were asked and how many were blocked, by category) and an anonymous code that changes every day, to limit how many questions one visitor can send; these are deleted after two days, and the counters after sixty days. Do not share personal information in the chat. If a message suggests you may be in danger, MALAKH stops joking and points you to free help lines.</p>
-            <h3>9. Third-Party Content and Links</h3>
-            <p>Our Video page embeds YouTube players, served through the privacy-enhanced youtube-nocookie.com domain. A player is loaded only after you press play; until then, only a preview image is fetched from YouTube's servers. Comic pages and some media files are delivered from Cloudflare storage. The site also links to external platforms, mainly Amazon, Facebook, X and YouTube. VA Comics does not control, and is not responsible for, the privacy practices or content of these third-party services.</p>
-            <h3>10. Data Security</h3>
-            <p>All pages are served over the secure HTTPS protocol (SSL encryption) to protect your browsing against unauthorized interception.</p>
+
+            <h3>6. Browser Storage</h3>
+            <p>The website keeps a few small items in your own browser, which we cannot see from our side:</p>
+            <ul>
+                <li>local storage: that you confirmed the 18+ notice; in the comic reader, the issue and page where you stopped (also used for "Continue reading" on the home page); in the Reading Room, the random device number, the chapter where you stopped and your text size; on the comment forms, the nickname you used last;</li>
+                <li>session storage (deleted when you close the tab): the MALAKH channel number and your last messages while a channel is open, which MALAKH pages have already shown you a message, and a cached copy of the site's search index.</li>
+            </ul>
+            <p>None of this is sent to us or used for tracking. You can clear it at any time from your browser settings.</p>
+
+            <h3>7. Embedded Players</h3>
+            <p>Our Video page embeds YouTube players through the privacy-enhanced youtube-nocookie.com domain, and our Soundtrack page embeds the Suno music player. Until you press play, no player is loaded: YouTube only sends a preview image, and nothing is loaded from Suno. Once you press play, the player is loaded from that company's servers, which receive your IP address and may set their own cookies, under their own privacy policies.</p>
+
+            <h3>8. Children</h3>
+            <p>This website is not meant for children. Dead Drop is for adults only (18+). You must be at least 16 to post a comment, ask for a Reading Room code or use MALAKH. If you believe a child has sent us personal data, contact us and we will delete it.</p>
+
+            <h3>9. Your Rights</h3>
+            <p>Under the GDPR you have the right to:</p>
+            <ul>
+                <li>ask what data we hold about you and get a copy of it;</li>
+                <li>have incorrect data corrected;</li>
+                <li>have your data deleted, for example your comments or your Reading Room code;</li>
+                <li>ask us to restrict processing, or object to processing based on our legitimate interest;</li>
+                <li>receive data you gave us in a portable format, where this applies.</li>
+            </ul>
+            <p>To use any of these rights, contact us on Facebook or X. Because we keep almost no data, we may need a few details (such as your nickname, the page and the date of a comment, or your Reading Room code) to find it. We answer within one month.</p>
+            <p>You also have the right to lodge a complaint with a data protection authority: the one in the EU country where you live or work, or the Hungarian authority, where VA Comics is run: the National Authority for Data Protection and Freedom of Information (NAIH, <a href="https://naih.hu" rel="noopener" target="_blank">naih.hu</a>).</p>
+
+            <h3>10. Security</h3>
+            <p>All pages are served over HTTPS. The site's admin area is protected by multi-factor login, and stored data is kept in Cloudflare's infrastructure with access limited to the site owner.</p>
+
+            <h3>11. Changes</h3>
+            <p>We will update this policy when the website changes. The date at the top shows the latest version.</p>
         </section>
 
         <section class="panel legal" id="cookies" data-label="SIGNAL_TRACKING_PROTOCOL // COOKIES">
             <h2 class="h2">Cookie Policy</h2>
-            <p class="updated">Last updated: 2026-11-11</p>
+            <p class="updated">Last updated: 2026-11-15</p>
             <p>This website is designed to work with as little tracking as possible.</p>
-            <h3>1. What are Cookies?</h3>
-            <p>A cookie is a small text file stored on your computer or mobile device when you visit a website. Browsers also offer similar storage (local storage) that websites can use to remember simple choices.</p>
-            <h3>2. What Do We Use?</h3>
-            <p>This website DOES NOT use marketing, tracking, advertising, or behavioral profiling cookies, and our visitor statistics work without cookies. VA Comics sets one cookie, and only in the Reading Room after you enter an access code: a strictly necessary session cookie that keeps the book open while your code is valid. It contains only a random session number, cannot be read by other websites and is removed when you close the book or when the code expires. Everything else is kept in your browser's local storage: the 18+ confirmation, your reading progress, and the Reading Room device number and text size.</p>
+
+            <h3>1. What Are Cookies?</h3>
+            <p>A cookie is a small text file stored on your device when you visit a website. Browsers also offer similar storage (local and session storage) that websites use to remember simple choices.</p>
+
+            <h3>2. What We Use</h3>
+            <p>This website does not use marketing, advertising, tracking or profiling cookies, and our visitor statistics work without cookies. VA Comics sets one cookie, and only in the Reading Room after you enter an access code: a strictly necessary session cookie that keeps the book open while your code is valid. It contains only a random session number, cannot be read by other websites and is removed when you close the book or when the code expires. Everything else is kept in your browser's local or session storage, as listed in section 6 of the Privacy Policy.</p>
+            <p>Because we only use what is strictly necessary for features you ask for, the website does not show a cookie banner.</p>
+
             <h3>3. Third-Party Services</h3>
-            <p>Our Video page embeds YouTube players using the privacy-enhanced youtube-nocookie.com domain. The player is loaded only after you press play. YouTube may store cookies or similar data once you start playing a video; this is governed by Google's own policies. Our hosting provider, Cloudflare, may also use strictly technical cookies for security and performance, including for the Turnstile anti-bot check on the comment forms and when you open a MALAKH channel; none of them are used for advertising or tracking.</p>
+            <p>Our Video page embeds YouTube players through the privacy-enhanced youtube-nocookie.com domain, and our Soundtrack page embeds the Suno music player. Neither player is loaded until you press play. After that, YouTube or Suno may store cookies or similar data under their own policies. Our hosting provider, Cloudflare, may also use strictly technical cookies for security and performance, including for the Turnstile anti-bot check on the comment forms and when you open a MALAKH channel. None of them are used for advertising or tracking.</p>
+
             <h3>4. Managing and Deleting Cookies</h3>
-            <p>You can manage, block, or delete cookies and local storage at any time through your browser settings (Chrome, Edge, Firefox, Safari, etc.). If you clear them, the 18+ notice will appear again, your reading progress will be forgotten and the Reading Room will ask for your code again (which counts as a new device).</p>
+            <p>You can manage, block or delete cookies and browser storage at any time in your browser settings (Chrome, Edge, Firefox, Safari, etc.). If you clear them, the 18+ notice will appear again, your reading progress will be forgotten and the Reading Room will ask for your code again (which counts as a new device).</p>
         </section>
 
     </main>

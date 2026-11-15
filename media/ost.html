@@ -24,6 +24,12 @@
     <style>
         .ost-player { border: 1px solid rgba(var(--accent-rgb), 0.35); background: #050505; }
         .ost-player iframe { display: block; width: 100%; height: 240px; border: 0; }
+        .ost-facade { width: 100%; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: radial-gradient(ellipse at center, rgba(var(--accent-rgb), 0.18), transparent 70%), #050505; border: 0; color: #e8e8e8; cursor: pointer; font-family: var(--mono); }
+        .ost-facade:hover .ost-play, .ost-facade:focus-visible .ost-play { background: var(--accent); color: #000; }
+        .ost-facade:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+        .ost-play { padding: 12px 22px; border: 1px solid var(--accent); color: var(--accent); font-size: 14px; font-weight: 700; letter-spacing: 2px; }
+        .ost-facade-track { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+        .ost-facade-note { font-size: 11px; letter-spacing: 1px; color: var(--text-4); }
         .ost-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); }
         .ost-list li { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
         .ost-list button { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; width: 100%; min-height: 48px; padding: 8px 12px; background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
@@ -47,6 +53,7 @@
      Versurile sunt în assets/ost-lyrics.js (cheia = același ID). Piesă fără versuri = scrie "Instrumental".
      _headers are https://suno.com în frame-src (fără el browserul blochează playerul).
      Link direct la o piesă: /media/ost#track-3
+     Playerul Suno se încarcă DOAR după click pe LOAD PLAYER (promis așa în Privacy/Cookies). Nu pune src direct pe iframe.
      ====================================================================== -->
 <body data-bg="deaddrop">
 
@@ -66,7 +73,12 @@
         <div class="ost-grid">
         <section class="ost-main">
             <div class="ost-player">
-                <iframe id="ostPlayer" title="Dead Drop soundtrack player" src="https://suno.com/embed/d02ca7fb-0059-4776-9759-8c6900566eb5" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe>
+                <button type="button" class="ost-facade" id="ostFacade" aria-label="Load the Suno player and play">
+                    <span class="ost-play">&#9654; LOAD PLAYER</span>
+                    <span class="ost-facade-track" id="ostFacadeTrack"></span>
+                    <span class="ost-facade-note">Loads the player from suno.com</span>
+                </button>
+                <iframe id="ostPlayer" hidden title="Dead Drop soundtrack player" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
             </div>
             <p class="meta" id="ostNow" aria-live="polite">NOW LOADED // 01 KINETIC STRIKE</p>
             <ol class="ost-list" id="ostList"></ol>
@@ -114,6 +126,7 @@
     ];
     /* ========================================== */
     var list = document.getElementById('ostList'), player = document.getElementById('ostPlayer'), now = document.getElementById('ostNow');
+    var facade = document.getElementById('ostFacade'), facadeTrack = document.getElementById('ostFacadeTrack'), live = false, current = 0;
     var lyr = document.getElementById('ostLyrics'), lyrTitle = document.getElementById('ostLyricsTitle'), LYRICS = window.OST_LYRICS || {};
     if (!list || !player) { return; }
     function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -129,8 +142,10 @@
     });
     function load(i, fromUser) {
         var t = TRACKS[i]; if (!t) { return; }
+        current = i;
         var src = 'https://suno.com/embed/' + t.id;
-        if (player.getAttribute('src') !== src) { player.setAttribute('src', src); }
+        if (live && player.getAttribute('src') !== src) { player.setAttribute('src', src); }
+        if (facadeTrack) { facadeTrack.textContent = pad(i + 1) + ' // ' + t.title; }
         buttons.forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
         if (now) { now.textContent = 'NOW LOADED // ' + pad(i + 1) + ' ' + t.title.toUpperCase(); }
         if (lyrTitle) { lyrTitle.textContent = t.title; }
@@ -139,6 +154,13 @@
             try { history.replaceState(null, '', '#track-' + (i + 1)); } catch (e) { /* ignore */ }
             player.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
+    }
+    /* the Suno player loads only after a click (privacy: nothing goes to suno.com before that) */
+    if (facade) {
+        facade.addEventListener('click', function () {
+            live = true; facade.hidden = true; player.hidden = false;
+            player.setAttribute('src', 'https://suno.com/embed/' + TRACKS[current].id);
+        });
     }
     var m = /^#track-(\d+)$/.exec(location.hash);
     load(m ? (+m[1] - 1) : 0, false);
