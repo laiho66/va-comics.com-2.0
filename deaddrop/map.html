@@ -14,7 +14,7 @@
     <meta property="og:title" content="Terminus City Map // Dead Drop // VA Comics">
     <meta property="og:description" content="Explore Terminus City, the world of Dead Drop: an interactive map of all 16 sectors, from the Slums to the Canopy. Mature readers, 18+.">
     <meta property="og:url" content="https://va-comics.com/deaddrop/map">
-    <meta property="og:image" content="https://va-comics.com/deaddrop/assets/og-deaddrop.jpg">
+    <meta property="og:image" content="https://va-comics.com/deaddrop/assets/og-map.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
@@ -23,40 +23,65 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/style.css">
     <style>
-        /* page-only styles: the Terminus City map */
+        /* page-only styles: the Terminus City map (image + SVG layer) */
         .tc-wrap { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
-        .tc-stage { position: relative; flex: 2 1 460px; min-width: 0; background: #050505; border: 1px solid rgba(var(--accent-rgb), 0.25); }
-        .tc-stage > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
-        .tc-stage > svg { position: relative; display: block; width: 100%; height: auto; }
-        .tc-info { flex: 1 1 260px; min-width: 0; min-height: 260px; position: sticky; top: 24px; }
-        .tc-outline { fill: none; stroke: rgba(var(--accent-rgb), 0.5); stroke-width: 2; stroke-dasharray: 3 7; }
-        .tc-cell { stroke: #050505; stroke-width: 7; stroke-linejoin: round; transition: fill var(--t-fast); }
-        .tc-zone { cursor: pointer; outline: none; }
-        .tc-zone text { font-family: var(--mono); text-anchor: middle; pointer-events: none; }
-        .tc-code { font-size: 18px; font-weight: 700; fill: var(--accent); letter-spacing: 1px; }
-        .tc-name { font-size: 20px; font-weight: 700; fill: #f0f0f0; letter-spacing: 1.5px; paint-order: stroke; stroke: #050505; stroke-width: 4px; }
-        .tc-zone:hover .tc-cell, .tc-zone:focus-visible .tc-cell { fill: rgba(var(--accent-rgb), 0.38) !important; }
-        .tc-zone.is-on .tc-cell { fill: rgba(var(--accent-rgb), 0.62) !important; }
-        .tc-zone.is-on .tc-code { fill: #000; }
-        .tc-rail { fill: none; stroke: #cfcfcf; stroke-width: 2; stroke-dasharray: 10 8; opacity: 0.45; }
-        .tc-hub { fill: #050505; stroke: #cfcfcf; stroke-width: 2; }
+        .tc-col { flex: 2 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+        .tc-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+        .tc-bar .chips { margin: 0; }
+        .tc-zoom { position: absolute; z-index: 4; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 4px; }
+        .tc-zoom button { width: 40px; height: 40px; padding: 0; background: rgba(5, 5, 5, 0.85); color: #e8e8e8; border: 1px solid rgba(var(--accent-rgb), 0.6); font-family: var(--mono); font-size: 16px; font-weight: 700; cursor: pointer; }
+        .tc-zoom button[data-zoom="reset"] { font-size: 11px; }
+        .tc-zoom button:hover, .tc-zoom button:focus-visible { background: var(--accent); color: #000; outline: none; }
+        .tc-view { position: relative; overflow: hidden; aspect-ratio: 2576 / 1438; background: #050505; border: 1px solid rgba(var(--accent-rgb), 0.25); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+        .tc-view.is-zoomed { touch-action: none; cursor: grab; }
+        .tc-view.is-dragging { cursor: grabbing; }
+        .tc-pan { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
+        .tc-pan > img, .tc-pan > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .tc-pan > img { pointer-events: none; -webkit-user-drag: none; }
+        .tc-zone { cursor: pointer; outline: none; --glow: 255, 69, 0; }
+        .tc-cell { fill: rgba(var(--glow), 0); stroke: rgba(255, 210, 120, 0.35); stroke-width: 3; stroke-dasharray: 14 10; stroke-linejoin: round; transition: fill var(--t-fast), stroke var(--t-fast); }
         .tc-hit { fill: transparent; }
-        .tc-mark { fill: #050505; stroke: var(--accent); stroke-width: 3; transition: fill var(--t-fast); }
-        .tc-fl { font-size: 17px; font-weight: 700; fill: var(--accent); }
-        .tc-foundry:hover .tc-mark, .tc-foundry:focus-visible .tc-mark, .tc-foundry.is-on .tc-mark { fill: var(--accent); }
-        .tc-foundry:hover .tc-fl, .tc-foundry:focus-visible .tc-fl, .tc-foundry.is-on .tc-fl { fill: #000; }
-        .tc-deco text { font-family: var(--mono); font-size: 13px; letter-spacing: 1.5px; fill: var(--text-4); }
-        @media (max-width: 640px) { .tc-code { font-size: 22px; } .tc-name { font-size: 25px; } .tc-info { position: static; min-height: 0; } .tc-deco text { font-size: 17px; } }
+        .tc-zone:hover .tc-cell, .tc-zone:focus-visible .tc-cell { fill: rgba(var(--glow), 0.22); stroke: rgb(var(--glow)); stroke-dasharray: none; filter: drop-shadow(0 0 10px rgba(var(--glow), 0.8)); }
+        .tc-zone.is-on .tc-cell { fill: rgba(var(--glow), 0.32); stroke: rgb(var(--glow)); stroke-width: 5; stroke-dasharray: none; filter: drop-shadow(0 0 14px rgba(var(--glow), 0.9)); }
+        .tc-zone:focus-visible .tc-hit { stroke: #fff; stroke-width: 4; }
+        .tc-ping { fill: none; stroke: #ffb066; stroke-width: 4; transform-box: fill-box; transform-origin: center; animation: tc-ping 2.4s ease-out infinite; }
+        .tc-foundry:hover .tc-ping, .tc-foundry:focus-visible .tc-ping { stroke: #fff; }
+        @keyframes tc-ping { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+        .tc-transit { display: none; pointer-events: none; }
+        .tc-view.show-transit .tc-transit { display: inline; }
+        .tc-view.show-transit .tc-cell { stroke-opacity: 0.35; }
+        .tc-line { fill: none; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 28 18; animation: tc-flow 1.6s linear infinite; filter: drop-shadow(0 0 8px currentColor); }
+        .tc-line--freight { stroke: #ff7a1a; color: #ff7a1a; stroke-width: 16; animation-duration: 2.6s; }
+        .tc-line--maglev { stroke: #39d5ff; color: #39d5ff; }
+        .tc-line--bridge { stroke: #e8f4ff; color: #e8f4ff; stroke-width: 8; stroke-dasharray: 10 12; animation-duration: 3s; }
+        @keyframes tc-flow { to { stroke-dashoffset: -92; } }
+        .tc-legend { display: none; gap: 14px; flex-wrap: wrap; }
+        .tc-col.show-transit .tc-legend { display: flex; }
+        .tc-legend span::before { content: ""; display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; background: var(--c); }
+        .tc-card { position: absolute; z-index: 3; max-width: 240px; padding: 10px 12px; background: rgba(5, 5, 5, 0.92); border: 1px solid rgba(var(--accent-rgb), 0.6); pointer-events: none; font-family: var(--mono); font-size: 12px; line-height: 1.45; color: #e8e8e8; }
+        .tc-card[hidden] { display: none; }
+        .tc-card b { display: block; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+        .tc-info { flex: 1 1 260px; min-width: 0; min-height: 260px; position: sticky; top: 24px; }
+        .tc-facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 0; }
+        .tc-facts dt { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--text-4); }
+        .tc-facts dd { margin: 0; }
+        .tc-modal { max-width: 440px; width: calc(100% - 32px); padding: 0; background: #050505; color: #e8e8e8; border: 1px solid var(--accent); }
+        .tc-modal::backdrop { background: rgba(0, 0, 0, 0.75); }
+        .tc-modal .stack { padding: 24px; }
+        .tc-denied { font-family: var(--mono); letter-spacing: 3px; color: var(--accent); animation: tc-blink 1.2s steps(2) infinite; }
+        @keyframes tc-blink { 50% { opacity: 0.25; } }
+        @media (max-width: 640px) { .tc-info { position: static; min-height: 0; } .tc-card { display: none; } }
+        @media (prefers-reduced-motion: reduce) { .tc-line, .tc-ping, .tc-denied { animation: none; } }
     </style>
 </head>
 
 <!-- ======================================================================
-     DEAD DROP // TERMINUS CITY MAP  (nov 2026)
-     Harta e un SVG desenat de mână (cod), cu 16 sectoare + Foundry. Pozițiile vin din
-     "Terminus City Sector Directory" (Drive). Textele sectoarelor sunt în assets/map.js (EDIT ZONE).
-     Fundal opțional: dacă pui o imagine la deaddrop/assets/map-bg.webp (pătrată, nordul sus),
-     apare singură sub hartă. Dacă fișierul nu există, harta rămâne pe negru.
-     Fără spoilere: doar atmosferă, nimic din ce se întâmplă în poveste.
+     DEAD DROP // TERMINUS CITY MAP  (v2, nov 2026)
+     Fundal: deaddrop/assets/map-bg.webp (2576x1438) + map-bg-1400.webp pentru ecrane mici.
+     Peste imagine e un SVG cu ACELAȘI viewBox (0 0 2576 1438): zonele (polygon) și etichetele (rect) se
+     potrivesc pe pixelii imaginii. Imagine nouă cu alt desen = zonele trebuie retrasate.
+     Textele sectoarelor sunt în assets/map.js (EDIT ZONE). Moduri: SECTOR_GRID + TRANSIT (FACTION: nu încă).
+     Foundry de pe hartă = locul din comic, NU are legătură cu /foundry (admin). Doar modal "classified".
      ====================================================================== -->
 <body data-bg="deaddrop">
 
@@ -71,37 +96,57 @@
         <div class="page-head">
             <nav class="crumbs" id="crumbs"></nav>
             <div class="title-row"><h1 class="h1">Terminus City</h1><span class="chip">18+</span></div>
-            <p class="lead">Sixteen sectors, one grid, no safe zones. Pick a sector to open its file.</p>
+            <p class="lead">Sixteen sectors, one grid, no safe zones. Pick a sector to open its file. Scroll or pinch to zoom, drag to move.</p>
         </div>
 
         <div class="tc-wrap">
-            <div class="tc-stage">
-                <img src="/deaddrop/assets/map-bg.webp" alt="" onerror="this.remove()">
-<svg id="tcMap" viewBox="0 0 1000 1010" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Map of Terminus City: 16 sectors and the Foundry">
-<defs><pattern id="tcGrid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" fill="none" stroke="rgba(255,69,0,0.10)" stroke-width="1"/></pattern><pattern id="tcHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V8" stroke="rgba(255,69,0,0.16)" stroke-width="2"/></pattern><clipPath id="tcCity"><path d="M500 91 L601 73 L695 108 L789 149 L837 242 L887 322 L942 406 L950 505 L921 599 L907 697 L842 772 L784 854 L683 878 L595 914 L500 958 L403 921 L313 885 L215 855 L149 779 L118 685 L67 602 L50 505 L85 412 L95 314 L169 246 L229 173 L317 133 L405 97Z"/></clipPath></defs>
-<rect width="1000" height="1010" fill="url(#tcGrid)"/>
-<path class="tc-outline" d="M500 91 L601 73 L695 108 L789 149 L837 242 L887 322 L942 406 L950 505 L921 599 L907 697 L842 772 L784 854 L683 878 L595 914 L500 958 L403 921 L313 885 L215 855 L149 779 L118 685 L67 602 L50 505 L85 412 L95 314 L169 246 L229 173 L317 133 L405 97Z"/>
-<g clip-path="url(#tcCity)" pointer-events="none"><polyline class="tc-rail" points="495,184 343,250 366,395 299,545 388,695 257,799 495,887"/><polyline class="tc-rail" points="140,571 299,545 503,524 646,437 794,339"/><polyline class="tc-rail" points="299,545 503,524 636,680 740,806"/><polyline class="tc-rail" points="503,524 850,560"/></g>
-<g class="tc-zone" data-id="dredge" tabindex="0" role="button" aria-label="S-00 The Dredge"><path class="tc-cell" d="M641 896 L595 914 L500 958 L403 921 L345 897 L406 786 L502 737 L587 786Z" style="fill: rgba(255,69,0,0.14);"/><text class="tc-code" x="495" y="843">S-00</text><text class="tc-name" x="495" y="867">DREDGE</text></g>
-<g class="tc-zone" data-id="slums" tabindex="0" role="button" aria-label="S-01 The Slums"><path class="tc-cell" d="M406 786 L345 897 L313 885 L215 855 L149 779 L118 685 L116 683 L220 629Z" style="fill: rgba(255,69,0,0.2);"/><path d="M406 786 L345 897 L313 885 L215 855 L149 779 L118 685 L116 683 L220 629Z" fill="url(#tcHatch)" stroke="none" pointer-events="none"/><text class="tc-code" x="257" y="755">S-01</text><text class="tc-name" x="257" y="779">SLUMS</text></g>
-<g class="tc-zone" data-id="throat" tabindex="0" role="button" aria-label="S-02 The Throat"><path class="tc-cell" d="M506 631 L502 737 L406 786 L220 629 L223 623 L410 544Z" style="fill: rgba(255,69,0,0.2);"/><path d="M506 631 L502 737 L406 786 L220 629 L223 623 L410 544Z" fill="url(#tcHatch)" stroke="none" pointer-events="none"/><text class="tc-code" x="388" y="651">S-02</text><text class="tc-name" x="388" y="675">THROAT</text></g>
-<g class="tc-zone" data-id="smolder" tabindex="0" role="button" aria-label="S-03 The Smolder"><path class="tc-cell" d="M800 649 L587 786 L502 737 L506 631 L625 522 L723 524Z" style="fill: rgba(255,69,0,0.2);"/><path d="M800 649 L587 786 L502 737 L506 631 L625 522 L723 524Z" fill="url(#tcHatch)" stroke="none" pointer-events="none"/><text class="tc-code" x="636" y="636">S-03</text><text class="tc-name" x="636" y="660">SMOLDER</text></g>
-<g class="tc-zone" data-id="rust" tabindex="0" role="button" aria-label="S-04 The Rust Zone"><path class="tc-cell" d="M905 699 L842 772 L784 854 L683 878 L641 896 L587 786 L800 649Z" style="fill: rgba(255,69,0,0.2);"/><path d="M905 699 L842 772 L784 854 L683 878 L641 896 L587 786 L800 649Z" fill="url(#tcHatch)" stroke="none" pointer-events="none"/><text class="tc-code" x="740" y="751">S-04</text><text class="tc-name" x="740" y="775">RUST</text><text class="tc-name" x="740" y="799">ZONE</text></g>
-<g class="tc-zone" data-id="pulse" tabindex="0" role="button" aria-label="S-05 The Pulse"><path class="tc-cell" d="M504 307 L502 327 L401 458 L230 416 L269 299 L487 278Z" style="fill: rgba(255,69,0,0.1);"/><text class="tc-code" x="366" y="351">S-05</text><text class="tc-name" x="366" y="375">PULSE</text></g>
-<g class="tc-zone" data-id="vortex" tabindex="0" role="button" aria-label="S-06 The Vortex"><path class="tc-cell" d="M410 544 L223 623 L213 428 L230 416 L401 458Z" style="fill: rgba(255,69,0,0.1);"/><text class="tc-code" x="299" y="501">S-06</text><text class="tc-name" x="299" y="525">VORTEX</text></g>
-<g class="tc-zone" data-id="stone" tabindex="0" role="button" aria-label="S-07 The Stone"><path class="tc-cell" d="M625 522 L506 631 L410 544 L401 458 L502 327Z" style="fill: rgba(255,69,0,0.16);"/><text class="tc-code" x="503" y="480">S-07</text><text class="tc-name" x="503" y="504">STONE</text></g>
-<g class="tc-zone" data-id="neural" tabindex="0" role="button" aria-label="S-08 The Neural"><path class="tc-cell" d="M686 298 L774 426 L723 524 L625 522 L502 327 L504 307Z" style="fill: rgba(255,69,0,0.1);"/><text class="tc-code" x="646" y="393">S-08</text><text class="tc-name" x="646" y="417">NEURAL</text></g>
-<g class="tc-zone" data-id="iron" tabindex="0" role="button" aria-label="S-09 The Iron District"><path class="tc-cell" d="M782 146 L789 149 L837 242 L887 322 L919 371 L774 426 L686 298Z" style="fill: rgba(255,69,0,0.1);"/><text class="tc-code" x="794" y="284">S-09</text><text class="tc-name" x="794" y="308">IRON</text><text class="tc-name" x="794" y="332">DISTRICT</text></g>
-<g class="tc-zone" data-id="glass" tabindex="0" role="button" aria-label="S-10 The Glass"><path class="tc-cell" d="M487 278 L269 299 L210 197 L229 173 L317 133 L378 108 L487 272Z" style="fill: rgba(255,69,0,0.05);"/><text class="tc-code" x="343" y="206">S-10</text><text class="tc-name" x="343" y="230">GLASS</text></g>
-<g class="tc-zone" data-id="oasis" tabindex="0" role="button" aria-label="S-11 The Oasis"><path class="tc-cell" d="M619 80 L695 108 L782 146 L686 298 L504 307 L487 278 L487 272Z" style="fill: rgba(255,69,0,0.05);"/><text class="tc-code" x="633" y="196">S-11</text><text class="tc-name" x="633" y="220">OASIS</text></g>
-<g class="tc-zone" data-id="canopy" tabindex="0" role="button" aria-label="S-12 The Canopy"><path class="tc-cell" d="M500 91 L601 73 L619 80 L487 272 L378 108 L405 97Z" style="fill: rgba(255,69,0,0.05);"/><text class="tc-code" x="495" y="140">S-12</text><text class="tc-name" x="495" y="164">CANOPY</text></g>
-<g class="tc-zone" data-id="kiln" tabindex="0" role="button" aria-label="S-13 The Kiln"><path class="tc-cell" d="M919 371 L942 406 L950 505 L921 599 L907 697 L905 699 L800 649 L723 524 L774 426Z" style="fill: rgba(255,69,0,0.12);"/><text class="tc-code" x="850" y="516">S-13</text><text class="tc-name" x="850" y="540">KILN</text></g>
-<g class="tc-zone" data-id="marrow" tabindex="0" role="button" aria-label="S-14 The Marrow"><path class="tc-cell" d="M86 404 L95 314 L169 246 L210 197 L269 299 L230 416 L213 428Z" style="fill: rgba(255,69,0,0.07);"/><text class="tc-code" x="180" y="320">S-14</text><text class="tc-name" x="180" y="344">MARROW</text></g>
-<g class="tc-zone" data-id="silence" tabindex="0" role="button" aria-label="S-15 The Silence"><path class="tc-cell" d="M220 629 L116 683 L67 602 L50 505 L85 412 L86 404 L213 428 L223 623Z" style="fill: rgba(255,69,0,0.03);"/><text class="tc-code" x="140" y="527">S-15</text><text class="tc-name" x="140" y="551">SILENCE</text></g>
-<circle class="tc-hub" cx="299" cy="545" r="6" pointer-events="none"/>
-<g class="tc-zone tc-foundry" data-id="foundry" tabindex="0" role="button" aria-label="The Foundry"><circle class="tc-hit" cx="500" cy="655" r="30"/><path class="tc-mark" d="M500 639 L516 655 L500 671 L484 655Z"/><text class="tc-fl" x="500" y="660">F</text><text class="tc-name" x="500" y="695">FOUNDRY</text></g>
-<g class="tc-deco" pointer-events="none"><text x="14" y="24">TERMINUS_CITY // TACTICAL_RECON</text><text x="986" y="24" text-anchor="end">GRID 16 // SECTORS 00-15</text><text x="14" y="996">MAG-LEV TRANSIT - - -</text><text x="986" y="996" text-anchor="end">NOT TO SCALE</text><g transform="translate(930,90)"><path d="M0 -34 L9 0 L0 -8 L-9 0Z" fill="#ff4500"/><text x="0" y="22" text-anchor="middle">N</text></g></g>
+            <div class="tc-col" id="tcCol">
+                <div class="tc-bar">
+                    <div class="chips" role="group" aria-label="Map layers">
+                        <button type="button" class="chip chip--active" data-layer="grid" aria-pressed="true">[01] SECTOR_GRID</button>
+                        <button type="button" class="chip" data-layer="transit" aria-pressed="false">[02] TRANSIT_&amp;_LOGISTICS</button>
+                    </div>
+                </div>
+                <div class="tc-view" id="tcView">
+                    <div class="tc-pan" id="tcPan">
+                        <img src="/deaddrop/assets/map-bg-1400.webp" srcset="/deaddrop/assets/map-bg-1400.webp 1400w, /deaddrop/assets/map-bg.webp 2576w" sizes="(max-width: 900px) 100vw, 66vw" width="2576" height="1438" alt="Illustrated map of Terminus City with its sectors labelled S-00 to S-15 and the Foundry">
+<svg id="tcMap" class="tc-svg" viewBox="0 0 2576 1438" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Map of Terminus City: 16 sectors and one unmapped node">
+<g class="tc-transit" aria-hidden="true">
+<polyline class="tc-line tc-line--freight" points="1230,880 1560,930 1900,1000 2250,1130 2576,1300"/>
+<polyline class="tc-line tc-line--maglev" points="1290,770 1300,900 1420,1060 1560,1230 1720,1438"/>
+<polyline class="tc-line tc-line--maglev" points="1290,770 1380,690 1450,600 1520,460 1700,300 1900,170 2100,60"/>
+<polyline class="tc-line tc-line--bridge" points="470,430 620,320 700,290"/>
+<polyline class="tc-line tc-line--bridge" points="830,280 980,320 1100,380"/>
+</g>
+<g class="tc-zone" data-id="slums" tabindex="0" role="button" aria-label="S-01 The Slums"><polygon class="tc-cell" points="1220,1250 1300,1150 1500,1030 1700,1000 1850,1010 2000,1060 2200,1150 2420,1250 2576,1360 2576,1438 1200,1438 1200,1340"/><rect class="tc-hit" x="1958" y="1150" width="262" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="dredge" tabindex="0" role="button" aria-label="S-00 The Dredge"><polygon class="tc-cell" points="90,1290 130,1200 260,1160 370,1170 405,1250 345,1330 250,1390 140,1375"/><rect class="tc-hit" x="172" y="1080" width="283" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="silence" tabindex="0" role="button" aria-label="S-15 The Silence"><polygon class="tc-cell" points="0,195 130,195 300,245 430,305 525,395 505,520 445,600 485,700 475,830 300,880 150,915 0,920"/><rect class="tc-hit" x="93" y="506" width="278" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="marrow" tabindex="0" role="button" aria-label="S-14 The Marrow"><polygon class="tc-cell" points="500,265 545,215 610,190 660,150 760,128 900,132 990,150 985,225 905,255 830,298 700,302 560,300"/><rect class="tc-hit" x="318" y="113" width="294" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="glass" tabindex="0" role="button" aria-label="S-10 The Glass"><polygon class="tc-cell" points="770,470 850,390 1000,370 1015,560 945,640 900,742 780,746 770,600"/><rect class="tc-hit" x="500" y="568" width="256" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="stone" tabindex="0" role="button" aria-label="S-07 The Stone"><polygon class="tc-cell" points="780,746 900,742 1000,830 1140,862 1180,960 1240,1060 1180,1150 1050,1210 900,1260 760,1222 700,1130 680,1000 700,880 770,860"/><rect class="tc-hit" x="918" y="985" width="254" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="canopy" tabindex="0" role="button" aria-label="S-12 The Canopy"><polygon class="tc-cell" points="1180,190 1290,60 1420,0 1680,0 1662,250 1582,332 1482,420 1400,440 1250,420 1180,380"/><rect class="tc-hit" x="1545" y="133" width="277" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="oasis" tabindex="0" role="button" aria-label="S-11 The Oasis"><polygon class="tc-cell" points="1080,520 1150,445 1250,420 1360,440 1432,500 1442,600 1382,670 1262,702 1140,682 1080,612"/><rect class="tc-hit" x="1158" y="390" width="244" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="pulse" tabindex="0" role="button" aria-label="S-05 The Pulse"><polygon class="tc-cell" points="930,700 1000,660 1180,660 1262,720 1245,842 1140,862 1000,830 930,780"/><rect class="tc-hit" x="935" y="627" width="255" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="vortex" tabindex="0" role="button" aria-label="S-06 The Vortex"><polygon class="tc-cell" points="1262,720 1400,690 1430,782 1420,900 1380,1000 1260,1020 1180,960 1150,880 1245,842"/><rect class="tc-hit" x="1312" y="805" width="278" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="neural" tabindex="0" role="button" aria-label="S-08 The Neural"><polygon class="tc-cell" points="1420,580 1480,520 1560,490 1650,560 1800,620 1822,700 1790,800 1700,832 1560,822 1430,782 1400,700"/><rect class="tc-hit" x="1498" y="655" width="277" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="iron" tabindex="0" role="button" aria-label="S-09 The Iron District"><polygon class="tc-cell" points="1560,470 1620,400 1760,360 1880,450 2000,468 1980,520 1900,560 1830,640 1740,662 1600,600 1560,540"/><rect class="tc-hit" x="1885" y="418" width="377" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="kiln" tabindex="0" role="button" aria-label="S-13 The Kiln"><polygon class="tc-cell" points="1800,280 1880,220 2050,210 2200,280 2232,330 2122,420 2000,468 1880,450 1800,380"/><rect class="tc-hit" x="2085" y="205" width="227" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="smolder" tabindex="0" role="button" aria-label="S-03 The Smolder"><polygon class="tc-cell" points="1920,800 2000,690 2150,660 2270,700 2380,740 2470,800 2500,880 2480,960 2350,1010 2150,990 1960,930"/><rect class="tc-hit" x="2167" y="793" width="303" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="rust" tabindex="0" role="button" aria-label="S-04 The Rust Zone"><polygon class="tc-cell" points="2250,640 2380,600 2576,560 2576,820 2470,800 2380,740 2270,700"/><rect class="tc-hit" x="2180" y="527" width="325" height="50" rx="8"/></g>
+<g class="tc-zone" data-id="throat" tabindex="0" role="button" aria-label="S-02 The Throat"><polygon class="tc-cell" points="1440,840 1680,850 2100,960 2400,1100 2576,1200 2576,1340 2420,1222 2100,1062 1680,922 1440,905"/><rect class="tc-hit" x="2195" y="1055" width="280" height="50" rx="8"/></g>
+<g class="tc-zone tc-foundry" data-id="foundry" tabindex="0" role="button" aria-label="The Foundry, unmapped node"><rect class="tc-hit" x="610" y="1283" width="268" height="87" rx="8"/><circle class="tc-ping" cx="1358" cy="1290" r="34"/><circle class="tc-hit" cx="1358" cy="1290" r="60"/></g>
 </svg>
+                    </div>
+                    <div class="tc-zoom" role="group" aria-label="Zoom">
+                        <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+                        <button type="button" data-zoom="out" aria-label="Zoom out">&minus;</button>
+                        <button type="button" data-zoom="reset" aria-label="Reset zoom">1:1</button>
+                    </div>
+                    <div class="tc-card" id="tcCard" hidden></div>
+                </div>
+                <div class="tc-legend meta" aria-hidden="true">
+                    <span style="--c:#39d5ff">MAG-LEV</span><span style="--c:#ff7a1a">FREIGHT // THE THROAT</span><span style="--c:#e8f4ff">BRIDGES</span>
+                </div>
             </div>
             <aside class="panel tc-info" data-label="SECTOR_FILE // STANDBY" id="tcInfo" aria-live="polite">
                 <div class="stack">
@@ -110,6 +155,16 @@
                 </div>
             </aside>
         </div>
+
+        <dialog class="tc-modal" id="tcModal" aria-labelledby="tcModalTitle">
+            <div class="stack">
+                <span class="tag">UNMAPPED // SUBTERRANEAN</span>
+                <h2 class="h2" id="tcModalTitle">The Foundry</h2>
+                <p class="copy">Unknown and entirely unmapped. It sits completely off the municipal grid, buried in the dark, subterranean dead zone between Sector 1 and Sector 0.</p>
+                <p class="tc-denied">ACCESS DENIED</p>
+                <form method="dialog"><button class="btn" type="submit">CLOSE</button></form>
+            </div>
+        </dialog>
 
         <section class="stack">
             <h2 class="section-label"><span>Sector list</span></h2>
@@ -130,7 +185,7 @@
             <button type="button" class="chip" data-id="kiln">S-13 KILN</button>
             <button type="button" class="chip" data-id="marrow">S-14 MARROW</button>
             <button type="button" class="chip" data-id="silence">S-15 SILENCE</button>
-            <button type="button" class="chip" data-id="foundry">F FOUNDRY</button>
+            <button type="button" class="chip" data-id="foundry">FOUNDRY [UNMAPPED]</button>
             </div>
         </section>
 
