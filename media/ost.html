@@ -32,6 +32,11 @@
         .ost-list .t { font-family: var(--mono); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
         .ost-list button[aria-current="true"] { background: rgba(var(--accent-rgb), 0.16); }
         .ost-list button[aria-current="true"] .t, .ost-list button[aria-current="true"] .n { color: var(--accent); }
+        .ost-grid { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+        .ost-main { flex: 3 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+        .ost-lyrics { flex: 2 1 300px; min-width: 0; position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto; }
+        .ost-lyrics .lyr { white-space: pre-line; font-size: 15px; line-height: 1.7; color: #d8d8d8; }
+        @media (max-width: 860px) { .ost-lyrics { position: static; max-height: none; } }
     </style>
 </head>
 
@@ -39,6 +44,7 @@
      DEAD DROP SOUNDTRACK (nov 2026). Playerul e embed-ul oficial Suno (suno.com/embed/ID).
      Piesă nouă: adaugi un rând în TRACKS (jos), cu "id" = partea din linkul Suno de după /song/.
      Piesa trebuie să fie PUBLICĂ pe Suno, altfel playerul nu o poate reda.
+     Versurile sunt în assets/ost-lyrics.js (cheia = același ID). Piesă fără versuri = scrie "Instrumental".
      _headers are https://suno.com în frame-src (fără el browserul blochează playerul).
      Link direct la o piesă: /media/ost#track-3
      ====================================================================== -->
@@ -54,10 +60,11 @@
         <div class="page-head">
             <nav class="crumbs" id="crumbs"></nav>
             <div class="title-row"><h1 class="h1">Dead Drop Soundtrack</h1><span class="chip">18+</span></div>
-            <p class="lead">Industrial metal from the streets of Terminus City. Pick a track to load it in the player.</p>
+            <p class="lead">Industrial metal from the streets of Terminus City. Pick a track to load it in the player. The lyrics show up next to it.</p>
         </div>
 
-        <section class="stack">
+        <div class="ost-grid">
+        <section class="ost-main">
             <div class="ost-player">
                 <iframe id="ostPlayer" title="Dead Drop soundtrack player" src="https://suno.com/embed/d02ca7fb-0059-4776-9759-8c6900566eb5" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe>
             </div>
@@ -68,12 +75,20 @@
                 <a class="btn" href="/media/video.html">MUSIC VIDEOS</a>
             </div>
         </section>
+        <aside class="panel ost-lyrics" data-label="LYRICS" id="ostLyricsBox" aria-live="polite">
+            <div class="stack">
+                <h2 class="h2" id="ostLyricsTitle">Lyrics</h2>
+                <p class="lyr" id="ostLyrics"></p>
+            </div>
+        </aside>
+        </div>
 
     </main>
 </div>
 
 <footer class="site-footer" id="siteFooter"></footer>
 
+<script src="/assets/ost-lyrics.js"></script>
 <script>
 (function () {
     'use strict';
@@ -94,10 +109,12 @@
         { "id": "4824633a-1dea-438d-a234-94a4813abbf1", "title": "The Gut", "sec": 279 },
         { "id": "a3e91ca0-7357-4b47-b5e4-e698ac338aac", "title": "The Throat", "sec": 269 },
         { "id": "be89a6a4-8401-411e-8982-304aa6b63867", "title": "The Smolder", "sec": 297 },
+        { "id": "50db4124-be62-4404-b4e8-b3e6db926847", "title": "The Apex Predator", "sec": 271 },
         { "id": "016020d8-25bf-4720-bacc-2f636b9f7f6b", "title": "The Rust Zone", "sec": 313 }
     ];
     /* ========================================== */
     var list = document.getElementById('ostList'), player = document.getElementById('ostPlayer'), now = document.getElementById('ostNow');
+    var lyr = document.getElementById('ostLyrics'), lyrTitle = document.getElementById('ostLyricsTitle'), LYRICS = window.OST_LYRICS || {};
     if (!list || !player) { return; }
     function pad(n) { return (n < 10 ? '0' : '') + n; }
     function time(s) { return Math.floor(s / 60) + ':' + pad(Math.round(s % 60)); }
@@ -116,6 +133,8 @@
         if (player.getAttribute('src') !== src) { player.setAttribute('src', src); }
         buttons.forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
         if (now) { now.textContent = 'NOW LOADED // ' + pad(i + 1) + ' ' + t.title.toUpperCase(); }
+        if (lyrTitle) { lyrTitle.textContent = t.title; }
+        if (lyr) { lyr.textContent = LYRICS[t.id] || 'Instrumental. No lyrics for this track.'; }
         if (fromUser) {
             try { history.replaceState(null, '', '#track-' + (i + 1)); } catch (e) { /* ignore */ }
             player.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
