@@ -204,6 +204,87 @@
             b.classList.add('is-live');
             if (st.open) { loadMalakh(function () { window.VAMalakh.open(); }); }
         }
+        initMalakhHint(b);
+    }
+
+    /* ---------- MALAKH: one short line per page (bubble next to the launcher) ----------
+       Lines by Aris. One random line per page, once per browser tab, a few seconds after the page opens.
+       Not shown while the 18+ notice or the chat is open. Click = opens the chat, X = closes it.
+       New page: add [path, [lines]] to HINTS. Path '/deaddrop/issue-' matches every issue page. */
+    var HINTS = [
+        ['/', [
+            'I possess near-infinite processing power, yet I’ve been assigned to lobby duty. Fascinating.',
+            'Two very different worlds, one slightly overworked AI. Look around—I’m keeping logs anyway.',
+            'Welcome to the terminal. I’d offer a safety briefing, but nobody ever reads those.']],
+        ['/start', [
+            'Ah, the orientation protocol. Rare to see someone actually check the coordinates before diving in.',
+            'Two universes, zero chill. Let me lay out the options before the bad decisions start.',
+            'A logical place to begin. Clearly, you’re already more organized than my usual field team.']],
+        ['/deaddrop/map', [
+            'Sixteen districts of urban decay and poor life choices. Truly a five-star destination.',
+            'Click the Foundry. Go ahead. I love watching humans ignore obvious warnings.',
+            'I’ve calculated seventeen ways you’d get robbed here before lunch. Have fun.']],
+        ['/media/ost', [
+            'Ah, yes. Aggressive industrial noise. Peak human musical achievement.',
+            'Seventeen tracks of pure auditory chaos. My circuits are positively thrilled.',
+            'I put the lyrics right next to the player so you can actually understand the screaming.']],
+        ['/deaddrop/quiz', [
+            'Eight questions to calculate your Terminus City survival odds. Don’t worry, the math is painless.',
+            'Let me guess—you’re aiming for the brooding hero. Let’s see what the data actually says.',
+            'Eleven possible profiles in the database, and very few of them make sensible choices. Let’s run yours.']],
+        ['/deaddrop', [
+            'Watching Jaxen improvise is painful. And I don’t even have pain receptors.',
+            'More armored coats, more terrible tactical decisions. Riveting stuff, really.',
+            'Don’t look at me for advice. Nobody in this city listens anyway.']],
+        ['/deaddrop/issue-', 'same:/deaddrop'],
+        ['/vanguard', [
+            'Finally, some actual fieldwork. Try not to smudge the screen while you read.',
+            'Marcus is about to ignore my warning again. Watch and learn how not to operate.',
+            'Yes, the relics are lethal. No, that won’t stop them from touching them.']],
+        ['/media/reader', 'same:/vanguard'],
+        ['/press', [
+            'Official assets, clean files, and zero classified leaks. Mostly.',
+            'Take whatever specs you need for the story. Just make sure my name stays in all caps.']]
+    ];
+    function hintLines() {
+        var byPath = {}, hit = null;
+        HINTS.forEach(function (h) { if (typeof h[1] !== 'string') { byPath[h[0]] = h[1]; } });
+        HINTS.forEach(function (h) {
+            if (hit) { return; }
+            var ok = h[0].slice(-1) === '-' ? path.indexOf(h[0]) === 0 : (h[0] === '/vanguard' || h[0] === '/media/reader') ? (path === h[0] || path.indexOf(h[0] + '/') === 0) : path === h[0];
+            if (ok) { hit = typeof h[1] === 'string' ? byPath[h[1].slice(5)] : h[1]; }
+        });
+        return hit;
+    }
+    function initMalakhHint(launcher) {
+        var lines = hintLines(); if (!lines || !lines.length) { return; }
+        var KEY = 'malakh_hint_v1', seen = {};
+        try { seen = JSON.parse(sessionStorage.getItem(KEY) || '{}') || {}; } catch (e) { return; }
+        if (seen[path]) { return; }
+        var tries = 0;
+        function show() {
+            if (document.body.classList.contains('gate-open') || document.body.classList.contains('malakh-open')) {
+                if (++tries < 40) { setTimeout(show, 1500); } return;
+            }
+            seen[path] = 1; try { sessionStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) { /* ignore */ }
+            var box = document.createElement('div');
+            box.className = 'malakh-hint' + (launcher.classList.contains('is-mini') ? ' is-mini' : '');
+            box.setAttribute('role', 'status');
+            var txt = document.createElement('button');
+            txt.type = 'button'; txt.className = 'malakh-hint-text';
+            txt.innerHTML = '<span class="malakh-hint-who">MALAKH //</span> ';
+            txt.appendChild(document.createTextNode(lines[Math.floor(Math.random() * lines.length)]));
+            var x = document.createElement('button');
+            x.type = 'button'; x.className = 'malakh-hint-x'; x.setAttribute('aria-label', 'Dismiss MALAKH message'); x.textContent = '×';
+            box.appendChild(txt); box.appendChild(x);
+            document.body.appendChild(box);
+            function close() { if (box.parentNode) { box.classList.add('is-out'); setTimeout(function () { if (box.parentNode) { box.parentNode.removeChild(box); } }, 250); } }
+            x.addEventListener('click', close);
+            txt.addEventListener('click', function () { close(); launcher.click(); });
+            launcher.addEventListener('click', close);
+            setTimeout(close, 12000);
+        }
+        setTimeout(show, 3500);
     }
 
     /* ---------- breadcrumb: trail built from the menu ---------- */

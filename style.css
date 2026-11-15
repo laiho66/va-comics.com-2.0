@@ -781,6 +781,22 @@ body.malakh-open .malakh-launcher { border-color: var(--mk); }
 /* reading pages: smaller and out of the way */
 .malakh-launcher.is-mini { width: 42px; height: 42px; right: 14px; bottom: 14px; opacity: 0.7; }
 .malakh-launcher.is-mini:hover, .malakh-launcher.is-mini:focus-visible { opacity: 1; }
+
+/* MALAKH: one-line bubble next to the launcher (site.js HINTS) */
+.malakh-hint {
+    --mk: #22d3ee; --mk-rgb: 34, 211, 238;
+    position: fixed; right: 24px; bottom: 94px; z-index: 449; max-width: min(340px, calc(100vw - 48px));
+    display: flex; align-items: flex-start; background: #000; border: 1px solid rgba(var(--mk-rgb), 0.6);
+    box-shadow: 0 0 0 1px #000, 0 0 24px rgba(var(--mk-rgb), 0.2); animation: mk-hint-in 0.25s ease-out;
+}
+.malakh-hint.is-mini { right: 14px; bottom: 66px; }
+.malakh-hint.is-out { opacity: 0; transform: translateY(6px); transition: opacity 0.25s, transform 0.25s; }
+.malakh-hint-text { flex: 1; padding: 12px 6px 12px 14px; background: none; border: 0; color: #e6f9fd; font: inherit; font-size: 14px; line-height: 1.5; text-align: left; cursor: pointer; }
+.malakh-hint-who { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--mk); }
+.malakh-hint-x { flex: none; width: 36px; height: 36px; background: none; border: 0; color: var(--mk); font-size: 20px; line-height: 1; cursor: pointer; }
+.malakh-hint-text:focus-visible, .malakh-hint-x:focus-visible { outline: 1px solid var(--mk); outline-offset: -3px; }
+@keyframes mk-hint-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .malakh-hint { animation: none; } }
 .malakh-launcher.is-mini svg { width: 22px; height: 22px; }
 @media (max-width: 640px) {
     .malakh-launcher { right: 14px; bottom: 14px; width: 52px; height: 52px; }
