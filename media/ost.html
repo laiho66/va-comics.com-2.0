@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dead Drop Soundtrack // VA Comics</title>
+
+    <!-- SEO (descrierea: maxim 155 de caractere) -->
+    <meta name="description" content="The Dead Drop original soundtrack: industrial metal from the streets of Terminus City. Listen to all tracks right here.">
+    <link rel="canonical" href="https://va-comics.com/media/ost">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VA Comics">
+    <meta property="og:title" content="Dead Drop Soundtrack // VA Comics">
+    <meta property="og:description" content="The Dead Drop original soundtrack: industrial metal from the streets of Terminus City. Listen to all tracks right here.">
+    <meta property="og:url" content="https://va-comics.com/media/ost">
+    <meta property="og:image" content="https://va-comics.com/deaddrop/assets/og-map.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .ost-player { border: 1px solid rgba(var(--accent-rgb), 0.35); background: #050505; }
+        .ost-player iframe { display: block; width: 100%; height: 240px; border: 0; }
+        .ost-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+        .ost-list li { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+        .ost-list button { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; width: 100%; min-height: 48px; padding: 8px 12px; background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+        .ost-list button:hover, .ost-list button:focus-visible { background: rgba(var(--accent-rgb), 0.10); outline: none; }
+        .ost-list .n, .ost-list .d { font-family: var(--mono); font-size: 12px; letter-spacing: 1px; color: var(--text-4); }
+        .ost-list .t { font-family: var(--mono); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+        .ost-list button[aria-current="true"] { background: rgba(var(--accent-rgb), 0.16); }
+        .ost-list button[aria-current="true"] .t, .ost-list button[aria-current="true"] .n { color: var(--accent); }
+    </style>
+</head>
+
+<!-- ======================================================================
+     DEAD DROP SOUNDTRACK (nov 2026). Playerul e embed-ul oficial Suno (suno.com/embed/ID).
+     Piesă nouă: adaugi un rând în TRACKS (jos), cu "id" = partea din linkul Suno de după /song/.
+     Piesa trebuie să fie PUBLICĂ pe Suno, altfel playerul nu o poate reda.
+     _headers are https://suno.com în frame-src (fără el browserul blochează playerul).
+     Link direct la o piesă: /media/ost#track-3
+     ====================================================================== -->
+<body data-bg="deaddrop">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="shell">
+    <nav class="nav" id="siteNav" aria-label="Main"></nav>
+    <script src="/site.js"></script>
+
+    <main class="main" id="main">
+        <div class="page-head">
+            <nav class="crumbs" id="crumbs"></nav>
+            <div class="title-row"><h1 class="h1">Dead Drop Soundtrack</h1><span class="chip">18+</span></div>
+            <p class="lead">Industrial metal from the streets of Terminus City. Pick a track to load it in the player.</p>
+        </div>
+
+        <section class="stack">
+            <div class="ost-player">
+                <iframe id="ostPlayer" title="Dead Drop soundtrack player" src="https://suno.com/embed/d02ca7fb-0059-4776-9759-8c6900566eb5" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <p class="meta" id="ostNow" aria-live="polite">NOW LOADED // 01 KINETIC STRIKE</p>
+            <ol class="ost-list" id="ostList"></ol>
+            <div class="row">
+                <a class="btn" href="https://suno.com/playlist/6880b358-d602-4342-8466-3f4a7e6f4dde" target="_blank" rel="noopener">FULL PLAYLIST ON SUNO</a>
+                <a class="btn" href="/media/video.html">MUSIC VIDEOS</a>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer class="site-footer" id="siteFooter"></footer>
+
+<script>
+(function () {
+    'use strict';
+    /* ===== TRACKS (aici adaugi piese noi) ===== */
+    var TRACKS = [
+        { "id": "d02ca7fb-0059-4776-9759-8c6900566eb5", "title": "Kinetic Strike", "sec": 192 },
+        { "id": "30dc21bc-ec2e-457c-98fe-72c0d2ba7a5c", "title": "Terminus City", "sec": 307 },
+        { "id": "92cd5dae-cded-4897-9465-422d07920257", "title": "The Hunt", "sec": 272 },
+        { "id": "3e7fa4a7-cf92-48ba-b8df-e9fc4bba5649", "title": "The Silent Pact", "sec": 290 },
+        { "id": "c4fe79e7-20d7-4e65-be33-b91af656885a", "title": "The Man", "sec": 255 },
+        { "id": "fca3ab51-f318-4859-82eb-b209843c925a", "title": "The Surgeon", "sec": 113 },
+        { "id": "34cbc584-272b-46f4-b09a-27f8ac87f248", "title": "Iron Purge", "sec": 224 },
+        { "id": "f0a01ac3-7e80-4534-9eb1-3e46e786a153", "title": "Iron Crown", "sec": 182 },
+        { "id": "4ef5f3f9-3829-4b2d-bea5-29ff784d3733", "title": "Flesh Scratch", "sec": 194 },
+        { "id": "b79df8ca-344e-4002-88a1-f179ab675119", "title": "The Stitch", "sec": 230 },
+        { "id": "cffb2400-7fe8-4bdc-b4fa-3a7290d5bc2c", "title": "Scorched Protocol", "sec": 248 },
+        { "id": "f028ebf1-991f-488f-b297-de195987051c", "title": "Tear Off The Mask", "sec": 228 },
+        { "id": "4824633a-1dea-438d-a234-94a4813abbf1", "title": "The Gut", "sec": 279 },
+        { "id": "a3e91ca0-7357-4b47-b5e4-e698ac338aac", "title": "The Throat", "sec": 269 },
+        { "id": "be89a6a4-8401-411e-8982-304aa6b63867", "title": "The Smolder", "sec": 297 },
+        { "id": "016020d8-25bf-4720-bacc-2f636b9f7f6b", "title": "The Rust Zone", "sec": 313 }
+    ];
+    /* ========================================== */
+    var list = document.getElementById('ostList'), player = document.getElementById('ostPlayer'), now = document.getElementById('ostNow');
+    if (!list || !player) { return; }
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function time(s) { return Math.floor(s / 60) + ':' + pad(Math.round(s % 60)); }
+    var buttons = [];
+    TRACKS.forEach(function (t, i) {
+        var li = document.createElement('li'), b = document.createElement('button');
+        b.type = 'button';
+        b.innerHTML = '<span class="n"></span><span class="t"></span><span class="d"></span>';
+        b.children[0].textContent = pad(i + 1); b.children[1].textContent = t.title; b.children[2].textContent = time(t.sec);
+        b.addEventListener('click', function () { load(i, true); });
+        li.appendChild(b); list.appendChild(li); buttons.push(b);
+    });
+    function load(i, fromUser) {
+        var t = TRACKS[i]; if (!t) { return; }
+        var src = 'https://suno.com/embed/' + t.id;
+        if (player.getAttribute('src') !== src) { player.setAttribute('src', src); }
+        buttons.forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+        if (now) { now.textContent = 'NOW LOADED // ' + pad(i + 1) + ' ' + t.title.toUpperCase(); }
+        if (fromUser) {
+            try { history.replaceState(null, '', '#track-' + (i + 1)); } catch (e) { /* ignore */ }
+            player.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+    var m = /^#track-(\d+)$/.exec(location.hash);
+    load(m ? (+m[1] - 1) : 0, false);
+})();
+</script>
+</body>
+</html>

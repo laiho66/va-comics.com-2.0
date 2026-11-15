@@ -13,10 +13,10 @@
         '/deaddrop/issue-1.html', '/deaddrop/issue-2.html', '/deaddrop/issue-3.html', '/deaddrop/issue-4.html', '/deaddrop/issue-5.html', '/deaddrop/issue-6.html', '/deaddrop/issue-7.html',
         '/deaddrop/issue-8.html', '/deaddrop/issue-9.html', '/deaddrop/issue-10.html', '/deaddrop/issue-11-1.html', '/deaddrop/issue-11-2.html', '/deaddrop/issue-12.html', '/deaddrop/issue-13.html',
         '/vanguard/index.html', '/vanguard/book1.html', '/vanguard/book2.html', '/vanguard/characters.html',
-        '/media.html', '/media/viewer.html', '/media/video.html', '/media/reader.html', '/legal.html'
+        '/media.html', '/media/viewer.html', '/media/video.html', '/media/ost.html', '/media/reader.html', '/legal.html'
     ];
-    var ADULT = ['/deaddrop', '/media/viewer', '/media/video'];
-    var CACHE_KEY = 'va_search_v2';
+    var ADULT = ['/deaddrop', '/media/viewer', '/media/video', '/media/ost'];
+    var CACHE_KEY = 'va_search_v3';
     var MAX = 12;
 
     var index = null, building = null, ui = null, lastFocus = null;

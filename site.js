@@ -31,7 +31,7 @@
     ];
 
     /* The 18+ notice is shown ONLY on pages whose address starts with one of these. */
-    var ADULT_PATHS = ['/deaddrop', '/media/viewer', '/media/video', '/media/talk'];
+    var ADULT_PATHS = ['/deaddrop', '/media/viewer', '/media/video', '/media/ost', '/media/talk'];
 
     /* ================================================================== */
 
@@ -58,7 +58,8 @@
             groups: [{ label: null, items: [
                 { label: 'VIDEO', href: '/media/video.html' },
                 { label: 'VIEWER', href: '/media/viewer.html' },
-                { label: 'READING ROOM', href: '/media/reader.html' }
+                { label: 'READING ROOM', href: '/media/reader.html' },
+                { label: 'SOUNDTRACK', href: '/media/ost.html' }
             ] }]
         },
         {
