@@ -104,7 +104,7 @@
         groups.forEach(function (g) {
             var sec = el('section', 'stack');
             var h = el('h2', 'section-label'); h.appendChild(el('span', '', g.v.title));
-            var buy = el('a', '', '[ GET IT ON AMAZON ]'); buy.href = g.v.page; h.appendChild(buy);
+            var buy = el('a', '', '[ VOLUME PAGE ]'); buy.href = g.v.page; h.appendChild(buy);
             sec.appendChild(h);
             var grid = el('div', 'grid grid-5');
             g.keys.forEach(function (k) {
@@ -231,7 +231,7 @@
             b.addEventListener('click', function () { rEnd.hidden = true; openReader(next, 1, false); });
             box.appendChild(b);
         } else { box.appendChild(el('p', 'meta', 'END OF AVAILABLE ISSUES')); }
-        var a = el('a', 'btn btn--block', 'GET THIS ISSUE // AMAZON'); a.href = issuePage(cur.k); box.appendChild(a);
+        var a = el('a', 'btn btn--block', 'ISSUE PAGE'); a.href = issuePage(cur.k); box.appendChild(a);
         var l = el('button', 'btn btn--block', 'BACK TO LIBRARY'); l.type = 'button';
         l.addEventListener('click', function () { rEnd.hidden = true; goLibrary(); }); box.appendChild(l);
         var c = el('button', 'btn btn--block', 'BACK TO THE LAST PAGE'); c.type = 'button';
